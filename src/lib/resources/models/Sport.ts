@@ -16,4 +16,9 @@ const sportSchema = new Schema<Sport>({
     }
 })
 
+/**
+ * @description
+ * The model for the Sport collection.
+ */
 const SportModel = models["sport"] as Model<Sport> || model<Sport>('sport', sportSchema);
+export default SportModel;

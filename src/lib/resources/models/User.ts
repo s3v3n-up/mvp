@@ -17,4 +17,8 @@ const userSchema = new Schema<User>({
     }
 })
 
+/**
+ * @description
+ * The model for the User collection.
+ */
 const UserModel = models["user"] as Model<User> || model<User>('user', userSchema);

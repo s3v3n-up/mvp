@@ -49,5 +49,9 @@ const matchSchema = new Schema<Match>({
     }
 })
 
+/**
+ * @description
+ * The model for the Match collection.
+ */
 const MatchModel = models["match"] as Model<Match> || model<Match>('match', matchSchema);
 export default MatchModel;

@@ -17,5 +17,9 @@ const teamSchema = new Schema<Team>({
     }
 })
 
+/**
+ * @description
+ * The model for the Team collection.
+ */
 const TeamModel = models["team"] as Model<Team> || model<Team>('team', teamSchema);
 export default TeamModel;

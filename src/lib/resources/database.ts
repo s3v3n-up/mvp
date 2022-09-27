@@ -2,7 +2,8 @@ import mongoose from 'mongoose';
 import { MongoClient } from 'mongodb';
 
 /**
- * database class to manange database client connections
+ * @description
+ * entity that manage database client connections
  */
 export default class Database {
     static mongooseClient: typeof mongoose;
