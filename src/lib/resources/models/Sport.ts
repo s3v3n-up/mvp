@@ -11,8 +11,7 @@ const sportSchema = new Schema<Sport>({
             team: String,
             wins: Number
         }],
-        default: [],
-        required: true
+        default: []
     }
 })
 

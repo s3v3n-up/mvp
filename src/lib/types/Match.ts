@@ -10,6 +10,7 @@ export interface Match {
     languages: string[];
     score: Score[];
     status: boolean;
+    code: string;
 }
 
 export interface Score {

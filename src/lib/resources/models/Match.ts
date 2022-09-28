@@ -1,5 +1,5 @@
 import {models, model, Model, Schema} from 'mongoose';
-import type { Match } from '@/lib/types/match';
+import type { Match } from '@/lib/types/Match';
 
 const matchSchema = new Schema<Match>({
     sport: {
@@ -40,11 +40,13 @@ const matchSchema = new Schema<Match>({
             score: Number
         }],
         default: [],
-        required: true
     },
     status: {
         type: Boolean,
         default: false,
+    }, 
+    code: {
+        type: String,
         required: true
     }
 })

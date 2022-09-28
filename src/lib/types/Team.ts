@@ -3,4 +3,5 @@ export interface Team {
     name: string;
     leader: string;
     members: string[];
+    code: string;
 }

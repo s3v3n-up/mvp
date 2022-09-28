@@ -14,6 +14,10 @@ const teamSchema = new Schema<Team>({
         type: [String],
         default: [],
         required: true
+    },
+    code: {
+        type: String,
+        required: true
     }
 })
 
