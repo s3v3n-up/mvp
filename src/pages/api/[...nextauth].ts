@@ -57,7 +57,6 @@ export const authOptions: NextAuthOptions = {
                 clientSecret: process.env.OAUTH_GOOGLE_CLIENT_SECRET,
             }
         )
-
     ]
 };
 
