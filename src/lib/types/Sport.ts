@@ -1,9 +1,6 @@
-export interface Sport {
-    name: string;
-    records: Record[];
-}
+import { Sport as SportName } from '@/lib/types/Match'
 
-export interface Record {
-    team: string;
-    wins: number;
+export interface Sport {
+    sportName: SportName;
+    maxPlayers: number;
 }

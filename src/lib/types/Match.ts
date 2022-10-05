@@ -1,19 +1,20 @@
 export interface Match {
     _id?: string;
-    sport: string;
-    date: string;
-    startTime: string;
-    endTime: string;
-    location: string; 
-    teams: string[];
-    teamsLimit: number;
-    languages: string[];
-    score: Score[];
-    status: boolean;
-    code: string;
+	host: string;
+	sport: Sport;
+	isQuick: boolean;
+	location: string;
+	matchTime: string;
+	description: string;
+	players?: string[];
+	playerLimit: number;
+	duration?: number;
 }
 
-export interface Score {
-    team: string;
-    score: number;
+export enum Sport {
+	basketball = "BASKETBALL",
+	tennis = "TENNIS",
+	pingpong = "PINGPONG",
+	volleyball = "VOLLEYBALL",
+	badminton = "BADMINTON",
 }

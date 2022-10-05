@@ -2,18 +2,33 @@ import {model, models, Model, Schema} from 'mongoose';
 import type { User } from '@/lib/types/User';
 
 const userSchema = new Schema<User>({
-    nickname: {
+    userName: {
         type: String,
         required: true
     },
-    team: {
+    firstName: {
         type: String,
         required: true
     },
-    recentMatches: {
-        type: [String],
+	lastName: {
+        type: String,
+        required: true
+    },
+	email: {
+        type: String,
+        required: true
+    },
+	contact: {
+        type: String,
+        required: true
+    },
+	records: {
+        type: [{
+            matchID: String,
+            isWinner: Boolean,
+			required: false
+        }],
         default: [],
-        required: true
     }
 })
 
