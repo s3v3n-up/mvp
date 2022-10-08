@@ -1,43 +1,88 @@
 import {models, model, Model, Schema} from 'mongoose';
-import type { Match } from '@/lib/types/Match';
+// import type { Match.Type } from '@/lib/types/Match';
+import { Match, Matches } from '@/lib/types/Match'
+import {ObjectId} from 'mongodb'
+import UserModel  from '@/lib/resources/models/User'
+
+/**
+ * @description = This is the match schema
+ * The full description of each property is referenced in the Match interface 
+ */
 
 const matchSchema = new Schema<Match>({
-    host: {
-        type: String,
+    matchHost: {
+        type: String || ObjectId || UserModel,
         required: true
     },
     sport: {
         type: String,
         required: true
     },
-    isQuick: {
-        type: Boolean,
+    matchType: {
+        type: String,
+		enum: Matches.Type,
         required: true
     },
     location: {
         type: String,
-        required: true
+        required: true,
+		default: {}
     },
-    matchTime: {
-        type: String,
-        required: true
+    matchStart: {
+        type: Date,
+		min: [Date.now(), "Date should not be less than current date/time"],
+        required: true,
+		default: Date.now()
+    },
+	matchEnd: {
+        type: Date,
+        min: [Date.now(), "Date should not be less than current date/time"],
+        required: true,
+		default: Date.now()
     },
     description: {
         type: String,
         required: true
     },
     players: {
-        type: Array<String>,
-        required: false
+        type: [String],
+        required: true,
+		default: []
     },
-    playerLimit: {
-        type: Number,
-        required: true
-    },
-    duration: {
-        type: Number,
-		required: false
-    }
+	teamA: {
+		members: [{
+			type: Schema.Types.ObjectId,
+			ref: 'user',
+			required: true,
+			default: []
+		}],
+		score: Number,
+		required: true,
+		result: {
+			type: String,
+			enum: Matches.Result,
+			required: true,
+			default: ''
+		},
+		default: {}
+	},
+	teamB: {
+		members: [{
+			type: Schema.Types.ObjectId,
+			ref: 'user',
+			required: true,
+			default: []
+		}],
+		score: Number,
+		required: true,
+		result: {
+			type: String,
+			enum: Matches.Result,
+			required: true,
+			default: ''
+		},
+		default: {}
+	}
 })
 
 /**

@@ -1,15 +1,21 @@
 import {model, models, Model, Schema} from 'mongoose';
 import type { Sport } from '@/lib/types/Sport';
 
+/**
+ * @description = This is the sport schema
+ * The full description of each property is referenced in the Sport interface 
+ */
+
 const sportSchema = new Schema<Sport>({
-    sportName: {
+    name: {
         type: String,
         required: true
     },
-    maxPlayers: {
-		type: Number,
-		required: true
-	}  
+    gameModes: [{
+		name: String,
+		minPlayers: Number,
+		maxPlayers: Number
+	}]
 })
 
 /**
