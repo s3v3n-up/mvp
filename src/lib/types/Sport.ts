@@ -1,9 +1,9 @@
 export interface Sport {
-    name: string;
-    records: Record[];
+  name: string;
+  records: Record[];
 }
 
 export interface Record {
-    team: string;
-    wins: number;
+  team: string;
+  wins: number;
 }
