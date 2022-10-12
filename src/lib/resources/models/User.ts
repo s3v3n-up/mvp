@@ -17,13 +17,13 @@ const userSchema = new Schema<User>({
 	},
 	firstName: {
 		type: String,
-		min: [8, 'Firstname should be at least 8 characters'],
+		min: [2, 'Firstname should be at least 2 characters'],
 		max: [64, 'Firstname should be max of 64 characters'],
 		required: [true, 'Firstname is required'],
 	},
 	lastName: {
 		type: String,
-		min: [8, 'Lastname should be at least 8 characters'],
+		min: [2, 'Lastname should be at least 2 characters'],
 		max: [64, 'Lastname should be max of 64 characters'],
 		required: [true, 'Lastname is required'],
 	},
