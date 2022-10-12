@@ -14,11 +14,6 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
 
             let {userName, firstName, lastName, phonenumber, email, matches} = req.body as User
 
-            userName =  userName.toLowerCase();
-            email = email.toLowerCase();
-            firstName = firstName.charAt(0) + firstName.substring(1).toLowerCase();
-            lastName = lastName.charAt(0) + lastName.substring(1).toLowerCase();
-            phonenumber = phonenumber.substring(0,3) + "-" + phonenumber.substring(3,6) + "-" + phonenumber.substring(6);
 
             const schema = object(
                 {
@@ -31,6 +26,12 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
             )
             
             const validatedUser = await schema.validate(req.body);
+            
+            userName =  userName.toLowerCase();
+            email = email.toLowerCase();
+            firstName = firstName.charAt(0) + firstName.substring(1).toLowerCase();
+            lastName = lastName.charAt(0) + lastName.substring(1).toLowerCase();
+            //phonenumber = phonenumber.substring(0,3) + "-" + phonenumber.substring(3,6) + "-" + phonenumber.substring(6);
 
                 
             // if(email === "" || !EMAIL_REGEX.test(email) || email.trim() === "") {
