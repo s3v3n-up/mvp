@@ -1,0 +1,25 @@
+import styles from '../styles/Scoreboard.module.sass'
+import Image from 'next/image'
+
+export default function Scoreboard(){
+    return(
+        <div className={styles.page}>
+            <Image src="/crown.svg" width={39.75} height={29.33}/>
+            <div className={styles.scoreboard}>
+                <div>
+                    <h1>Home</h1>
+                    <div>
+                        <div>0</div>
+                    </div>
+                </div>
+                <div>
+                    <h1>Away</h1>
+                    <div>
+                        <div>0</div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    )
+}

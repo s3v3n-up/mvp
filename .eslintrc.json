@@ -1,7 +1,7 @@
 {
   "extends": "next/core-web-vitals",
   "rules": {
-    "semi": ["warning", "always"],
+    "semi": "warning",
     "quotes": ["warning", "double"],
     "no-var": ["error", "always"],
     "newline-before-return": ["warning", "always"],
