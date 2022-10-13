@@ -13,7 +13,7 @@ export default function Header(){
         <div className="hidden space-x-8 md:flex cursor-pointer text-lg  font-semibold  ">
           <Link className="headerLink" href="/">RANKING</Link>
           <Link className="headerLink" href="#">MATCHES</Link>
-          <Link className="headerLink" href="#">CREATE MATCH</Link>
+          <Link className="headerLink" href="/create">CREATE MATCH</Link>
           <Link className="headerLink" href="#">CATEGORY</Link>
           <Link className="headerLink" href="#">HISTORY</Link>
         </div>
