@@ -6,19 +6,8 @@
   body {
   }
 
- header {
-    @apply  top-0  flex w-full items-center justify-between
-    px-20 py-10  text-[#f3f2ef] 
-  }
 }
 
 @layer components {
-  .headerLink {
-    @apply cursor-pointer font-semibold text-lg
-  }
-  .rightLink {
-    @apply cursor-pointer font-semibold text-lg
-  } 
-
 
 }
