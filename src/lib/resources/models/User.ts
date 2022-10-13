@@ -1,5 +1,5 @@
 import { model, models, Model, Schema } from 'mongoose';
-import type { User } from '@/lib/types/User';
+import type { UserProfile } from '@/lib/types/User';
 import { PHONE_REGEX, EMAIL_REGEX } from '@/lib/resources/constants'
 
 /**
@@ -7,7 +7,7 @@ import { PHONE_REGEX, EMAIL_REGEX } from '@/lib/resources/constants'
  * The full description of each property is referenced in the User interface 
  */
 
-const userSchema = new Schema<User>({
+const userSchema = new Schema<UserProfile>({
 	// This is the username of the user
 	userName: {
 		type: String,
@@ -66,5 +66,5 @@ const userSchema = new Schema<User>({
  * @description
  * The model for the User collection.
  */
-const UserModel = models["user"] as Model<User> || model<User>('user', userSchema);
+const UserModel = models["userprofile"] as Model<UserProfile> || model<UserProfile>('userprofile', userSchema);
 export default UserModel;

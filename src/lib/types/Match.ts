@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb'
-import { User } from '@/lib/types/User'
+import { UserProfile } from '@/lib/types/User'
 
 /**
  * Interface for creating a match
@@ -17,7 +17,7 @@ import { User } from '@/lib/types/User'
 
 export interface Match {
 	id?: string | ObjectId;
-	matchHost: string | ObjectId | User;
+	matchHost: string | ObjectId | UserProfile;
 	sport: string;
 	matchType: Matches.Type;
 	location: object;
@@ -28,12 +28,12 @@ export interface Match {
 	teamA: {
 		members: string[],
 		score: number,
-		result: Matches.Result
+		status: Matches.Status
 	}
 	teamB: {
 		members: string[],
 		score: number,
-		result: Matches.Result
+		status: Matches.Status
 
 	}
 }
@@ -45,10 +45,11 @@ export namespace Matches {
 		Quick = "QUICK",
 	}
 
-	export enum Result {
+	export enum Status {
 		Win = "WIN",
 		Lose = "LOSE",
-		Draw = "DRAW"
+		Draw = "DRAW",
+		Unfinished = "UNFINISHED"
 	}
 
 }

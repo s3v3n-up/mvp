@@ -11,7 +11,7 @@ import { Match } from '@/lib/types/Match'
  * @phonenumber = This is the user's contact info 
  * @matches = This is the matches that the user creates/joins
  */
-export interface User {
+export interface UserProfile {
     id?: string | ObjectId;
 	userName: string;
     firstName: string;

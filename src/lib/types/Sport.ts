@@ -17,5 +17,12 @@ export interface Sport {
 		modeName: string,
 		minPlayers: number,
 		maxPlayers: number
-	}]
+	}];
+	records: [{
+		playerName: string,
+		win: number,
+		lose: number,
+		draw: number,
+		unfinished: number
+	}];
 }

@@ -66,9 +66,9 @@ const matchSchema = new Schema<Match>({
 		}],
 		score: Number,
 		required: true,
-		result: {
+		status: {
 			type: String,
-			enum: Matches.Result,
+			enum: Matches.Status,
 			required: true,
 			default: ''
 		},
@@ -84,9 +84,9 @@ const matchSchema = new Schema<Match>({
 		}],
 		score: Number,
 		required: true,
-		result: {
+		status: {
 			type: String,
-			enum: Matches.Result,
+			enum: Matches.Status,
 			required: true,
 			default: ''
 		},

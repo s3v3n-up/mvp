@@ -17,7 +17,16 @@ const sportSchema = new Schema<Sport>({
 		modeName: String,
 		minPlayers: Number,
 		maxPlayers: Number
+	}],
+	// This is where we keep records for leaderboard purposes
+	records: [{
+		playerName: String,
+		win: Number,
+		lose: Number,
+		draw: Number,
+		unfinished: Number
 	}]
+
 })
 
 /**
