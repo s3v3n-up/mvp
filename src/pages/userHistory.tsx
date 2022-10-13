@@ -1,15 +1,13 @@
-import styles from '../styles/History.module.sass';
-import Image from 'next/image';
-import Created from '@/components/userMatches';
+import styles from "../styles/History.module.sass";
+//import Image from 'next/image';
+import Card  from "@/components/card";
+import Tab from "@/components/tab";
 
 export default function History() {
     return(
-        <div>
-            <div>
-                <p>Your Matches</p>
-
-            </div>
-            <Created/>
+        <div className={styles.background}>
+            <Tab/>
+            
         </div>
     )
 }
