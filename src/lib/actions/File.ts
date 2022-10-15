@@ -13,6 +13,6 @@ export async function uploadFile(path: string) {
         }
         return response;
     } catch(e) {
-        throw new Error("something wrong here", {cause: e});
+        throw e
     }
 }
