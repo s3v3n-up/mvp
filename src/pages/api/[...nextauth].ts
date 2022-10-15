@@ -5,7 +5,6 @@ import DiscordProvider from 'next-auth/providers/discord';
 import GoogleProvider from 'next-auth/providers/google';
 import Database from '@/lib/resources/database';
 
-
 /**
  * @description
  * This manages the authentication for Passwordless, Google and Discord OAuth
@@ -43,8 +42,8 @@ export const authOptions: NextAuthOptions = {
          */
         DiscordProvider(
             {
-                clientId: process.env.OAUTH_DISCORD_CLIENT_ID,
-                clientSecret: process.env.OAUTH_DISCORD_CLIENT_SECRET,
+                clientId: process.env.OAUTH_DISCORD_CLIENT_ID!,
+                clientSecret: process.env.OAUTH_DISCORD_CLIENT_SECRET!,
             }
         ),
         /**
@@ -53,11 +52,30 @@ export const authOptions: NextAuthOptions = {
          */
         GoogleProvider(
             {
-                clientId: process.env.OAUTH_GOOGLE_CLIENT_ID,
-                clientSecret: process.env.OAUTH_GOOGLE_CLIENT_SECRET,
+                clientId: process.env.OAUTH_GOOGLE_CLIENT_ID!,
+                clientSecret: process.env.OAUTH_GOOGLE_CLIENT_SECRET!,
             }
         )
-    ]
+    ],
+    pages: {
+        newUser: '/'
+    },
+    callbacks: {
+        // Sends back the token
+        async jwt({ token, user}) {
+            if(user) {
+                token.user = user;
+            }
+            return token;
+        },
+        // Sends back the session
+        async session({ session, token }) {
+            if(token && token.user) {
+                session.user = token.user
+            }
+            return session;
+        }
+    }
 };
 
 export default NextAuth(authOptions);
