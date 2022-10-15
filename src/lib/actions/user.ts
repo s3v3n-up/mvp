@@ -51,3 +51,15 @@ export async function getUsers() {
 
     return users
 }
+
+/**
+ * @userExist This is a function to check if the user exists on the database
+ */
+
+export async function userExist(email: string) {    
+    await Database.setup()
+
+    const user = await UserModel.findOne({ email })
+
+    return user
+}
