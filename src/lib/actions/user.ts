@@ -1,4 +1,4 @@
-import { User } from '@/lib/types/User'
+import { UserProfile } from '@/lib/types/User'
 // import Database from  '@/lib/resources/database'
 import UserModel from '../resources/models/User'
 
@@ -9,7 +9,7 @@ import Database from '@/lib/resources/database'
  * @param user = accepts a user object
  * @returns = returns a code and a message if successful user creation or user already taken 
  */
-export async function createUser(user: User) {
+export async function createUser(user: UserProfile) {
     await Database.setup()
 
     // Deconstruct username 
@@ -27,7 +27,7 @@ export async function createUser(user: User) {
     }
 
     // Creates a UserModel
-	const player = new UserModel<User>(user)
+	const player = new UserModel<UserProfile>(user)
 
     // Saves the UserModel in the database
     await player.save()
