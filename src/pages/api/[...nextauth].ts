@@ -58,7 +58,7 @@ export const authOptions: NextAuthOptions = {
         )
     ],
     pages: {
-        newUser: '/'
+        newUser: '/signup'
     },
     callbacks: {
         // Sends back the token
