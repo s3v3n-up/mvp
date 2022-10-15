@@ -8,6 +8,17 @@
   height: 100vh
   user-select: none
 
+.background
+  background-image: url("/img/mobile.png")
+  background-position: 50%
+  background-repeat: no-repeat
+  background-size: cover
+
+
+  width: 50%
+  height: 100vh
+  user-select: none
+
 @import url('https://fonts.googleapis.com/css2?family=Aldrich&display=swap')
 
 .about
@@ -23,32 +34,6 @@
   text-align: center
   color: #FFFF
 
-.background
-  background-image: url("/img/mobile.png")
-  background-position: 50%
-  background-size: cover
-  background-repeat: no-repeat
-
-  width: 50%
-  min-height: 100vh
-  user-select: none
-
-@media (max-width: 428px)
-
-  .container
-    flex-direction: column
-
-  .background
-    background-image: url("/img/mobile.png")
-    background-position: 50%
-    background-size: cover
-    background-repeat: no-repeat
-    width: 428px
-    height: 100vh
-
-  .box
-    display: none
-
 .imgwrapper
   display: flex
   justify-content: center
@@ -57,18 +42,21 @@
 .input
   display: flex
   justify-content: center
-  margin-top: 45px
+  margin-top: 20px
 
 .email input
   display: flex
   align-self: center
   border-bottom: 1px solid #A4A4A4
   background-color: #FFFF
-  font-size: 17px
+
   border-style: none
   border-radius: 10px
   width: 400px
   height: 51.11px
+
+  font-size: 13px
+  text-transform: uppercase
 
 @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap')
 
@@ -78,11 +66,13 @@
   background-color: #fc5c3e
   color: white
   border-radius: 10px
-  padding-top: 15px
+  padding-top: 20px
 
   font-family: 'Inter', sans-serif
-  font-size: 24px
+  font-weight: bold
+  font-size: 17pxx
   text-align: center
+  letter-spacing: 5px
   text-transform: uppercase
 
   width: 400px
@@ -101,25 +91,43 @@
   display: flex
   justify-content: center
   width: 400px
-  height: 60px
+  height: 50px
 
   font-weight: bold
-  font-size: 18px
+  font-size: 17px
   margin-bottom: 17px
 
   background: #FFFFFF
   box-shadow: 0px 4px 7px rgba(0, 0, 0, 0.25)
   border-radius: 5px
+  border: none
 
 .google
   display: flex
   justify-content: center
   width: 400px
-  height: 60px
+  height: 50px
 
   font-weight: bold
-  font-size: 18px
+  font-size: 17px
 
   background: #FFFFFF
   box-shadow: 0px 4px 7px rgba(0, 0, 0, 0.25)
   border-radius: 5px
+  border: none
+
+@media screen and (max-width: 1000px)
+
+  .container
+    flex-direction: column
+
+  .background
+    background-image: url("/img/mobile.png")
+    background-position: 100%
+    background-size: cover
+    background-repeat: no-repeat
+    width: 100%
+    height: 100vh
+
+  .box
+    display: none

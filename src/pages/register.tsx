@@ -17,15 +17,13 @@ export default function Register() {
             </div>
 
             <div className={styles.background}>
-                <div className={styles.header}>
-                    <Image
-                        src={"/img/logo.png"}
-                        alt={"logo"}
-                        width={263}
-                        height={184}
-                    />
+                <div className={styles.imgwrapper}>
+                    <Image src={"/img/logo.png"} alt={"logo"} width={263} height={184} />
                 </div>
-
+                <div className={styles.imgupload}>
+                    <input type="file"/>
+                    <button><Image src={"/icons/addprofile.png"} alt="icon" width={30} height={30}></Image></button>
+                </div>
                 <div className={styles.input}>
                     <div className={styles.info}>
                         <input type="firstname" placeholder="enter your first name" />

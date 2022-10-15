@@ -18,20 +18,14 @@ export default function Login() {
 
             <div className={styles.background}>
                 <div className={styles.imgwrapper}>
-                    <Image
-                        src={"/img/logo.png"}
-                        alt="logo"
-                        width={263}
-                        height={184}
-                    />
+                    <Image src={"/img/logo.png"} alt="logo" width={263} height={184} />
                 </div>
 
                 <div className={styles.input}>
                     <div className={styles.email}>
-                        {/* <Image className={styles.iconemail} src={"/icons/email.png"} width={21} height={16} alt="icon"/> */}
                         <input type="email" placeholder="enter your email" />
                         <Link href={""}>
-                            <a className={styles.login}>Log In</a>
+                            <a className={styles.login}>Login</a>
                         </Link>
                         <Image
                             className={styles.line}
@@ -41,12 +35,22 @@ export default function Login() {
                             alt={"line"}
                         />
                         <button className={styles.discord}>
-                            <Image width={50} height={50} src={"/icons/discord.png"} alt={"icon"}/>
+                            <Image
+                                width={50}
+                                height={50}
+                                src={"/icons/discord.png"}
+                                alt={"icon"}
+                            />
                             <p>Continue with Discord</p>
                         </button>
 
                         <button className={styles.google}>
-                            <Image width={50} height={50} src={"/icons/google.png"} alt={"icon"} />
+                            <Image
+                                width={50}
+                                height={50}
+                                src={"/icons/google.png"}
+                                alt={"icon"}
+                            />
                             <p>Continue with Google</p>
                         </button>
                     </div>
