@@ -3,13 +3,15 @@ import nextConnect from 'next-connect';
 import multer from 'multer';
 import { uploadFile } from '@/lib/actions/File';
 
+/**
+ * @description saves the file locally
+ */
 const upload = multer(
     {
         storage: multer.diskStorage(
             {
                 destination: '/tmp',
                 filename(req, file, callback) {
-                    // you can replace Date.now() with UUID or NanoID
                     callback(null, `${ Date.now() }.${ file.mimetype.substring(6) }`);
                 }
             }
@@ -17,6 +19,9 @@ const upload = multer(
     }
 );
 
+/**
+ * @description Check if the method is supported
+ */
 const handler = nextConnect(
     {
         onNoMatch(req: NextApiRequest, res: NextApiResponse) {
@@ -29,16 +34,20 @@ const handler = nextConnect(
     }
 );
 
+// Multer file type found in the Express namespace
 type NextApiRequestWithFiles = NextApiRequest & {
-    // Multer file type found in the Express namespace
     files: Express.Multer.File[];
 };
 
+/**
+ * @description Handles the uploading of the file into the cloudinary
+ */
 handler.use(
     upload.array('files')
 ).post(
     async(req: NextApiRequestWithFiles, res: NextApiResponse) => {
         try {
+            // Checks if there is no file to be uploaded
             if (!req.files) {
                 throw {
                     code: 400,
@@ -46,16 +55,21 @@ handler.use(
                 };
             }
 
+            // Checks if there is only 1 file
             if (req.files.length !== 1) {
                 throw {
                     code: 400,
                     message: 'you can only upload one file'
                 };
             }
+            // Gets the first file
             const file = req.files[0];
+            // Gets the path of the file
             const { path } = file;
+            // Gets the url of the file to be uploaded
             const { url } = await uploadFile(path);
 
+            // Sends back status and the url
             res.status(200).json(
                 {
                     status: 200,
@@ -64,6 +78,7 @@ handler.use(
                     }
                 }
             );
+            // Catches error and throw the error message and code
         } catch(error: any) {
             const { code = 500, message = 'unknown error occured' } = error;
             res.status(code).json(
