@@ -3,6 +3,10 @@ import Image from "next/image";
 import styles from "@/styles/Register.module.sass";
 import Link from "next/link";
 
+import { GetServerSideProps } from "next";
+import React, { useState } from "react";
+
+
 export default function Register() {
     return (
         <div className={styles.container}>
@@ -40,3 +44,4 @@ export default function Register() {
         </div>
     );
 }
+
