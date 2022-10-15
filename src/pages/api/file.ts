@@ -7,7 +7,7 @@ const upload = multer(
     {
         storage: multer.diskStorage(
             {
-                destination: 'C:\\Users\\emilj\\Downloads',
+                destination: '/tmp',
                 filename(req, file, callback) {
                     // you can replace Date.now() with UUID or NanoID
                     callback(null, `${ Date.now() }.${ file.mimetype.substring(6) }`);
@@ -38,7 +38,6 @@ handler.use(
     upload.array('files')
 ).post(
     async(req: NextApiRequestWithFiles, res: NextApiResponse) => {
-        console.log(req.files)
         try {
             if (!req.files) {
                 throw {
@@ -53,25 +52,15 @@ handler.use(
                     message: 'you can only upload one file'
                 };
             }
-
-            console.log("Before File")
             const file = req.files[0];
-            console.log("After File", file)
-            console.log("Before Path")
             const { path } = file;
-            console.log("After Path", path)
-
-            console.log("Before FileName")
-            const { filename } = await uploadFile(path);
-            console.log("After FileName", filename)
-
-            console.log(`successfully uploaded file with name: ${ filename }`);
+            const { url } = await uploadFile(path);
 
             res.status(200).json(
                 {
                     status: 200,
                     data: {
-                        filename
+                        url
                     }
                 }
             );

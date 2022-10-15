@@ -3,28 +3,16 @@ import cloudinary from '@/lib/resources/cloudinary';
 const { uploader } = cloudinary;
 
 export async function uploadFile(path: string) {
-    console.log("Before Response")
-    console.log("Path", path)
     try {
-        const response = await uploader.upload(
-            path,
-            {
-                unique_filename: true
-            }
-        );
+        const response = await uploader.upload(path,
+            { 
+                unique_filename: true 
+            });
+        if (!response) {
+            throw new Error("upload to cloudinary failed")
+        }
+        return response;
     } catch(e) {
-        console.log(e)
+        throw new Error("something wrong here", {cause: e});
     }
-    console.log("After Reponse", response)
-
-    if (!response) {
-        throw {
-            code: 500,
-            message: `failed to upload file with path: ${ path }`
-        };
-    }
-
-    return {
-        filename: response.public_id
-    };
 }
