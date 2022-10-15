@@ -53,6 +53,11 @@ const userSchema = new Schema<UserProfile>({
 		},
 		required: [true, 'User phone number required']
 	},
+	// This is the image/logo of the user
+	image: {
+		type: String,
+		required:[true, 'Image is required']
+	},
 	// This is where the matches record are contained or referenced 
 	matches: [{
 		type: Schema.Types.ObjectId,
