@@ -18,8 +18,8 @@ export async function middleware(req: NextRequest) {
 		}
 	);
 	console.log("token", token)
-	if (!token) {		
-		return NextResponse.rewrite(new URL('/login', req.url))		
+	if (!token) {
+		return NextResponse.rewrite(new URL('/login', req.url))
 	}
 	return NextResponse.next();
 }
@@ -30,5 +30,5 @@ export async function middleware(req: NextRequest) {
 
 
 export const config = {
-	matcher: ['/api/register']
-  }
+	matcher: ['/api/register', '/api/creatematch']
+}

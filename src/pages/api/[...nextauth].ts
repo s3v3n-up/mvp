@@ -62,10 +62,13 @@ export const authOptions: NextAuthOptions = {
     },
     callbacks: {
         // Sends back the token
-        async jwt({ token, user}) {
+        async jwt({ token, user, account}) {
             if(user) {
                 token.user = user;
             }
+			if (account) {
+				token.accessToken = account.access_token;
+			  }
             return token;
         },
         // Sends back the session

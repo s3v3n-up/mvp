@@ -1,5 +1,4 @@
 import { ObjectId } from 'mongodb'
-import { UserProfile } from '@/lib/types/User'
 
 /**
  * Interface for creating a match
@@ -17,7 +16,7 @@ import { UserProfile } from '@/lib/types/User'
 
 export interface Match {
 	id?: string | ObjectId;
-	matchHost: string | ObjectId | UserProfile;
+	matchHost: string;
 	sport: string;
 	matchType: Matches.Type;
 	location: object;

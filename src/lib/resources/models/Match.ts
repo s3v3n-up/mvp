@@ -1,8 +1,6 @@
-import {models, model, Model, Schema} from 'mongoose';
+import { models, model, Model, Schema } from 'mongoose';
 // import type { Match.Type } from '@/lib/types/Match';
 import { Match, Matches } from '@/lib/types/Match'
-import {ObjectId} from 'mongodb'
-import UserModel  from '@/lib/resources/models/User'
 
 /**
  * @description = This is the match schema
@@ -11,61 +9,59 @@ import UserModel  from '@/lib/resources/models/User'
 
 const matchSchema = new Schema<Match>({
 	// The user who created the match
-    matchHost: {
-        type: String || ObjectId || UserModel,
-        required: true
-    },
+	matchHost: {
+		type: String,
+		required: true
+	},
 	// The the type of sport for the created match
-    sport: {
-        type: String,
-        required: true
-    },
+	sport: {
+		type: String,
+		required: true
+	},
 	// This is the type of the match either REGULAR or QUICK
-    matchType: {
-        type: String,
+	matchType: {
+		type: String,
 		enum: Matches.Type,
-        required: true
-    },
+		required: true
+	},
 	// This is the location where the match is or will happen
-    location: {
-        type: String,
-        required: true,
+	location: {
+		type: Object,
+		required: true,
 		default: {}
-    },
+	},
 	// This is the start date/time of the match
-    matchStart: {
-        type: Date,
-		min: [Date.now(), "Date should not be less than current date/time"],
-        required: true,
+	matchStart: {
+		type: Date,
+		// min: [Date.now(), "Date should not be less than current date/time"],
+		required: true,
 		default: Date.now()
-    },
+	},
 	// This is the end date/time of the match
 	matchEnd: {
-        type: Date,
-        min: [Date.now(), "Date should not be less than current date/time"],
-        required: true,
+		type: Date,
+		// min: [Date.now(), "Date should not be less than current date/time"],
+		required: true,
 		default: Date.now()
-    },
+	},
 	// This is the match details, also a place where you can input extra details eg. Discord link, Facebook messenger link etc.
-    description: {
-        type: String,
-        required: true
-    },
-    // players: {
-    //     type: [String],
-    //     required: true,
+	description: {
+		type: String,
+		required: true
+	},
+	// players: {
+	//     type: [String],
+	//     required: true,
 	// 	default: []
-    // },
+	// },
 	// These are the details or records for the home team, such as members, score and match result.
 	teamA: {
 		members: [{
-			type: Schema.Types.ObjectId,
-			ref: 'user',
+			type: String,
 			required: true,
 			default: []
 		}],
 		score: Number,
-		required: true,
 		status: {
 			type: String,
 			enum: Matches.Status,
@@ -77,13 +73,11 @@ const matchSchema = new Schema<Match>({
 	// These are the details or records for the away team, such as members, score and match result.
 	teamB: {
 		members: [{
-			type: Schema.Types.ObjectId,
-			ref: 'user',
+			type: String,
 			required: true,
 			default: []
 		}],
 		score: Number,
-		required: true,
 		status: {
 			type: String,
 			enum: Matches.Status,
@@ -98,5 +92,5 @@ const matchSchema = new Schema<Match>({
  * @description
  * The model for the Match collection.
  */
-const MatchModel = models["match"] as Model<Match> || model<Match>('match', matchSchema);
+const MatchModel = models['match'] as Model<Match> || model<Match>('match', matchSchema);
 export default MatchModel;
