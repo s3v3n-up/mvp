@@ -1,5 +1,5 @@
-import { ObjectId } from 'mongodb'
-import { UserProfile } from '@/lib/types/User'
+/* eslint-disable no-unused-vars */
+import { ObjectId } from 'mongodb';
 
 /**
  * Interface for creating a match
@@ -14,17 +14,15 @@ import { UserProfile } from '@/lib/types/User'
  * @teamA This is the home team 
  * @teamB This is the away team
  */
-
 export interface Match {
 	id?: string | ObjectId;
-	matchHost: string | ObjectId | UserProfile;
+	matchHost: string | ObjectId;
 	sport: string;
 	matchType: Matches.Type;
 	location: object;
 	matchStart: Date;
 	matchEnd: Date;
 	description: string;
-	// players: object[] | User[];
 	teamA: {
 		members: string[],
 		score: number,
@@ -34,17 +32,28 @@ export interface Match {
 		members: string[],
 		score: number,
 		status: Matches.Status
-
 	}
 }
 
 export namespace Matches {
 
+	/**
+	 * @enum {string} match type
+	 * @property {string} Regular - Regular match
+	 * @property {string} Quick - Quick match
+	 */
 	export enum Type {
 		Regular = "REGULAR",
 		Quick = "QUICK",
 	}
 
+	/**
+	 * @enum {string} match status
+	 * @property {string} Win - Team won
+	 * @property {string} Lose - Team lost
+	 * @property {string} Draw - Team draw
+	 * @property {string} Unfinished - Match is not finished
+	 */
 	export enum Status {
 		Win = "WIN",
 		Lose = "LOSE",
