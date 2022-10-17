@@ -1,5 +1,4 @@
 import { ObjectId } from 'mongodb'
-import { UserProfile } from '@/lib/types/User'
 
 /**
  * Interface for creating a match
@@ -17,14 +16,13 @@ import { UserProfile } from '@/lib/types/User'
 
 export interface Match {
 	id?: string | ObjectId;
-	matchHost: string | ObjectId | UserProfile;
+	matchHost: string ;
 	sport: string;
 	matchType: Matches.Type;
 	location: object;
 	matchStart: Date;
 	matchEnd: Date;
 	description: string;
-	// players: object[] | User[];
 	teamA: {
 		members: string[],
 		score: number,
@@ -53,21 +51,3 @@ export namespace Matches {
 	}
 
 }
-
-// export enum Sport {
-// 	Basketball = "BASKETBALL",
-// 	Tennis = "TENNIS",
-// 	Pingpong = "PINGPONG",
-// 	Volleyball = "VOLLEYBALL",
-// 	Badminton = "BADMINTON",
-// }
-
-// export enum MatchSubType {
-// 	Onevsone = "1V1",
-// 	Twovstwo = "2V2",
-// 	Threevsthree = "3V3",
-// 	Fourvsfour = "4V4",
-// 	Fivevsfive = "5V5",
-// 	Sixbysix = "6V6",
-// }
-

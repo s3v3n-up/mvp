@@ -19,14 +19,14 @@ const userSchema = new Schema<UserProfile>({
 	// This is the firstname of the user
 	firstName: {
 		type: String,
-		min: [8, 'Firstname should be at least 8 characters'],
+		min: [2, 'Firstname should be at least 2 characters'],
 		max: [64, 'Firstname should be max of 64 characters'],
 		required: [true, 'Firstname is required'],
 	},
 	// This is the lastname of the user
 	lastName: {
 		type: String,
-		min: [8, 'Lastname should be at least 8 characters'],
+		min: [2, 'Lastname should be at least 2 characters'],
 		max: [64, 'Lastname should be max of 64 characters'],
 		required: [true, 'Lastname is required'],
 	},
@@ -53,10 +53,14 @@ const userSchema = new Schema<UserProfile>({
 		},
 		required: [true, 'User phone number required']
 	},
+	// This is the image/logo of the user
+	image: {
+		type: String,
+		required:[true, 'Image is required']
+	},
 	// This is where the matches record are contained or referenced 
 	matches: [{
-		type: Schema.Types.ObjectId,
-		ref: 'match',
+		type: String,
 		required: true,
 		default: []
 	}]
