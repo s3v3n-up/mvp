@@ -9,35 +9,37 @@ import Database from "@/lib/resources/database";
  * @param user = accepts a user object
  * @returns = returns a code and a message if successful user creation or user already taken
  */
-export async function createUser(user: UserProfile) {
-    await Database.setup();
+ export async function createUser(user: UserProfile) {
+    try {
+        // Deconstruct username
+        const { userName } = user;
 
-    // Deconstruct username
-    const { userName } = user;
+        // Check if the username already exist in the database
+        const existingUser = await UserModel.findOne({ userName });
 
-    // Check if the username already exist in the database
-    const existingUser = await UserModel.findOne({ userName });
+        // If username exist returns an error code and message
+        if(existingUser) {
+            return {
+                code: 400,
+                message: "Username already taken"
+            };
+        }
 
-    // If username exist returns an error code and message
-    if(existingUser) {
+        // Creates a UserModel
+        const player = new UserModel<UserProfile>(user);
+
+        // Saves the UserModel in the database
+        await player.save();
+
+        // Returns a code and message for successful creation of user
         return {
-            code: 400,
-            message: "Username already taken"
+            code: 200,
+            message: "User successfully created"
         };
+
+    } catch(error: any) {
+        throw new Error("Error creating a user", error.message);
     }
-
-    // Creates a UserModel
-    const player = new UserModel<UserProfile>(user);
-
-    // Saves the UserModel in the database
-    await player.save();
-
-    // Returns a code and message for successful creation of user
-    return {
-        code: 200,
-        message: "User successfully created"
-    };
-
 
 }
 
