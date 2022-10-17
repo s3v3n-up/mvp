@@ -1,5 +1,6 @@
+/* eslint-disable camelcase */
 // import latest version of cloudinary as cloudinary
-import { v2 as cloudinary } from 'cloudinary';
+import { v2 as cloudinary } from "cloudinary";
 
 // configure cloudinary using env variables
 cloudinary.config(
