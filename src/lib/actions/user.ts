@@ -10,50 +10,58 @@ import Database from "@/lib/resources/database";
  * @returns = returns a code and a message if successful user creation or user already taken
  */
 export async function createUser(user: UserProfile) {
-    await Database.setup();
+    try {
+        // Deconstruct username
+        const { userName } = user;
 
-    // Deconstruct username
-    const { userName } = user;
+        // Check if the username already exist in the database
+        const existingUser = await UserModel.findOne({ userName });
 
-    // Check if the username already exist in the database
-    const existingUser = await UserModel.findOne({ userName });
+        // If username exist returns an error code and message
+        if(existingUser) {
+            return {
+                code: 400,
+                message: "Username already taken"
+            };
+        }
 
-    // If username exist returns an error code and message
-    if(existingUser) {
+        // Creates a UserModel
+        const player = new UserModel<UserProfile>(user);
+
+        // Saves the UserModel in the database
+        await player.save();
+
+        // Returns a code and message for successful creation of user
         return {
-            code: 400,
-            message: "Username already taken"
+            code: 200,
+            message: "User successfully created"
         };
+
+    } catch(error: any) {
+        throw new Error("Error creating a user", error.message);
     }
 
-    // Creates a UserModel
-    const player = new UserModel<UserProfile>(user);
-
-    // Saves the UserModel in the database
-    await player.save();
-
-    // Returns a code and message for successful creation of user
-    return {
-        code: 200,
-        message: "User successfully created"
-    };
 }
 
 export async function updateUser(username: string, firstName: string, lastName: string, phonenumber: string, image: string) {
 
-    //  const { userName } = user;
+    try {
+        const updatedUser = await UserModel.findOneAndUpdate({ username }, {
+            firstName,
+            lastName,
+            phonenumber,
+            image
+        }, {
+            new: true
+        });
 
-    const foundUser = await UserModel.findOneAndUpdate({ username }, {
-        firstName,
-        lastName,
-        phonenumber,
-        image
-    }, {
-        new: true
-    });
+        // returns the updated user
+        return updatedUser;
 
-	 // Saves the UserModel in the database
-	 return foundUser;
+    } catch (error: any) {
+        throw new Error("Error updating the user", error.message);
+    }
+    // Find and Update a specific username
 
 }
 
@@ -61,11 +69,16 @@ export async function updateUser(username: string, firstName: string, lastName: 
  * @description = A function that gets all users in the database and returns it
  */
 export async function getUsers() {
-    await Database.setup();
+    try {
+        await Database.setup();
 
-    const users = await UserModel.find({});
+        const users = await UserModel.find({});
 
-    return users;
+        return users;
+
+    } catch(error: any) {
+        throw new Error("Error getting users", error.message);
+    }
 }
 
 /**
