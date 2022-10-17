@@ -18,6 +18,7 @@ export interface Match {
 	id?: string | ObjectId;
 	matchHost: string ;
 	sport: string;
+	gameMode: string;
 	matchType: Matches.Type;
 	location: object;
 	matchStart: Date;

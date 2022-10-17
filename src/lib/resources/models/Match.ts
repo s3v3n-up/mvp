@@ -18,6 +18,10 @@ const matchSchema = new Schema<Match>({
         type: String,
         required: true
     },
+    gameMode: {
+        type: String,
+        required: true
+    },
     // This is the type of the match either REGULAR or QUICK
     matchType: {
         type: String,
