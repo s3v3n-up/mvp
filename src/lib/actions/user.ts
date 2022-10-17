@@ -5,9 +5,9 @@ import UserModel from "../resources/models/User";
 import Database from "@/lib/resources/database";
 
 /**
- * @description = a function that creates user and save to the database
- * @param user = accepts a user object
- * @returns = returns a code and a message if successful user creation or user already taken
+ * @description a function that creates user and save to the database
+ * @param {UserProfile} user = accepts a user object
+ * @returns returns a code and a message if successful user creation or user already taken
  */
 export async function createUser(user: UserProfile) {
     try {
@@ -43,6 +43,15 @@ export async function createUser(user: UserProfile) {
 
 }
 
+/**
+ * @description Updates a user profile
+ * @param {string} username the username to be updated
+ * @param {string} firstName the first name of the user to be changed
+ * @param {string} lastName the last name of the user to be changed
+ * @param {string} phonenumber the phone number of the user to be changed
+ * @param {string} image the image/logo of the user to be change
+ * @returns the updated user
+ */
 export async function updateUser(username: string, firstName: string, lastName: string, phonenumber: string, image: string) {
 
     try {
@@ -66,7 +75,8 @@ export async function updateUser(username: string, firstName: string, lastName: 
 }
 
 /**
- * @description = A function that gets all users in the database and returns it
+ * @description = A function that gets all users in the database
+ * @returns all the users in the database
  */
 export async function getUsers() {
     try {
@@ -83,6 +93,8 @@ export async function getUsers() {
 
 /**
  * @userExist This is a function to check if the user exists on the database
+ * @param {string} email the email of the user
+ * @returns the user if it exist
  */
 
 export async function userExist(email: string) {
