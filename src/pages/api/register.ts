@@ -21,6 +21,7 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
                     firstName: string().required().min(2).max(64),
                     lastName: string().required().min(2).max(64),
                     phonenumber: string().required().matches(PHONE_REGEX, "invalid input for phone number"),
+                    image: string().required(),
                     email: string().required().matches(EMAIL_REGEX, "invalid input for email"),
                 }
             )
