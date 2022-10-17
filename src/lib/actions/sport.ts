@@ -1,5 +1,5 @@
 import { Sport } from '@/lib/types/Sport'
-import SportModel from '../resources/models/Sport'
+import SportModel from '@/lib/resources/models/Sport'
 
 import Database from '@/lib/resources/database'
 
@@ -9,33 +9,45 @@ import Database from '@/lib/resources/database'
  * @returns = returns a code and a message if successful user creation or user already taken 
  */
 export async function createSport(sport: Sport) {
-    await Database.setup()
+	await Database.setup()
 
-    // Deconstruct username 
-    const { name } = sport
+	// Deconstruct username 
+	const { name, gameModes } = sport
 
-    // Check if the sport already exist in the database
-    const existingSport = await SportModel.findOne({ name })
+	// Check if the sport already exist in the database
+	const existingSport = await SportModel.findOne({ name })
 
-    // If sport exist returns an error code and message
-    if(existingSport) {
-        return { 
-            code: 400,
-            message: "This sport already exists in the database"
-        }
-    }
+	const gameModeExist = existingSport?.gameModes.find((e) => e.modeNames === gameModes[0].modeNames)
 
-    // Creates a SportModel
-	const playerSport = new SportModel<Sport>(sport)
+	if (existingSport) {
+		if (gameModeExist) {
+			return {
+				code: 400,
+				message: "This sport with this game mode already exists in the database"
+			}
+		} else {
+			const [{ modeNames, requiredPlayers }] = gameModes
+			existingSport.gameModes.push({
+				modeNames,
+				requiredPlayers
+			})
+			await existingSport.save()
+			return {
+				code: 200,
+				message: "New game mode successfully added"
+			}
+		}
+	} else {
+		// Creates a SportModel
+		const playerSport = new SportModel<Sport>(sport)
 
-    // Saves the UserModel in the database
-    await playerSport.save()
+		// Saves the UserModel in the database
+		await playerSport.save()
 
-    // Returns a code and message for successful creation of user
-    return {
-        code: 200,
-        message: "Sport successfully created"
-    }
-
-   
+		// Returns a code and message for successful creation of user
+		return {
+			code: 200,
+			message: "Sport successfully created"
+		}
+	}
 }

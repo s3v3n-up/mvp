@@ -1,5 +1,4 @@
 import { Match } from '@/lib/types/Match'
-// import Database from  '@/lib/resources/database'
 import MatchModel from '../resources/models/Match'
 
 import Database from '@/lib/resources/database'

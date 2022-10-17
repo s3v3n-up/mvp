@@ -60,8 +60,7 @@ const userSchema = new Schema<UserProfile>({
 	},
 	// This is where the matches record are contained or referenced 
 	matches: [{
-		type: Schema.Types.ObjectId,
-		ref: 'match',
+		type: String,
 		required: true,
 		default: []
 	}]

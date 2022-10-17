@@ -1,7 +1,9 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { Match } from '@/lib/types/Match'
-import { createMatch } from '@/lib/actions/match';
-import { object, string, array, number, date } from 'yup'
+import { NextApiRequest, NextApiResponse } from 'next';
+import { Match } from '@/lib/types/Match';
+import { createMatch } from '@/lib/actions/match2';
+import { object, string, array, number, date } from 'yup';
+import Database from '@/lib/resources/database';
+
 
 
 /**
@@ -34,12 +36,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 			const match = {
 				matchHost, sport, matchType, location, matchStart, matchEnd, description, teamA, teamB
 			}
-
+			await Database.setup()
 			const response = await createMatch(match);
 
-			res.status(response.code).json(
+			res.status(200).json(
 				{
-					message: response.message
+					response
 				}
 			);
 

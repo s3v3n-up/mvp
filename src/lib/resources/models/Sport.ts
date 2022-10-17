@@ -14,13 +14,16 @@ const sportSchema = new Schema<Sport>({
 	},
 	// These are the details for the game modes for each sport such as "1v1", "2v2", etc., also contains the minimum players required and maximum players required for each game mode under a specific sport
 	gameModes: [{
-		modeName: {
+		modeNames: {
 			type: String,
-			required: true
+			required: true,
+			default: '1V1'
 		},
-		minPlayers: Number,
-		maxPlayers: Number,
-		required: true
+		requiredPlayers: {
+			type: Number,
+			required: true,
+			default: 2
+		}
 	}],
 	// This is where we keep records for leaderboard purposes
 	records: [{
@@ -37,5 +40,5 @@ const sportSchema = new Schema<Sport>({
  * @description
  * The model for the Sport collection.
  */
-const SportModel = models['sport'] as Model<Sport> || model<Sport>('sport', sportSchema);
+const SportModel = models['sports'] as Model<Sport> || model<Sport>('sports', sportSchema);
 export default SportModel;

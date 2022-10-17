@@ -9,17 +9,14 @@ import { object, string, array, number, date } from 'yup'
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 	if (req.method === 'POST') {
-		console.log("RAWR1")		
 		try {
 
 			let { name, gameModes, records } = req.body as Sport
-
 			
-			console.log("RAWR")
 			const schema = object(
 				{
 					name: string().required(),
-					gameModes: array(object()).required(),
+					gameModes: array(object()),
 					records: array(object())
 				}
 			)

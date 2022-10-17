@@ -30,5 +30,5 @@ export async function middleware(req: NextRequest) {
 
 
 export const config = {
-	matcher: ['/api/register', '/api/creatematch']
+	matcher: ['/api/register', '/api/hello']
 }
