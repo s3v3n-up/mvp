@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { User } from '@/lib/types/User'
+import { UserProfile } from '@/lib/types/User'
 import { createUser, getUsers } from '@/lib/actions/user';
 import { PHONE_REGEX, EMAIL_REGEX } from '@/lib/resources/constants';
-import { object, string, array, number } from 'yup'
+import { object, string } from 'yup'
 
 
 /**
@@ -12,7 +12,7 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
     if (req.method === 'POST') {
         try {
 
-            let {userName, firstName, lastName, phonenumber, email, matches} = req.body as User
+            let {userName, firstName, lastName, phonenumber, email, matches} = req.body as UserProfile
 
 
             const schema = object(
@@ -80,7 +80,7 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
 
             res.status(response.code).json(
                 {
-                    message: response.message
+                    response
                 }
             );
              
