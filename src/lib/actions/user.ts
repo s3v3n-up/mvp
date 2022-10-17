@@ -5,8 +5,8 @@ import UserModel from "../resources/models/User";
 import Database from "@/lib/resources/database";
 
 /**
- * @description = a function that creates user and save to the database
- * @param user = accepts a user object
+ * @description a function that creates user and save to the database
+ * @param user accepts a user object
  * @returns = returns a code and a message if successful user creation or user already taken
  */
 export async function createUser(user: UserProfile) {
