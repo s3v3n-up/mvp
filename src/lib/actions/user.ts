@@ -9,7 +9,7 @@ import Database from "@/lib/resources/database";
  * @param user = accepts a user object
  * @returns = returns a code and a message if successful user creation or user already taken
  */
- export async function createUser(user: UserProfile) {
+export async function createUser(user: UserProfile) {
     try {
         // Deconstruct username
         const { userName } = user;
@@ -47,9 +47,14 @@ import Database from "@/lib/resources/database";
  * @description = A function that gets all users in the database and returns it
  */
 export async function getUsers() {
-    await Database.setup();
+    try {
+        await Database.setup();
 
-    const users = await UserModel.find({});
+        const users = await UserModel.find({});
 
-    return users;
+        return users;
+
+    } catch(error: any) {
+        throw new Error("Error getting users", error.message);
+    }
 }
