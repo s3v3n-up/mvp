@@ -30,6 +30,9 @@ export default function Scoreboard(){
                             <button className={styles.homeleave}> Leave </button>
                         </div>
                     </div>
+                    <div className={styles.button}>
+                        <button className={styles.pause}> Pause </button>
+                    </div>
                 </div>
                 <div className={styles.awayteam}>
                     <h1 className={styles.away}>Away</h1>
@@ -55,9 +58,11 @@ export default function Scoreboard(){
                             <button className={styles.leave}> Leave </button>
                         </div>
                     </div>
+                    <div className={styles.buttone}>
+                        <button className={styles.finish}> Finish </button>
+                    </div>
                 </div>
             </div>
-            
         </div>
     )
 }
