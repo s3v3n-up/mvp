@@ -11,20 +11,21 @@ import Database from "@/lib/resources/database";
  */
 export async function createUser(user: UserProfile) {
     try {
-        // Deconstruct username
-        const { userName } = user;
+        // Deconstruct user to get username and email
+        const { userName, email } = user;
 
         // Check if the username already exist in the database
         const existingUser = await UserModel.findOne({ userName });
+        // Check if the email already exist in the database
+        const existingEmail = await UserModel.findOne({ email });
 
         // If username exist returns an error code and message
-        if(existingUser) {
+        if(existingUser || existingEmail) {
             return {
                 code: 400,
-                message: "Username already taken"
+                message: "Username or Email already taken"
             };
         }
-
         // Creates a UserModel
         const player = new UserModel<UserProfile>(user);
 
