@@ -10,4 +10,4 @@ function MyApp({ Component, pageProps }: AppProps<{ session: Session }>) {
         </SessionProvider>
     );
 }
-export default MyApp
+export default MyApp;

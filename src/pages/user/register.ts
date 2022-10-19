@@ -49,8 +49,8 @@ export default async function handler(
             firstName = firstName.charAt(0) + firstName.substring(1).toLowerCase();
             // Converts first letter of the lastname to capital and the rest is lowercase
             lastName = lastName.charAt(0) + lastName.substring(1).toLowerCase();
-            //phonenumber = phonenumber.substring(0,3) + "-" + phonenumber.substring(3,6) + "-" + phonenumber.substring(6);
 
+            // Define user object to be created in the database
             const user = {
                 userName,
                 email,
@@ -61,11 +61,14 @@ export default async function handler(
                 matches,
             };
 
+            // Stores the created user into the response
             const response = await createUser(user);
 
+            // Returns the code and the user created
             res.status(response.code).json({
                 response,
             });
+          //Catches any error and throws it in message
         } catch (error: any) {
             const { code = 500, message } = error;
             res.status(code).json({

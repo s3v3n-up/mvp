@@ -37,7 +37,7 @@ export async function createUser(user: UserProfile) {
             code: 200,
             message: "User successfully created"
         };
-
+      // Catch any errors and throws a message
     } catch(error: any) {
         throw new Error("Error creating a user", error.message);
     }
@@ -49,12 +49,16 @@ export async function createUser(user: UserProfile) {
  */
 export async function getUsers() {
     try {
+        // Sets up the database
         await Database.setup();
 
+        // Stores all the users in the database
         const users = await UserModel.find({});
 
+        // Returns all users
         return users;
 
+      // Catches any error and throws it in message
     } catch(error: any) {
         throw new Error("Error getting users", error.message);
     }
