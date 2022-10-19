@@ -1,12 +1,51 @@
 import type { NextPage } from 'next'
+import { ref, onValue, set, push } from "firebase/database";
+import { database } from '@/lib/config/firebase';
+import { useState, useEffect } from 'react';
+import { useList } from "react-firebase-hooks/database";
+
 // import Head from 'next/head'
 // import Image from 'next/image'
 // import styles from '../styles/Home.module.css'
 
 const Home: NextPage = () => {
+  const [snapshots, loading, error] = useList(ref(database, 'users'));
+  const [users, setUsers] = useState("");
+  const [data, setData] = useState({
+    name: "",
+    age: 0
+  })
+
+  useEffect(()=> {
+    if (!loading && !error) {
+      console.log(JSON.stringify(snapshots));
+      //gets the users and puts it into a string
+      setUsers(JSON.stringify(snapshots));
+    }
+  },[snapshots])
+
+  const handleChange = (e: any) => {
+    setData(prev=>({...prev,[e.target.name]: e.target.value}));
+  }
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    const usersRef = ref(database, 'users');
+    const document = await push(usersRef);
+    set(document, {
+      name: data.name,
+      age: data.age
+    });
+  }
+
   return (
     <div>
-      Hello
+      <div className="text-white">{users}</div>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5 mt-5 w-2/5 m-auto">
+        <input type="text" name="name" value={data.name} onChange={handleChange}/>
+        <input type='number' name="age" value={data.age} onChange={handleChange}/>
+        <button type="submit" className="w-full p-3 bg-red-200">submit</button>
+      </form>
     </div>
     // <div className={styles.container}>
     //   <Head>
