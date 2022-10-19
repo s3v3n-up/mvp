@@ -1,0 +1,23 @@
+[{
+    "name": "Basketball",
+    "gameModes": [{
+        "modeNames": "1V1",
+        "requiredPlayers": 2
+    }]
+},
+
+{
+    "name": "Tennis",
+    "gameModes": [{
+        "modeNames": "1V1",
+        "requiredPlayers": 2
+    }]
+},
+
+{
+    "name": "Table Tennis",
+    "gameModes": [{
+        "modeNames": "1V1",
+        "requiredPlayers": 2
+    }]
+}]
