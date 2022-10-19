@@ -68,7 +68,7 @@ export default async function handler(
             res.status(response.code).json({
                 response,
             });
-          //Catches any error and throws it in message
+            //Catches any error and throws it in message
         } catch (error: any) {
             const { code = 500, message } = error;
             res.status(code).json({
