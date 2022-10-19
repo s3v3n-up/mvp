@@ -1,10 +1,10 @@
-import {ObjectId} from 'mongodb'
+import { ObjectId } from "mongodb";
 
 
 /**
  * @description interface for the type of sports
  * @id This is automatically added by mongodb
- * @name This is the sport name 
+ * @name This is the sport name
  * @gameModes This is the type of modes in each sport
  * @requiredPlayers This the minimum number of players for each game mode
  */

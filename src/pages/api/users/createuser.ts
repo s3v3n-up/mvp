@@ -1,19 +1,19 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { UserProfile } from '@/lib/types/User'
-import { createUser, getUsers } from '@/lib/actions/user';
-import { PHONE_REGEX, EMAIL_REGEX } from '@/lib/resources/constants';
-import { object, string, array, number } from 'yup'
+import { NextApiRequest, NextApiResponse } from "next";
+import { UserProfile } from "@/lib/types/User";
+import { createUser, getUsers } from "@/lib/actions/user";
+import { PHONE_REGEX, EMAIL_REGEX } from "@/lib/resources/constants";
+import { object, string, array, number } from "yup";
 
 
 /**
  * @description = a function that handles api request for registering user
  */
 export default async function handler(req:NextApiRequest, res:NextApiResponse) {
-    if (req.method === 'POST') {
+    if (req.method === "POST") {
         try {
 
-            let {userName, firstName, lastName, email, phonenumber, image, matches} = req.body as UserProfile
-			
+            let { userName, firstName, lastName, email, phonenumber, image, matches } = req.body as UserProfile;
+
             const schema = object(
                 {
                     userName: string().required().min(8).max(30),
@@ -22,17 +22,17 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
                     phonenumber: string().required().matches(PHONE_REGEX, "invalid input for phone number"),
                     email: string().required().matches(EMAIL_REGEX, "invalid input for email"),
                 }
-            )
-            
+            );
+
             const validatedUser = await schema.validate(req.body);
-            
-            userName =  userName.toLowerCase();
+
+            userName = userName.toLowerCase();
             email = email.toLowerCase();
             firstName = firstName.charAt(0) + firstName.substring(1).toLowerCase();
             lastName = lastName.charAt(0) + lastName.substring(1).toLowerCase();
             //phonenumber = phonenumber.substring(0,3) + "-" + phonenumber.substring(3,6) + "-" + phonenumber.substring(6);
 
-                
+
             // if(email === "" || !EMAIL_REGEX.test(email) || email.trim() === "") {
             //     throw {
             //         code: 400,
@@ -65,11 +65,11 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
             //     }
             // }
 
-            
+
             const user = {
                 userName, firstName, lastName, email, phonenumber, image, matches
-            }
-            
+            };
+
             const response = await createUser(user);
 
             res.status(response.code).json(
@@ -77,14 +77,15 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
                     message: response.message
                 }
             );
-             
+
         } catch(error : any) {
-            const { code = 500, message} = error;
+            const { code = 500, message } = error;
             res.status(code).json({
                 message
-                }
+            }
             );
+
             return;
         }
-    } 
+    }
 }

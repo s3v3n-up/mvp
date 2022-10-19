@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongodb'
+import { ObjectId } from "mongodb";
 
 /**
  * Interface for creating a match
@@ -9,8 +9,8 @@ import { ObjectId } from 'mongodb'
  * @location This is the location where the match is or will happen
  * @matchStart This is the start date/time of the match
  * @matchEnd This is the end date/time of the match
- * @description This is the match details 
- * @teamA This is the home team 
+ * @description This is the match details
+ * @teamA This is the home team
  * @teamB This is the away team
  */
 
@@ -18,6 +18,7 @@ export interface Match {
 	id?: string | ObjectId;
 	matchHost: string ;
 	sport: string;
+	gameMode: string;
 	matchType: Matches.Type;
 	location: object;
 	matchStart: Date;
