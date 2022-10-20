@@ -1,5 +1,5 @@
-import {ObjectId} from 'mongodb'
-import { Match } from '@/lib/types/Match'
+import { ObjectId } from "mongodb";
+import { Match } from "@/lib/types/Match";
 
 /**
  * @description = interface for creating a user
@@ -8,7 +8,7 @@ import { Match } from '@/lib/types/Match'
  * @firstName = This is the user's first name
  * @lastName = This is the user's last name
  * @email = This is the user's email address and is unique
- * @phonenumber = This is the user's contact info 
+ * @phonenumber = This is the user's contact info
  * @matches = This is the matches that the user creates/joins
  */
 export interface UserProfile {
