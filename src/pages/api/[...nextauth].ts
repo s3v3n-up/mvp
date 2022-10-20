@@ -1,9 +1,9 @@
-import NextAuth, { NextAuthOptions } from 'next-auth';
-import { MongoDBAdapter } from '@next-auth/mongodb-adapter';
-import EmailProvider from 'next-auth/providers/email';
-import DiscordProvider from 'next-auth/providers/discord';
-import GoogleProvider from 'next-auth/providers/google';
-import Database from '@/lib/resources/database';
+import NextAuth, { NextAuthOptions } from "next-auth";
+import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
+import EmailProvider from "next-auth/providers/email";
+import DiscordProvider from "next-auth/providers/discord";
+import GoogleProvider from "next-auth/providers/google";
+import Database from "@/lib/resources/database";
 
 /**
  * @description
@@ -11,7 +11,7 @@ import Database from '@/lib/resources/database';
  */
 export const authOptions: NextAuthOptions = {
     session: {
-        strategy: 'jwt'
+        strategy: "jwt"
     },
     /**
      * @description
@@ -58,21 +58,23 @@ export const authOptions: NextAuthOptions = {
         )
     ],
     pages: {
-        newUser: '/signup'
+        newUser: "/signup"
     },
     callbacks: {
         // Sends back the token
-        async jwt({ token, user}) {
+        async jwt({ token, user }) {
             if(user) {
                 token.user = user;
             }
+
             return token;
         },
         // Sends back the session
         async session({ session, token }) {
             if(token && token.user) {
-                session.user = token.user
+                session.user = token.user;
             }
+
             return session;
         }
     }

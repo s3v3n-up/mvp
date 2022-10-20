@@ -1,7 +1,7 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import nextConnect from 'next-connect';
-import multer from 'multer';
-import { uploadFile } from '@/lib/actions/File';
+import { NextApiRequest, NextApiResponse } from "next";
+import nextConnect from "next-connect";
+import multer from "multer";
+import { uploadFile } from "@/lib/actions/File";
 
 /**
  * @description saves the file locally
@@ -10,7 +10,7 @@ const upload = multer(
     {
         storage: multer.diskStorage(
             {
-                destination: '/tmp',
+                destination: "/tmp",
                 filename(req, file, callback) {
                     callback(null, `${ Date.now() }.${ file.mimetype.substring(6) }`);
                 }
@@ -43,7 +43,7 @@ type NextApiRequestWithFiles = NextApiRequest & {
  * @description Handles the uploading of the file into the cloudinary
  */
 handler.use(
-    upload.array('files')
+    upload.array("files")
 ).post(
     async(req: NextApiRequestWithFiles, res: NextApiResponse) => {
         try {
@@ -51,7 +51,7 @@ handler.use(
             if (!req.files) {
                 throw {
                     code: 400,
-                    message: 'you must upload a file'
+                    message: "you must upload a file"
                 };
             }
 
@@ -59,7 +59,7 @@ handler.use(
             if (req.files.length !== 1) {
                 throw {
                     code: 400,
-                    message: 'you can only upload one file'
+                    message: "you can only upload one file"
                 };
             }
             // Gets the first file
@@ -80,7 +80,7 @@ handler.use(
             );
             // Catches error and throw the error message and code
         } catch(error: any) {
-            const { code = 500, message = 'unknown error occured' } = error;
+            const { code = 500, message = "unknown error occured" } = error;
             res.status(code).json(
                 {
                     status: code,

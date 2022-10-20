@@ -1,5 +1,5 @@
 // import cloudinary
-import cloudinary from '@/lib/resources/cloudinary';
+import cloudinary from "@/lib/resources/cloudinary";
 
 // Get the uploader in the cloudinary
 const { uploader } = cloudinary;
@@ -10,15 +10,21 @@ const { uploader } = cloudinary;
  */
 export async function uploadFile(path: string) {
     try {
+        // Stores the filename
         const response = await uploader.upload(path,
-            { 
-                unique_filename: true 
+            {
+                uniqueFilename: true
             });
+        // If there is no file then throws an error
         if (!response) {
-            throw new Error("upload to cloudinary failed")
+            throw new Error("upload to cloudinary failed");
         }
+
+        // returns the filename
         return response;
-    } catch(e) {
-        throw e
+
+        // Catches and throw the error
+    } catch(error: any) {
+        throw new Error("Error uploading file", error);
     }
 }

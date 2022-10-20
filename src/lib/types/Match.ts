@@ -1,5 +1,5 @@
-import { ObjectId } from 'mongodb'
-import { UserProfile } from '@/lib/types/User'
+import { ObjectId } from "mongodb";
+import { UserProfile } from "@/lib/types/User";
 
 /**
  * Interface for creating a match
@@ -10,8 +10,8 @@ import { UserProfile } from '@/lib/types/User'
  * @location This is the location where the match is or will happen
  * @matchStart This is the start date/time of the match
  * @matchEnd This is the end date/time of the match
- * @description This is the match details 
- * @teamA This is the home team 
+ * @description This is the match details
+ * @teamA This is the home team
  * @teamB This is the away team
  */
 
