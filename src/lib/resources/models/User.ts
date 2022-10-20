@@ -1,5 +1,5 @@
-import {model, models, Model, Schema} from 'mongoose';
-import type { User } from '@/lib/types/User';
+import { model, models, Model, Schema } from "mongoose";
+import type { User } from "@/lib/types/User";
 
 const userSchema = new Schema<User>({
     nickname: {
@@ -15,11 +15,11 @@ const userSchema = new Schema<User>({
         default: [],
         required: true
     }
-})
+});
 
 /**
  * @description
  * The model for the User collection.
  */
-const UserModel = models["user"] as Model<User> || model<User>('user', userSchema);
+const UserModel = models["user"] as Model<User> || model<User>("user", userSchema);
 export default UserModel;

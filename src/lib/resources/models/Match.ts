@@ -1,5 +1,5 @@
-import {models, model, Model, Schema} from 'mongoose';
-import type { Match } from '@/lib/types/Match';
+import { models, model, Model, Schema } from "mongoose";
+import type { Match } from "@/lib/types/Match";
 
 const matchSchema = new Schema<Match>({
     sport: {
@@ -44,16 +44,16 @@ const matchSchema = new Schema<Match>({
     status: {
         type: Boolean,
         default: false,
-    }, 
+    },
     code: {
         type: String,
         required: true
     }
-})
+});
 
 /**
  * @description
  * The model for the Match collection.
  */
-const MatchModel = models["match"] as Model<Match> || model<Match>('match', matchSchema);
+const MatchModel = models["match"] as Model<Match> || model<Match>("match", matchSchema);
 export default MatchModel;

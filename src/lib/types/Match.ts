@@ -4,7 +4,7 @@ export interface Match {
     date: string;
     startTime: string;
     endTime: string;
-    location: string; 
+    location: string;
     teams: string[];
     teamsLimit: number;
     languages: string[];
