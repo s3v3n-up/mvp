@@ -1,7 +1,8 @@
+// Imports UserProfile interface
 import { UserProfile } from "@/lib/types/User";
-// import Database from  '@/lib/resources/database'
+// Imports UserModel Schema
 import UserModel from "../resources/models/User";
-
+// import Database from  '@/lib/resources/database'
 import Database from "@/lib/resources/database";
 
 /**

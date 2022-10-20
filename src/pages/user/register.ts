@@ -1,7 +1,12 @@
+// Imports NextApiRequest and NextApiResponse from next
 import { NextApiRequest, NextApiResponse } from "next";
+// Imports UserProfile interface
 import { UserProfile } from "@/lib/types/User";
+// Imports createUser function
 import { createUser } from "@/lib/actions/user";
+// Imports PHONE_REGEX and EMAIL_REGEX
 import { PHONE_REGEX, EMAIL_REGEX } from "@/lib/resources/constants";
+// Imports object and string types from yup
 import { object, string } from "yup";
 
 /**
@@ -39,7 +44,7 @@ export default async function handler(
             });
 
             // Checks if it passes the yup validation
-            const validatedUser = await schema.validate(req.body);
+            await schema.validate(req.body);
 
             // Converts username to lowercase for uniformity
             userName = userName.toLowerCase();
