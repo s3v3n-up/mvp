@@ -1,7 +1,8 @@
 // Imports UserProfile interface
 import { UserProfile } from "@/lib/types/User";
-// Imports UserModel Schema
+// Imports UserModel and MatchModel Schema
 import UserModel from "../resources/models/User";
+import MatchModel from "../resources/models/Match";
 // import Database from  '@/lib/resources/database'
 import Database from "@/lib/resources/database";
 
@@ -117,6 +118,11 @@ export async function userExist(email: string) {
     }
 }
 
+/**
+ * @description This function looks for a specific user by his username
+ * @param {string} username the username of the user\
+ * @returns The user
+ */
 export async function findUserByUsername(userName: string): Promise<UserProfile[]> {
     try {
 
@@ -128,5 +134,65 @@ export async function findUserByUsername(userName: string): Promise<UserProfile[
     // Catches and throws error
     } catch(error: any) {
         throw new Error("error searching user", { cause: error });
+    }
+}
+
+/**
+ * @description This function will calculate the win/lose/draw of a specific user
+ * @param {string} username the username of the user
+ * @returns The stats(win/lose/draw) of a user
+ */
+export async function calculateStats(userName: string) {
+    try {
+        // Sets up database connection
+        await Database.setup();
+
+        // Stores and look for a specific user in the database
+        const userFound = await UserModel.findOne({ userName });
+
+        // Stores and look for all matches of the user
+        const userMatches = await MatchModel.find({ matches: userFound?.matches });
+
+        // Created a stats object to store win/lose/draw of the user
+        let stats = {
+            win: 0,
+            lose: 0,
+            draw: 0
+
+        };
+
+        // Checks all the matches of the user when he is on team A
+        userMatches.map((e) => {
+            if (e.teamA.members.includes(userName)) {
+                // win Increments by 1 if they Win
+                if (e.teamA.status === "WIN") {
+                    stats.win++;
+                // lose Increments by 1 if they Lose
+                } else if (e.teamA.status === "LOSE") {
+                    stats.lose++;
+                // draw Increments by 1 if they Draw
+                } else if (e.teamA.status === "DRAW") {
+                    stats.draw++;
+                }
+            // Checks all the matches of the user when he is on team B
+            } else if (e.teamB.members.includes(userName)) {
+                // win Increments by 1 if they Win
+                if (e.teamB.status === "WIN") {
+                    stats.win++;
+                // lose Increments by 1 if they Lose
+                } else if (e.teamB.status === "LOSE") {
+                    stats.lose++;
+                // draw Increments by 1 if they Draw
+                } else if (e.teamB.status === "DRAW") {
+                    stats.draw++;
+                }
+            }
+        });
+
+        // Returns the stats (win/lose/draw) of the user
+        return stats;
+    // Catches and throws error
+    } catch (error: any) {
+        throw new Error("Error Cannot Calculate win/lose/draw", error);
     }
 }

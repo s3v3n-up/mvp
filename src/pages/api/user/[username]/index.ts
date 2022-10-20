@@ -2,8 +2,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 // Imports Database
 import Database from "@/lib/resources/database";
-// Imports findUserByUsername and updateUser functions
-import { findUserByUsername, updateUser } from "@/lib/actions/user";
+// Imports calculateStats, findUserByUsername and updateUser functions
+import { calculateStats, findUserByUsername, updateUser } from "@/lib/actions/user";
 // Imports object and string type from yup
 import { object, string } from "yup";
 // Imports PHONE_REGEX
@@ -20,11 +20,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (req.method === "GET") {
             // Stores and looks for a specific username
             const user = await findUserByUsername(username as string);
+            
+            // Gets the username of the user
+            const { userName } = user[0];
 
-            // return user;
+            // Store and calculate the stats (win/lose/draw) of the user
+            const stats = await calculateStats(userName);
+
+            // return user and stats;
             res.status(200).json({
-                user
-            });
+                user,
+                stats
+            })
+
             // Checks if the method is PUT
         } else if (req.method === "PUT") {
             // Gets the firstName, lastName, phonenumber and image
