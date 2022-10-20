@@ -4,12 +4,9 @@ import Layout from "@/components/layout/Layout";
 import Image from "next/image";
 import styles from "@/styles/Home.module.sass";
 
-
-const names = ["whale", "squid", "turtle", "coral", "starfish"];
+const names = ["whale", "squid", "turtle", "coral", "starfish", "star"];
 
 export default function Home() {
-
-
     return (
         <Layout>
             <div className={styles.matches}>
@@ -30,25 +27,24 @@ export default function Home() {
 
                 <div>
                     <p>Quick Matches</p>
-                    <div>
-                        {names.map(name =>
-                            <div className={styles.quick} key={name}>
-                                <p>{name}</p>
+                    <div className={styles.container}>
+                        {names.map((name) => (
+                            <div className={styles.cards} key={name}>
+                                {name}
                             </div>
-                        )}
+                        ))}
                     </div>
                 </div>
-
-                {/* <div className={styles.regular}>
+                <div>
                     <p>Regular Matches</p>
-                    <div>
-                        <div className={styles.quick}>
-                            <div>
-
+                    <div className={styles.container}>
+                        {names.map((name) => (
+                            <div className={styles.cards} key={name}>
+                                {name}
                             </div>
-                        </div>
+                        ))}
                     </div>
-                </div> */}
+                </div>
             </div>
         </Layout>
     );
