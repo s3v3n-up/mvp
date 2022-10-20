@@ -43,7 +43,7 @@ const userSchema = new Schema<UserProfile>({
         unique: true
     },
     // This is the phonenumber of the user
-    phonenumber: {
+    phoneNumber: {
         type: String,
         validate: {
             validator: function (v: string) {

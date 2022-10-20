@@ -18,6 +18,7 @@ const matchSchema = new Schema<Match>({
         type: String,
         required: true
     },
+    // This is the chosen game mode for the chosen sport
     gameMode: {
         type: String,
         required: true
@@ -37,14 +38,12 @@ const matchSchema = new Schema<Match>({
     // This is the start date/time of the match
     matchStart: {
         type: Date,
-        // min: [Date.now(), "Date should not be less than current date/time"],
         required: true,
         default: Date.now()
     },
     // This is the end date/time of the match
     matchEnd: {
         type: Date,
-        // min: [Date.now(), "Date should not be less than current date/time"],
         required: true,
         default: Date.now()
     },
@@ -53,6 +52,7 @@ const matchSchema = new Schema<Match>({
         type: String,
         required: true
     },
+    // These are the details or records for the home team, such as members, score and match result.
     teamA: {
         members: [{
             type: String,
