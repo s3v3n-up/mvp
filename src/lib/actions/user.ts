@@ -89,7 +89,7 @@ export async function updateUser(username: string, firstName: string, lastName: 
 
         // returns the updated user
         return updatedUser;
-      // Catches any errors and throws it
+        // Catches any errors and throws it
     } catch (error: any) {
         throw new Error("Error updating the user", error.message);
     }
@@ -105,15 +105,15 @@ export async function userExist(email: string) {
     try {
         // Sets up Database connection
         await Database.setup();
-        
+
         // Stores and looks for a specific user by email
         const user = await UserModel.findOne({ email });
-        
+
         // Returns the user
         return user;
-      // Catches and throws error
+        // Catches and throws error
     } catch(error: any) {
-        throw new Error("Error something wrong", error)
+        throw new Error("Error something wrong", error);
     }
 }
 

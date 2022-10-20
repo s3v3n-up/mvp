@@ -25,12 +25,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             res.status(200).json({
                 user
             });
-          // Checks if the method is PUT
+            // Checks if the method is PUT
         } else if (req.method === "PUT") {
             // Gets the firstName, lastName, phonenumber and image
             let { firstName, lastName, phonenumber, image } = req.body;
 
-             // Yup validation criteria
+            // Yup validation criteria
             const schema = object({
                 firstName: string().required().min(2).max(64),
                 lastName: string().required().min(2).max(64),
@@ -53,7 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 updatedUser
             });
         }
-      // Catches and throws error
+        // Catches and throws error
     } catch (error: any) {
         throw new Error("Failed searching for user",error);
     }
