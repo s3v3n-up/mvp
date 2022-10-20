@@ -20,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (req.method === "GET") {
             // Stores and looks for a specific username
             const user = await findUserByUsername(username as string);
-            
+
             // Gets the username of the user
             const { userName } = user[0];
 
@@ -31,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             res.status(200).json({
                 user,
                 stats
-            })
+            });
 
             // Checks if the method is PUT
         } else if (req.method === "PUT") {
