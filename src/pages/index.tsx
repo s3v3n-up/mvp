@@ -1,5 +1,5 @@
 
-import PrimaryButton from "@/components/buttons/primaryButton";
+import PrimaryButton from "@/components/button/primaryButton";
 import SecondaryButton from "@/components/buttons/secondaryButton";
 import Layout from "@/components/layout/Layout";
 

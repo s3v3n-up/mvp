@@ -31,7 +31,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      <div className={styles.bottomnav}>
+      {/* <div className={styles.bottomNav}>
         <div className={styles.option}>
           <Link href={"/"}>
             <p>Ranking</p>
@@ -46,7 +46,7 @@ export default function Navbar() {
             <p>History</p>
           </Link>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }
