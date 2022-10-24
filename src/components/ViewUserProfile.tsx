@@ -14,16 +14,16 @@ export default function ViewUserProfile(){
         <Input text="User Name" icon=<FolderSharedOutlined/> />
         <Input text="Contact" icon=<Phone/> />
 
-        <table className="table-fixed border-collapse border border-slate-800 rounded-ml my-6 ">
-          <thead className=" bg-[#fc5c3e] text-[#f3f2ef] my-3" >
-            <tr>
+        <table className=" border-collapse border border-slate-800 rounded-ml text-center mt-6 ">
+          <thead className=" bg-[#fc5c3e] text-[#f3f2ef] my-5 py-5 mt-6" >
+            <tr className="my-5 py-5 mt-6">
               <th>Win</th>
               <th>Draw</th>
               <th>Loss</th>
             </tr>
           </thead>
           <tbody >
-            <tr className="place-items-center bg-white text-black">
+            <tr className=" bg-white text-black">
               <td>10</td>
               <td>3</td>
               <td>5</td>
