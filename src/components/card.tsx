@@ -14,9 +14,10 @@ export default function Card() {
                     <div className={styles.location}>
                         <p>Location</p>
                     </div>
+
                     <button className={styles.leaveButton}>Leave</button>
                 </div>
             </div>
         </div>
-    )
+    );
 };
