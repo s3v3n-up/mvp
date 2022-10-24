@@ -1,9 +1,14 @@
+// Imports NextAuth and NexyAuthOptions from next-auth
 import NextAuth, { NextAuthOptions } from "next-auth";
+// Imports MongoDBAdapter from next-auth/mongodb-adapter
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
+// Imports Email, Discord and Google Providers from next-auth
 import EmailProvider from "next-auth/providers/email";
 import DiscordProvider from "next-auth/providers/discord";
 import GoogleProvider from "next-auth/providers/google";
+// Imports Database
 import Database from "@/lib/resources/database";
+
 
 /**
  * @description
@@ -57,12 +62,12 @@ export const authOptions: NextAuthOptions = {
             }
         )
     ],
-    pages: {
-        newUser: "/signup"
-    },
+    /**
+     * @description This handles the callbacks
+     */
     callbacks: {
         // Sends back the token
-        async jwt({ token, user }) {
+        async jwt({ token, user, account }) {
             if(user) {
                 token.user = user;
             }
@@ -70,7 +75,7 @@ export const authOptions: NextAuthOptions = {
             return token;
         },
         // Sends back the session
-        async session({ session, token }) {
+        async session({ session, token, user }) {
             if(token && token.user) {
                 session.user = token.user;
             }
@@ -80,4 +85,5 @@ export const authOptions: NextAuthOptions = {
     }
 };
 
+// Exports the NextAuth
 export default NextAuth(authOptions);
