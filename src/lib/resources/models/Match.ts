@@ -15,12 +15,12 @@ const matchSchema = new Schema<Match>({
     // The the type of sport for the created match
     sport: {
         type: String,
-        required: true
+        required: true,
     },
     // This is the chosen game mode for the chosen sport
     gameMode: {
         type: String,
-        required: true
+        required: true,
     },
     // This is the type of the match either REGULAR or QUICK
     matchType: {
@@ -49,7 +49,7 @@ const matchSchema = new Schema<Match>({
     // This is the match details, also a place where you can input extra details eg. Discord link, Facebook messenger link etc.
     description: {
         type: String,
-        required: true
+        required: true,
     },
     // These are the details or records for the home team, such as members, score and match result.
     teamA: {
