@@ -1,14 +1,11 @@
 // Imports NextAuth and NexyAuthOptions from next-auth
 import NextAuth, { NextAuthOptions } from "next-auth";
-
 // Imports MongoDBAdapter from next-auth/mongodb-adapter
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
-
 // Imports Email, Discord and Google Providers from next-auth
 import EmailProvider from "next-auth/providers/email";
 import DiscordProvider from "next-auth/providers/discord";
 import GoogleProvider from "next-auth/providers/google";
-
 // Imports Database
 import Database from "@/lib/resources/database";
 
