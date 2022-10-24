@@ -10,10 +10,10 @@ export default class Database {
     static mongoClientPromise: Promise<MongoClient>;
 
     /**
-   * set up single database connection
-   * @param uri - database uri
-   * @returns mongoose client connection
-   */
+     * set up single database connection
+     * @param uri - database uri
+     * @returns mongoose client connection
+     */
     static async setup(uri: string = process.env.MONGODB_URI!) {
         if (!this.mongooseClient) {
             this.mongooseClient = await mongoose.connect(uri);
@@ -23,13 +23,11 @@ export default class Database {
     }
 
     /**
-   * set up single monogodb-adapter connection for next-auth
-   * @param {string} uri - database uri
-   * @returns {Promise<MongoClient>} - mongodb client connection promise
-   */
-    static async setupAdapterConnection(
-        uri: string = process.env.MONGODB_URI!
-    ): Promise<MongoClient> {
+    * set up single monogodb-adapter connection for next-auth
+    * @param {string} uri - database uri
+    * @returns {Promise<MongoClient>} - mongodb client connection promise
+    */
+    static async setupAdapterConnection(uri: string= process.env.MONGODB_URI!): Promise<MongoClient> {
         if (!this.mongoClientPromise) {
             this.mongoClientPromise = MongoClient.connect(uri);
         }
@@ -37,3 +35,5 @@ export default class Database {
         return this.mongoClientPromise;
     }
 }
+
+
