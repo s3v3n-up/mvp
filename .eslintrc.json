@@ -1,10 +1,14 @@
 {
   "extends": "next/core-web-vitals",
-  "rules": {
-    "semi": ["warning", "always"],
-    "quotes": ["warning", "double"],
-    "no-var": ["error", "always"],
-    "newline-before-return": ["warning", "always"],
-    "camelcase": ["warning", "always"]
+    "rules": {
+      "indent": ["warn", 4],
+      "semi": ["warn", "always"],
+      "quotes": ["warn", "double"],
+      "no-multi-spaces": "warn",
+      "no-trailing-spaces": "warn",
+      "object-curly-spacing": ["warn", "always"],
+      "no-var": "error",
+      "newline-before-return": "warn",
+      "camelcase": "warn"
   }
 }
