@@ -1,5 +1,4 @@
 import { models, model, Model, Schema } from "mongoose";
-// import type { Match.Type } from '@/lib/types/Match';
 import { Match, Matches } from "@/lib/types/Match";
 
 /**
