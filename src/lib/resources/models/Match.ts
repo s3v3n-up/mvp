@@ -1,8 +1,5 @@
 import { models, model, Model, Schema } from "mongoose";
-// import type { Match.Type } from '@/lib/types/Match';
 import { Match, Matches } from "@/lib/types/Match";
-import { ObjectId } from "mongodb";
-import UserModel from "@/lib/resources/models/User";
 
 /**
  * @description = This is the match schema
@@ -12,11 +9,16 @@ import UserModel from "@/lib/resources/models/User";
 const matchSchema = new Schema<Match>({
     // The user who created the match
     matchHost: {
-        type: String || ObjectId || UserModel,
+        type: String,
         required: true
     },
     // The the type of sport for the created match
     sport: {
+        type: String,
+        required: true
+    },
+    // This is the chosen game mode for the chosen sport
+    gameMode: {
         type: String,
         required: true
     },
@@ -28,21 +30,19 @@ const matchSchema = new Schema<Match>({
     },
     // This is the location where the match is or will happen
     location: {
-        type: String,
+        type: Object,
         required: true,
         default: {}
     },
     // This is the start date/time of the match
     matchStart: {
         type: Date,
-        min: [Date.now(), "Date should not be less than current date/time"],
         required: true,
         default: Date.now()
     },
     // This is the end date/time of the match
     matchEnd: {
         type: Date,
-        min: [Date.now(), "Date should not be less than current date/time"],
         required: true,
         default: Date.now()
     },
@@ -51,21 +51,14 @@ const matchSchema = new Schema<Match>({
         type: String,
         required: true
     },
-    // players: {
-    //     type: [String],
-    //     required: true,
-    // 	default: []
-    // },
     // These are the details or records for the home team, such as members, score and match result.
     teamA: {
         members: [{
-            type: Schema.Types.ObjectId,
-            ref: "user",
+            type: String,
             required: true,
             default: []
         }],
         score: Number,
-        required: true,
         status: {
             type: String,
             enum: Matches.Status,
@@ -77,13 +70,11 @@ const matchSchema = new Schema<Match>({
     // These are the details or records for the away team, such as members, score and match result.
     teamB: {
         members: [{
-            type: Schema.Types.ObjectId,
-            ref: "user",
+            type: String,
             required: true,
             default: []
         }],
         score: Number,
-        required: true,
         status: {
             type: String,
             enum: Matches.Status,
