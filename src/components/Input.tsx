@@ -1,4 +1,5 @@
 import Props from "@/Interface/interface"
+
 export default function Input(props:Props){
   return (
     <>

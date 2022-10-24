@@ -1,10 +1,10 @@
-import Header from "@/components/Header";
+import Navbar from "@/components/Navbar";
 import UserProfile from "@/components/UserProfile"
 
 export default function Profile(){
   return(
     <div>
-      <Header/>
+      <Navbar/>
       <UserProfile/>
       
     </div>

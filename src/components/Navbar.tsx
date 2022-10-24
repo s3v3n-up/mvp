@@ -1,8 +1,6 @@
-
 import Link from "next/link"
-import { useEffect } from "react"
 
-export default function Header(){
+export default function Navbar(){
 
   return (
     <header className="top-0 z-50 flex w-full items-center justify-between px-4 py-4 text-[#f3f2ef] ">

@@ -1,12 +1,11 @@
 import CreateMatch from '@/components/createMatch'
-import Header from '@/components/header'
-import type { NextPage } from 'next'
+import Navbar from '@/components/Navbar'
 
 
 export default function CreateMatchPage(){
   return (
     <div>
-      <Header/>
+      <Navbar/>
     <div>
       <CreateMatch/>
     </div>

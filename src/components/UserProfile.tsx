@@ -1,8 +1,6 @@
 import Image from "next/image"
-import AccountBox from '@mui/icons-material';
 import Input from "../components/Input"
 import {Person,FolderSharedOutlined, Email} from '@mui/icons-material';
-import Icon from '@mui/icons-material/FolderSharedOutlined';
 
 export default function UserProfile(){
   return (
