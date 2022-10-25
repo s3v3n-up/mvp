@@ -133,18 +133,3 @@ export async function getUserByEmail(email: string) {
         throw new Error("Error something wrong", error);
     }
 }
-
-export async function findUserByUsername(userName: string): Promise<UserProfile[]> {
-    try {
-
-        //find all users with matching username pattern
-        const users = await UserModel.find({ userName: { $regex: userName } });
-
-        //return users
-        return users;
-
-    // Catches and throws error
-    } catch(error: any) {
-        throw new Error("error searching user", { cause: error });
-    }
-}
