@@ -18,12 +18,11 @@ export default async function handler(
                 userName,
                 firstName,
                 lastName,
-                phonenumber,
+                phoneNumber,
                 image,
                 email,
                 matches,
             } = req.body as UserProfile;
-
             // Yup validation criteria
             const schema = object({
                 userName: string().required().min(8).max(30),
@@ -37,10 +36,8 @@ export default async function handler(
                     .required()
                     .matches(EMAIL_REGEX, "invalid input for email"),
             });
-
             // Checks if it passes the yup validation
-            const validatedUser = await schema.validate(req.body);
-
+            await schema.validate(req.body);
             // Converts username to lowercase for uniformity
             userName = userName.toLowerCase();
             // Converts email to lowercase for uniformity
@@ -49,20 +46,16 @@ export default async function handler(
             firstName = firstName.charAt(0) + firstName.substring(1).toLowerCase();
             // Converts first letter of the lastname to capital and the rest is lowercase
             lastName = lastName.charAt(0) + lastName.substring(1).toLowerCase();
-            //phonenumber = phonenumber.substring(0,3) + "-" + phonenumber.substring(3,6) + "-" + phonenumber.substring(6);
-
             const user = {
                 userName,
                 email,
                 firstName,
                 lastName,
-                phonenumber,
+                phoneNumber,
                 image,
                 matches,
             };
-
             const response = await createUser(user);
-
             res.status(response.code).json({
                 response,
             });

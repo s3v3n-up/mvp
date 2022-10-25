@@ -8,18 +8,18 @@ import Database from "@/lib/resources/database";
 /**
  * @description a function that creates user and save to the database
  * @param user accepts a user object
- * @returns = returns a code and a message if successful user creation or user already taken
+ * @returns a code and a message if successful user creation or user already taken
  */
 export async function createUser(user: UserProfile) {
     try {
+        // Sets up the database
+        await Database.setup();
         // Deconstruct user to get username and email
         const { userName, email } = user;
-
         // Check if the username already exist in the database
         const existingUser = await UserModel.findOne({ userName });
         // Check if the email already exist in the database
         const existingEmail = await UserModel.findOne({ email });
-
         // If username exist returns an error code and message
         if(existingUser || existingEmail) {
             return {
@@ -46,7 +46,7 @@ export async function createUser(user: UserProfile) {
 }
 
 /**
- * @description = A function that gets all users in the database and returns it
+ * @description A function that gets all users in the database and returns it
  */
 export async function getUsers() {
     try {

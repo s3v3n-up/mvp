@@ -2,23 +2,24 @@ import { ObjectId } from "mongodb";
 import { Match } from "@/lib/types/Match";
 
 /**
- * @description  interface for creating a user
- * @id This is automatically added by mongodb
- * @userName This the unique for every user
- * @firstName This is the user's first name
- * @lastName This is the user's last name
- * @email This is the user's email address and is unique
- * @phonenumber This is the user's contact info
- * @image This is the image/logo of the user
- * @matches This is the matches that the user creates/joins
+ * Interface for creating a user
  */
 export interface UserProfile {
-    id?: string | ObjectId;
+	// This is automatically added by mongodb
+	id?: string | ObjectId;
+	// This the unique for every user
 	userName: string;
-    firstName: string;
-    lastName: string;
+	// This is the user's first name
+	firstName: string;
+	// This is the user's last name
+	lastName: string;
+	// This is the user's email address and is unique
 	email: string;
-	phonenumber: string;
+	// This is the user's contact info
+	phoneNumber: string;
+	// This is the image/logo of the user
 	image: string;
+	// This is the matches that the user creates/joins
 	matches: Match[]
 }
+
