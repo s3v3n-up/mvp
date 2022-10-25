@@ -146,21 +146,16 @@ export async function calculateStats(userName: string) {
     try {
         // Sets up database connection
         await Database.setup();
-
         // Stores and look for a specific user in the database
         const userFound = await UserModel.findOne({ userName });
-
         // Stores and look for all matches of the user
         const userMatches = await MatchModel.find({ matches: userFound?.matches });
-
         // Created a stats object to store win/lose/draw of the user
         let stats = {
             win: 0,
             lose: 0,
             draw: 0
-
         };
-
         // Checks all the matches of the user when he is on team A
         userMatches.map((e) => {
             if (e.teamA.members.includes(userName)) {
