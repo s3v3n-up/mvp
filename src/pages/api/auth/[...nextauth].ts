@@ -12,6 +12,8 @@ import GoogleProvider from "next-auth/providers/google";
 // Imports Database
 import Database from "@/lib/resources/database";
 
+import { getUserByEmail } from "@/lib/actions/user";
+
 /**
  * @description
  * This manages the authentication for Passwordless, Google and Discord OAuth
@@ -36,7 +38,7 @@ export const authOptions: NextAuthOptions = {
             {
                 server: {
                     host: process.env.SMTP_HOST,
-                    port: Number(process.env.SMTP_PORT),
+                    port: process.env.SMTP_PORT,
                     auth: {
                         user: process.env.SMTP_USER,
                         pass: process.env.SMTP_PASSWORD
@@ -73,6 +75,13 @@ export const authOptions: NextAuthOptions = {
      * @description This handles the callbacks
      */
     callbacks: {
+        async signIn(context) {
+            await Database.setup();
+
+            // const isUserExist = await getUserByEmail
+
+            return true;
+        },
 
         // Sends back the token
         async jwt({ token, user, account }) {

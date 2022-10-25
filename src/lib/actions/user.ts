@@ -53,6 +53,22 @@ export async function createUser(user: UserProfile) {
     }
 }
 
+export async function getUserByEmail(email: string) {
+    try {
+        const user = await UserModel.findOne({ email });
+        if (!user) {
+            throw new Error("email not exist");
+        }
+
+        return user;
+    } catch(error: any) {
+        if (error.message) {
+            throw error;
+        }
+        throw new Error("error getting user by email", { cause: error });
+    }
+}
+
 /**
  * @description A function that gets all users in the database and returns it
  */
