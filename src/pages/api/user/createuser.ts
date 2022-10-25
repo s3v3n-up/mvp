@@ -1,7 +1,16 @@
+// Imports NextApiRequest and NextApiResponse from next
 import { NextApiRequest, NextApiResponse } from "next";
+
+// Imports UserProfile interface
 import { UserProfile } from "@/lib/types/User";
+
+// Imports createUser function
 import { createUser } from "@/lib/actions/user";
+
+// Imports PHONE_REGEX and EMAIL_REGEX
 import { PHONE_REGEX, EMAIL_REGEX } from "@/lib/resources/constants";
+
+// Imports object and string types from yup
 import { object, string } from "yup";
 
 /**
@@ -53,6 +62,8 @@ export default async function handler(
 
             // Converts first letter of the lastname to capital and the rest is lowercase
             lastName = lastName.charAt(0) + lastName.substring(1).toLowerCase();
+
+            // Define user object to be created in the database
             const user = {
                 userName,
                 email,
@@ -62,10 +73,16 @@ export default async function handler(
                 image,
                 matches,
             };
+
+            // Stores the created user into the response
             const response = await createUser(user);
+
+            // Returns the code and the user created
             res.status(response.code).json({
                 response,
             });
+
+            //Catches any error and throws it in message
         } catch (error: any) {
             const { code = 500, message } = error;
             res.status(code).json({
