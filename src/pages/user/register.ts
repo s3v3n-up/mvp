@@ -1,11 +1,15 @@
 // Imports NextApiRequest and NextApiResponse from next
 import { NextApiRequest, NextApiResponse } from "next";
+
 // Imports UserProfile interface
 import { UserProfile } from "@/lib/types/User";
+
 // Imports createUser function
 import { createUser } from "@/lib/actions/user";
+
 // Imports PHONE_REGEX and EMAIL_REGEX
 import { PHONE_REGEX, EMAIL_REGEX } from "@/lib/resources/constants";
+
 // Imports object and string types from yup
 import { object, string } from "yup";
 

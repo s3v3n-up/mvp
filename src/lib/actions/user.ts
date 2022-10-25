@@ -33,8 +33,8 @@ export async function createUser(user: UserProfile) {
         const player = new UserModel<UserProfile>(user);
         // Saves the UserModel in the database
         await player.save();
-        // Returns a code and message for successful creation of user
 
+        // Returns a code and message for successful creation of user
         return {
             code: 200,
             message: "User successfully created",

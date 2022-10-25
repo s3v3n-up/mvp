@@ -6,7 +6,6 @@ import { PHONE_REGEX, EMAIL_REGEX } from "@/lib/resources/constants";
  * @description = This is the user schema
  * The full description of each property is referenced in the User interface
  */
-
 const userSchema = new Schema<UserProfile>({
     // This is the username of the user
     userName: {

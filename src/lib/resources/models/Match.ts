@@ -5,7 +5,6 @@ import { Match, Matches } from "@/lib/types/Match";
  * @description = This is the match schema
  * The full description of each property is referenced in the Match interface
  */
-
 const matchSchema = new Schema<Match>({
     // The user who created the match
     matchHost: {

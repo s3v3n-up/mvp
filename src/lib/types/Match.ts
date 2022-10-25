@@ -3,7 +3,6 @@ import { ObjectId } from "mongodb";
 /**
  * Interface for creating a match
  */
-
 export interface Match {
 	// This is automatically added by mongodb
 	id?: string | ObjectId;

@@ -4,7 +4,6 @@ import { ObjectId } from "mongodb";
 /**
  Interface for the type of sports
  */
-
 export interface Sport {
 	// This is automatically added by mongodb
 	id?: string | ObjectId;

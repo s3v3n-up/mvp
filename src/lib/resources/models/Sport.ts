@@ -5,7 +5,6 @@ import type { Sport } from "@/lib/types/Sport";
  * @description = This is the sport schema
  * The full description of each property is referenced in the Sport interface
  */
-
 const sportSchema = new Schema<Sport>({
     // This is the name of the sport
     name: {
