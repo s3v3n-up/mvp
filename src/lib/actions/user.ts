@@ -1,7 +1,9 @@
 // Imports UserProfile interface
 import { UserProfile } from "@/lib/types/User";
+
 // Imports UserModel Schema
 import UserModel from "../resources/models/User";
+
 // import Database from  '@/lib/resources/database'
 import Database from "@/lib/resources/database";
 
@@ -12,21 +14,27 @@ import Database from "@/lib/resources/database";
  */
 export async function createUser(user: UserProfile) {
     try {
+
         // Sets up the database
         await Database.setup();
+
         // Deconstruct user to get username and email
         const { userName, email } = user;
+
         // Check if the username already exist in the database
         const existingUser = await UserModel.findOne({ userName });
+
         // Check if the email already exist in the database
         const existingEmail = await UserModel.findOne({ email });
+
         // If username exist returns an error code and message
-        if(existingUser || existingEmail) {
+        if (existingUser || existingEmail) {
             return {
                 code: 400,
-                message: "Username or Email already taken"
+                message: "Username or Email already taken",
             };
         }
+
         // Creates a UserModel
         const player = new UserModel<UserProfile>(user);
 
@@ -36,13 +44,13 @@ export async function createUser(user: UserProfile) {
         // Returns a code and message for successful creation of user
         return {
             code: 200,
-            message: "User successfully created"
+            message: "User successfully created",
         };
-        // Catch any errors and throws a message
-    } catch(error: any) {
+
+    // Catch any errors and throws a message
+    } catch (error: any) {
         throw new Error("Error creating a user", error.message);
     }
-
 }
 
 /**
@@ -50,6 +58,7 @@ export async function createUser(user: UserProfile) {
  */
 export async function getUsers() {
     try {
+
         // Sets up the database
         await Database.setup();
 
@@ -77,8 +86,10 @@ export async function getUsers() {
 export async function updateUser(userName: string, firstName: string, lastName: string, phonenumber: string, image: string) {
 
     try {
+
         // Gets the user by username
         const user = await UserModel.findOne({ userName });
+
         // Stores and look for a specific user id and updates it in the database
         const updatedUser = await UserModel.findOneAndUpdate({ _id: user?.id }, {
             userName,
@@ -92,6 +103,7 @@ export async function updateUser(userName: string, firstName: string, lastName: 
 
         // returns the updated user
         return updatedUser;
+
         // Catches any errors and throws it
     } catch (error: any) {
         throw new Error("Error updating the user", error.message);
@@ -104,8 +116,9 @@ export async function updateUser(userName: string, firstName: string, lastName: 
  * @param {string} email the email of the user
  * @returns the user if it exist
  */
-export async function userExist(email: string) {
+export async function getUserByEmail(email: string) {
     try {
+
         // Sets up Database connection
         await Database.setup();
 
@@ -114,6 +127,7 @@ export async function userExist(email: string) {
 
         // Returns the user
         return user;
+
         // Catches and throws error
     } catch(error: any) {
         throw new Error("Error something wrong", error);
@@ -128,6 +142,7 @@ export async function findUserByUsername(userName: string): Promise<UserProfile[
 
         //return users
         return users;
+
     // Catches and throws error
     } catch(error: any) {
         throw new Error("error searching user", { cause: error });
