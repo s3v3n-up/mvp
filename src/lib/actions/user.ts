@@ -4,7 +4,6 @@ import { UserProfile } from "@/lib/types/User";
 import UserModel from "../resources/models/User";
 // import Database from  '@/lib/resources/database'
 import Database from "@/lib/resources/database";
-
 /**
  * @description a function that creates user and save to the database
  * @param user accepts a user object
@@ -29,7 +28,6 @@ export async function createUser(user: UserProfile) {
         }
         // Creates a UserModel
         const player = new UserModel<UserProfile>(user);
-
         // Saves the UserModel in the database
         await player.save();
 
@@ -42,9 +40,7 @@ export async function createUser(user: UserProfile) {
     } catch(error: any) {
         throw new Error("Error creating a user", error.message);
     }
-
 }
-
 /**
  * @description A function that gets all users in the database and returns it
  */
@@ -52,13 +48,11 @@ export async function getUsers() {
     try {
         // Sets up the database
         await Database.setup();
-
         // Stores all the users in the database
         const users = await UserModel.find({});
 
         // Returns all users
         return users;
-
         // Catches any error and throws it in message
     } catch(error: any) {
         throw new Error("Error getting users", error.message);
