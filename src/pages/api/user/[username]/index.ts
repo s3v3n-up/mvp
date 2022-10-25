@@ -3,12 +3,11 @@ import { NextApiRequest, NextApiResponse } from "next";
 // Imports Database
 import Database from "@/lib/resources/database";
 // Imports findUserByUsername and updateUser functions
-import { updateUser } from "@/lib/actions/user";
+import { findUserByUsername, updateUser } from "@/lib/actions/user";
 // Imports object and string type from yup
 import { object, string } from "yup";
 // Imports PHONE_REGEX
 import { PHONE_REGEX } from "@/lib/resources/constants";
-
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
