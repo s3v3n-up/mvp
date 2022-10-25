@@ -8,7 +8,6 @@ export default function History() {
         <div className={styles.background}>
             <div className={styles.historyContainer}>
                 <Tab/>
-                <Card/>
             </div>
 
         </div>
