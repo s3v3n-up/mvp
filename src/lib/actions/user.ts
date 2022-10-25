@@ -14,14 +14,19 @@ import Database from "@/lib/resources/database";
  */
 export async function createUser(user: UserProfile) {
     try {
-    // Sets up the database
+
+        // Sets up the database
         await Database.setup();
+
         // Deconstruct user to get username and email
         const { userName, email } = user;
+
         // Check if the username already exist in the database
         const existingUser = await UserModel.findOne({ userName });
+
         // Check if the email already exist in the database
         const existingEmail = await UserModel.findOne({ email });
+
         // If username exist returns an error code and message
         if (existingUser || existingEmail) {
             return {
@@ -29,8 +34,10 @@ export async function createUser(user: UserProfile) {
                 message: "Username or Email already taken",
             };
         }
+
         // Creates a UserModel
         const player = new UserModel<UserProfile>(user);
+
         // Saves the UserModel in the database
         await player.save();
 
@@ -39,6 +46,7 @@ export async function createUser(user: UserProfile) {
             code: 200,
             message: "User successfully created",
         };
+
     // Catch any errors and throws a message
     } catch (error: any) {
         throw new Error("Error creating a user", error.message);
@@ -50,13 +58,16 @@ export async function createUser(user: UserProfile) {
  */
 export async function getUsers() {
     try {
-    // Sets up the database
+
+        // Sets up the database
         await Database.setup();
+
         // Stores all the users in the database
         const users = await UserModel.find({});
 
         // Returns all users
         return users;
+
     // Catches any error and throws it in message
     } catch (error: any) {
         throw new Error("Error getting users", error.message);
