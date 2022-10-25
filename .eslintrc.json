@@ -9,6 +9,11 @@
 	  "object-curly-spacing": ["warn", "always"],
 	  "no-var": "error",
 	  "newline-before-return": "warn",
-	  "camelcase": "warn"
+	  "camelcase": "warn",
+	  "padding-line-between-statements": [
+		"warn",
+		{ "blankLine": "always", "prev": "*", "next": ["return", "function"] }
+	  ],
+	  "lines-around-comment": ["warn", { "beforeLineComment": true}]
 	}
   }
