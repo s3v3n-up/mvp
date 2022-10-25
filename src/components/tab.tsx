@@ -12,6 +12,12 @@ export default function Tab() {
                     <p>History</p>
                 </div>
             </div>
+            <div className={styles.tabContent}>
+                <Card/>
+                <Card/>
+                <Card/>
+                <Card/>
+            </div>
         </div>
 
 
