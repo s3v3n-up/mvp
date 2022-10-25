@@ -23,7 +23,7 @@ export default async function handler(
                 userName,
                 firstName,
                 lastName,
-                phonenumber,
+                phoneNumber,
                 image,
                 email,
                 matches,
@@ -61,7 +61,7 @@ export default async function handler(
                 email,
                 firstName,
                 lastName,
-                phonenumber,
+                phoneNumber,
                 image,
                 matches,
             };
