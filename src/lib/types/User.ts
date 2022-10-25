@@ -31,4 +31,3 @@ export interface UserProfile {
 	matches: Match[]
 }
 
-
