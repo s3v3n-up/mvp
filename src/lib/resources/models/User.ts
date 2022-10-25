@@ -43,7 +43,7 @@ const userSchema = new Schema<UserProfile>({
         unique: true
     },
     // This is the phonenumber of the user
-    phonenumber: {
+    phoneNumber: {
         type: String,
         validate: {
             validator: function (v: string) {
@@ -60,8 +60,7 @@ const userSchema = new Schema<UserProfile>({
     },
     // This is where the matches record are contained or referenced
     matches: [{
-        type: Schema.Types.ObjectId,
-        ref: "match",
+        type: String,
         required: true,
         default: []
     }]
