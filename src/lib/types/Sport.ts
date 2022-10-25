@@ -1,6 +1,5 @@
 import { ObjectId } from "mongodb";
 
-
 /**
  Interface for the type of sports
  */

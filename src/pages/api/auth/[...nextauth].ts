@@ -12,7 +12,6 @@ import GoogleProvider from "next-auth/providers/google";
 // Imports Database
 import Database from "@/lib/resources/database";
 
-
 /**
  * @description
  * This manages the authentication for Passwordless, Google and Discord OAuth

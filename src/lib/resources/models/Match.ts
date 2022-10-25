@@ -2,7 +2,7 @@ import { models, model, Model, Schema } from "mongoose";
 import { Match, Matches } from "@/lib/types/Match";
 
 /**
- * @description = This is the match schema
+ * @description This is the match schema
  * The full description of each property is referenced in the Match interface
  */
 const matchSchema = new Schema<Match>({
