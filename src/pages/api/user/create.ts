@@ -49,8 +49,7 @@ export default async function handler(
             firstName = firstName.charAt(0) + firstName.substring(1).toLowerCase();
             // Converts first letter of the lastname to capital and the rest is lowercase
             lastName = lastName.charAt(0) + lastName.substring(1).toLowerCase();
-            //phonenumber = phonenumber.substring(0,3) + "-" + phonenumber.substring(3,6) + "-" + phonenumber.substring(6);
-
+            
             const user = {
                 userName,
                 email,
