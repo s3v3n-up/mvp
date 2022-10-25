@@ -10,12 +10,14 @@ const { uploader } = cloudinary;
  */
 export async function uploadFile(path: string) {
     try {
+
         // Stores the filename
         const response = await uploader.upload(path,
             {
                 // eslint-disable-next-line camelcase
                 unique_filename: true
             });
+
         // If there is no file then throws an error
         if (!response) {
             throw new Error("upload to cloudinary failed");

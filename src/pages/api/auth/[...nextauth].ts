@@ -1,14 +1,16 @@
 // Imports NextAuth and NexyAuthOptions from next-auth
 import NextAuth, { NextAuthOptions } from "next-auth";
+
 // Imports MongoDBAdapter from next-auth/mongodb-adapter
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
+
 // Imports Email, Discord and Google Providers from next-auth
 import EmailProvider from "next-auth/providers/email";
 import DiscordProvider from "next-auth/providers/discord";
 import GoogleProvider from "next-auth/providers/google";
+
 // Imports Database
 import Database from "@/lib/resources/database";
-
 
 /**
  * @description
@@ -18,12 +20,14 @@ export const authOptions: NextAuthOptions = {
     session: {
         strategy: "jwt"
     },
+
     /**
      * @description
      * Set-up a single mongodb-adapter connection
      */
     adapter: MongoDBAdapter(Database.setupAdapterConnection(process.env.MONGODB_URI)),
     providers: [
+
         /**
          * @description
          * This handles the passwordless login
@@ -41,6 +45,7 @@ export const authOptions: NextAuthOptions = {
                 from: process.env.SMTP_FROM,
             }
         ),
+
         /**
          * @description
          * This handles the Discord OAuth
@@ -51,6 +56,7 @@ export const authOptions: NextAuthOptions = {
                 clientSecret: process.env.OAUTH_DISCORD_CLIENT_SECRET!,
             }
         ),
+
         /**
          * @description
          * This handles the Google OAuth
@@ -62,10 +68,12 @@ export const authOptions: NextAuthOptions = {
             }
         )
     ],
+
     /**
      * @description This handles the callbacks
      */
     callbacks: {
+
         // Sends back the token
         async jwt({ token, user, account }) {
             if(user) {
@@ -74,6 +82,7 @@ export const authOptions: NextAuthOptions = {
 
             return token;
         },
+
         // Sends back the session
         async session({ session, token, user }) {
             if(token && token.user) {
