@@ -53,6 +53,22 @@ export async function createUser(user: UserProfile) {
     }
 }
 
+export async function getUserByEmail(email: string) {
+    try {
+        const user = await UserModel.findOne({ email });
+        if (!user) {
+            throw new Error("email not exist");
+        }
+
+        return user;
+    } catch(error: any) {
+        if (error.message) {
+            throw error;
+        }
+        throw new Error("error getting user by email", { cause: error });
+    }
+}
+
 /**
  * @description A function that gets all users in the database and returns it
  */
@@ -71,5 +87,23 @@ export async function getUsers() {
     // Catches any error and throws it in message
     } catch (error: any) {
         throw new Error("Error getting users", error.message);
+    }
+}
+
+/**
+ * search for users that matches a given username
+ * @param {string} userName - username of user to find
+ * @returns {User[]} array of users with matching username
+ */
+export async function findUserByUsername(userName: string): Promise<UserProfile[]> {
+    try {
+
+        //find all users with matching username pattern
+        const users = await UserModel.find({ userName: { $regex: userName } });
+
+        //return users
+        return users;
+    } catch(error: any) {
+        throw new Error("error searching user", { cause: error });
     }
 }

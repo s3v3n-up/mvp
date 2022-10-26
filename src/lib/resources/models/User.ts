@@ -1,6 +1,6 @@
 import { model, models, Model, Schema } from "mongoose";
 import type { UserProfile } from "@/lib/types/User";
-import { PHONE_REGEX, EMAIL_REGEX } from "@/lib/resources/constants";
+import { PHONE_REGEX, EMAIL_REGEX } from "@/lib/helpers/validation";
 
 /**
  * @description This is the user schema

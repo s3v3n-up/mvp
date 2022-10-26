@@ -2,12 +2,19 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "@/styles/Register.module.sass";
 import Link from "next/link";
-
-import { GetServerSideProps } from "next";
-import React, { useState } from "react";
-
+import React, { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 export default function Register() {
+    const { data: session } = useSession();
+
+    useEffect(()=>{
+        if (session) {
+            console.log(session);
+        }
+        console.log(session);
+    });
+
     return (
         <div className={styles.container}>
             <div className={styles.box}>

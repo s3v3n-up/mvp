@@ -1,5 +1,5 @@
 // Imports NextAuth and NexyAuthOptions from next-auth
-import NextAuth, { NextAuthOptions } from "next-auth";
+import NextAuth, { NextAuthOptions, User } from "next-auth";
 
 // Imports MongoDBAdapter from next-auth/mongodb-adapter
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
@@ -11,6 +11,8 @@ import GoogleProvider from "next-auth/providers/google";
 
 // Imports Database
 import Database from "@/lib/resources/database";
+
+import { getUserByEmail } from "@/lib/actions/user";
 
 /**
  * @description
@@ -36,7 +38,7 @@ export const authOptions: NextAuthOptions = {
             {
                 server: {
                     host: process.env.SMTP_HOST,
-                    port: Number(process.env.SMTP_PORT),
+                    port: process.env.SMTP_PORT,
                     auth: {
                         user: process.env.SMTP_USER,
                         pass: process.env.SMTP_PASSWORD
@@ -75,12 +77,21 @@ export const authOptions: NextAuthOptions = {
     callbacks: {
 
         // Sends back the token
-        async jwt({ token, user, account }) {
+        async jwt({ token, user, account, profile }) {
             if(user) {
-                token.user = user;
+                token.user = user as User;
             }
+            try {
+                if (!token.user.isFinishedSignup) {
+                    await Database.setup();
+                    await getUserByEmail(token.user.email!);
+                    token.user.isFinishedSignup = true;
+                }
 
-            return token;
+                return token;
+            } catch {
+                return token;
+            };
         },
 
         // Sends back the session
