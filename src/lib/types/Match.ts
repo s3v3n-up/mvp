@@ -1,5 +1,30 @@
 import { ObjectId } from "mongodb";
 
+// Namespace to contain the enums used by the match model
+export namespace Matches {
+
+	// Matches type
+	export type MatchType = "REGULAR" | "QUICK";
+
+	// Matches team status type
+	export type TeamStatus = "WIN" | "LOSE" | "DRAW" | "UNFINISHED";
+
+	// Matches status type
+	export type MatchStatus = "UPCOMING" | "ONGOING" | "FINISHED";
+}
+
+/**
+ * Match Team type
+ * @property members - The members of the team
+ * @property score - The score of the team
+ * @property status - The status of the team
+ */
+interface Team {
+	members: string[];
+	score: number;
+	status: Matches.TeamStatus;
+}
+
 /**
  * Interface for creating a match
  */
@@ -18,7 +43,7 @@ export interface Match {
 	gameMode: string;
 
 	// This is the type of the match either REGULAR or QUICK
-	matchType: Matches.Type;
+	matchType: Matches.MatchType;
 
 	// This is the location where the match is or will happen
 	location: object;
@@ -32,37 +57,7 @@ export interface Match {
 	// This is the additional details for the match eg. discord links, whatsapp or zoom links, or any other information you would like to add.
 	description: string;
 
-	//This is details for the home team
-	teamA: {
-		members: string[],
-		score: number,
-		status: Matches.Status
-	}
-
-	//This is details for the away team
-	teamB: {
-		members: string[],
-		score: number,
-		status: Matches.Status
-
-	}
+	//this is the teams that are playing in the match
+	teams: [Team, Team];
 }
 
-// Namespace to contain the enums used by the match model
-export namespace Matches {
-
-	// Matches type enum
-	export enum Type {
-		Regular = "REGULAR",
-		Quick = "QUICK",
-	}
-
-	// Matches status enum
-	export enum Status {
-		Win = "WIN",
-		Lose = "LOSE",
-		Draw = "DRAW",
-		Unfinished = "UNFINISHED"
-	}
-
-}

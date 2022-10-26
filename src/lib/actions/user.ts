@@ -112,7 +112,7 @@ export async function updateUser(userName: string, firstName: string, lastName: 
 
 
 /**
- * @userExist This is a function to check if the user exists on the database
+ * @getUserByEmail This is a function to check if the user exists on the database
  * @param {string} email the email of the user
  * @returns the user if it exist
  */
@@ -125,11 +125,18 @@ export async function getUserByEmail(email: string) {
         // Stores and looks for a specific user by email
         const user = await UserModel.findOne({ email });
 
+        if (!user) {
+            throw new Error("email not exist");
+        }
+
         // Returns the user
         return user;
 
         // Catches and throws error
     } catch(error: any) {
+        if (error.message) {
+            throw error;
+        }
         throw new Error("Error something wrong", error);
     }
 }

@@ -1,5 +1,33 @@
 import { models, model, Model, Schema } from "mongoose";
-import { Match, Matches } from "@/lib/types/Match";
+import { Match } from "@/lib/types/Match";
+
+/**
+ * subdocument schema for teams
+ */
+const TeamSchema = new Schema({
+
+    //team's members
+    members: {
+        type: [String],
+        required: true,
+        default: []
+    },
+
+    //team's score
+    score: {
+        type: Number,
+        required: true,
+        default: 0
+    },
+
+    //match status of the team
+    status: {
+        type: String,
+        required: true,
+        default: "UNFINISHED",
+        enum: ["WIN", "LOSE", "DRAW", "UNFINISHED"]
+    }
+});
 
 /**
  * @description This is the match schema
@@ -28,7 +56,7 @@ const matchSchema = new Schema<Match>({
     // This is the type of the match either REGULAR or QUICK
     matchType: {
         type: String,
-        enum: Matches.Type,
+        enum: ["REGULAR", "QUICK"],
         required: true
     },
 
@@ -60,37 +88,18 @@ const matchSchema = new Schema<Match>({
     },
 
     // These are the details or records for the home team, such as members, score and match result.
-    teamA: {
-        members: [{
-            type: String,
-            required: true,
-            default: []
-        }],
-        score: Number,
-        status: {
-            type: String,
-            enum: Matches.Status,
-            required: true,
-            default: ""
-        },
-        default: {}
-    },
-
-    // These are the details or records for the away team, such as members, score and match result.
-    teamB: {
-        members: [{
-            type: String,
-            required: true,
-            default: []
-        }],
-        score: Number,
-        status: {
-            type: String,
-            enum: Matches.Status,
-            required: true,
-            default: ""
-        },
-        default: {}
+    teams: {
+        type: [TeamSchema],
+        required: true,
+        default: [{
+            members: [],
+            score: 0,
+            status: "UNFINISHED"
+        }, {
+            members: [],
+            score: 0,
+            status: "UNFINISHED"
+        }]
     }
 });
 
