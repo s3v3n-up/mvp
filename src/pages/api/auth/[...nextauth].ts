@@ -1,5 +1,5 @@
 // Imports NextAuth and NexyAuthOptions from next-auth
-import NextAuth, { NextAuthOptions } from "next-auth";
+import NextAuth, { NextAuthOptions, User } from "next-auth";
 
 // Imports MongoDBAdapter from next-auth/mongodb-adapter
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
@@ -75,21 +75,23 @@ export const authOptions: NextAuthOptions = {
      * @description This handles the callbacks
      */
     callbacks: {
-        async signIn(context) {
-            await Database.setup();
-
-            // const isUserExist = await getUserByEmail
-
-            return true;
-        },
 
         // Sends back the token
-        async jwt({ token, user, account }) {
+        async jwt({ token, user, account, profile }) {
             if(user) {
-                token.user = user;
+                token.user = user as User;
             }
+            try {
+                if (!token.user.isFinishedSignup) {
+                    await Database.setup();
+                    await getUserByEmail(token.user.email!);
+                    token.user.isFinishedSignup = true;
+                }
 
-            return token;
+                return token;
+            } catch {
+                return token;
+            };
         },
 
         // Sends back the session

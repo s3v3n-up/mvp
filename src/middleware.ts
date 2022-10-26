@@ -16,20 +16,20 @@ export async function middleware(req: NextRequest) {
     // Pass the token into a token variable
     let token = await getToken({ req, secret });
 
-    //guards against unauthorized requests from non logged in users on server side
+    // If there is no token meaning no session, redirect to login page
     if (!token) {
-        const url = req.nextUrl.clone();
-        url.pathname = "/login";
+        return NextResponse.rewrite(new URL("/login", req.url));
+    };
 
-        return NextResponse.redirect(url);
-    }
-
-    return NextResponse.next();
+    if (!token.user.isFinishedSignup) {
+        return NextResponse.rewrite(new URL("/register", req.url));
+    };
 }
 
 /**
  * @config This is where you specify the routes, it should be an absolute path
  */
+
 export const config = {
-    matcher: ["/api/register"]
+    matcher: ["/","/api/register"]
 };
