@@ -8,7 +8,7 @@ import { UserProfile } from "@/lib/types/User";
 import { createUser } from "@/lib/actions/user";
 
 // Imports PHONE_REGEX and EMAIL_REGEX
-import { PHONE_REGEX, EMAIL_REGEX } from "@/lib/resources/constants";
+import { PHONE_REGEX, EMAIL_REGEX } from "@/lib/helpers/validation";
 
 // Imports object and string types from yup
 import { object, string } from "yup";
