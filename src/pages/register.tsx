@@ -2,11 +2,8 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "@/styles/Register.module.sass";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
-import { GetServerSideProps } from "next";
 import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-
 
 export default function Register() {
     const { data: session } = useSession();

@@ -22,7 +22,7 @@ export async function middleware(req: NextRequest) {
     };
 
     if (!token.user.isFinishedSignup) {
-        return NextResponse.rewrite(new URL("/register", req.url));
+        return NextResponse.redirect(new URL("/register", req.url));
     };
 }
 
@@ -31,5 +31,5 @@ export async function middleware(req: NextRequest) {
  */
 
 export const config = {
-    matcher: ["/","/api/register"]
+    matcher: ["/","/login", "/api/register"]
 };
