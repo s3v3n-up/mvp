@@ -11,7 +11,7 @@ import { getUserByEmail, updateUser } from "@/lib/actions/user";
 import { object, string } from "yup";
 
 // Imports PHONE_REGEX
-import { PHONE_REGEX } from "@/lib/resources/constants";
+import { PHONE_REGEX } from "@/lib/helpers/validation";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {

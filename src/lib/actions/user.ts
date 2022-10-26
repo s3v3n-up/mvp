@@ -125,6 +125,7 @@ export async function getUserByEmail(email: string) {
         // Stores and looks for a specific user by email
         const user = await UserModel.findOne({ email });
 
+        // Checks if user exist
         if (!user) {
             throw new Error("email not exist");
         }
