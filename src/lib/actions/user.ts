@@ -89,3 +89,21 @@ export async function getUsers() {
         throw new Error("Error getting users", error.message);
     }
 }
+
+/**
+ * search for users that matches a given username
+ * @param {string} userName - username of user to find
+ * @returns {User[]} array of users with matching username
+ */
+export async function findUserByUsername(userName: string): Promise<UserProfile[]> {
+    try {
+
+        //find all users with matching username pattern
+        const users = await UserModel.find({ userName: { $regex: userName } });
+
+        //return users
+        return users;
+    } catch(error: any) {
+        throw new Error("error searching user", { cause: error });
+    }
+}
