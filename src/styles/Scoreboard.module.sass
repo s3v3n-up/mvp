@@ -1,155 +1,57 @@
 .page
-    display: flex
-    justify-content: center
-    align-content: center
-    align-items: center
-    padding-top: 1rem
-    flex-direction: column
+    @apply flex flex-col justify-center items-center py-5
 
+    .scoreboard
+        @apply sm:grid sm:grid-cols-2 px-10 w-full gap-7 flex flex-col items-center
+        margin-top: 4rem
+        color: white
 
-.home
-    display: flex
-    justify-content: center
-    font-weight: 700
-    font-size: 3rem
-    color: #FC5C3E
+        .hometeam 
+            @apply flex flex-col w-full
+            &>*
+                @apply w-full
 
-.away
-    display: flex
-    justify-content: center
-    font-weight: 700
-    font-size: 3rem
+            .home
+                text-align: center
+                font-weight: 700
+                font-size: 3rem
+                color: #FC5C3E
 
+            .homeplayers
+                margin-top: 1.5rem
+                @apply flex flex-col items-center py-3 px-5 bg-white items-center gap-3 rounded-md 
+                
+                .homeplayer
+                    @apply flex flex-row justify-between items-center text-orange-600 w-full sm:text-base text-sm
 
-.scoreboard
-    margin-top: 4rem
-    width: 60%
-    display: flex
-    justify-content: space-around
-    color: white
+                    .homeleave
+                        @apply rounded-md border-2 border-orange-500 px-7 py-0.5 sm:text-base text-sm
 
+            .pause
+                @apply px-7 py-2 text-center text-orange-500 bg-white mt-7 sm:w-1/2 w-full ml-auto rounded-md
 
-.scoreh
-    display: flex
-    justify-content: center
-    align-items: center
-    background-image: url('/bgw.svg')
-    width: 34.5rem
-    height: 10.62rem
-    background-size: cover
-    background-position: center
-    background-repeat: no-repeat
+        .awayteam
+            @apply flex flex-col w-full
+            &>*
+                @apply w-full
 
+            .away
+                text-align: center
+                font-weight: 700
+                font-size: 3rem
+                @media screen and (max-width: 768px)
+                    font-size: 2rem 
 
-.scorea
-    background-image: url('/obg.svg')
-    width: 34.5rem
-    height: 10.62rem
-    background-size: cover
-    background-position: center
-    background-repeat: no-repeat
-    display: flex
-    justify-content: center
-    align-items: center
+            .awayplayers
+                margin-top: 1.5rem
+                @apply flex flex-col items-center py-3 px-5 bg-orange-600 items-center gap-3 rounded-md
 
-.points
-    width: 70%
-    height: 60%
-    background: white
-    display: flex
-    justify-content: center
-    align-items: center
-    color: black
-    font-weight: 700
-    font-size: 3rem
-    border-radius: 10px
+                .player
+                    @apply flex flex-row justify-between items-center text-white w-full sm:text-base text-sm
 
-.awayplayers
-    width: 34.5rem
-    height: 10.62rem
-    margin-top: 2rem
-    border-radius: 10px
-    background-color: #FC5C3E
-    display: flex
-    flex-direction: column
-    justify-content: space-around
-    padding-left: .25rem
-    padding-right: .25rem
-   
-.homeplayers
-    width: 34.5rem
-    height: 10.62rem
-    margin-top: 2rem
-    border-radius: 10px
-    background-color: white
-    display: flex
-    flex-direction: column
-    justify-content: space-around
-    padding-left: .25rem
-    padding-right: .25rem
+                    .leave
+                        @apply rounded-md border-2 border-white sm:px-7 px-3 py-0.5 sm:text-base text-sm
 
-.homeplayer
-    margin-top: 0.25rem
-    display: inline-flex
-    justify-content: space-between
-    font-weight: 700
-    font-size: 1rem
-    width: 100%
-    height: 20%
-    text-align: center
-    color: #FC5C3E
+            .finish
+                @apply px-7 py-2 text-center text-white bg-orange-600 mt-7 sm:w-1/2 w-full mr-auto rounded-md
 
-.player
-    margin-top: 0.25rem
-    display: inline-flex
-    justify-content: space-between
-    color: white
-    font-weight: 700
-    font-size: 1rem
-    width: 100%
-    height: 20%
-    text-align: center
-    
-
-.leave
-    width: 8rem
-    border: 1px solid white
-    border-radius: 10px
-
-.homeleave
-    width: 8rem
-    border: 1px solid #FC5C3E
-    border-radius: 10px
-
-.pause
-    font-size: 1.5rem
-    width: 20.75rem
-    height: 3.75rem
-    background-color: white
-    display: flex
-    color: #FC5C3E
-    font-weight: 700
-    justify-content: center
-    border-radius: 10px
-    align-items: center
-
-.finish
-    font-size: 1.5rem
-    width: 20.75rem
-    height: 3.75rem
-    background-color: #FC5C3E
-    display: flex
-    justify-content: center
-    align-items: center
-    font-weight: 700
-    border-radius: 10px
-    
-.button
-    margin-top: 8rem
-    display: flex
-    justify-content: right
-
-.buttone
-    margin-top: 8rem
-    display: flex
-    justify-content: left
