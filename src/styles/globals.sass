@@ -2,16 +2,19 @@
 @tailwind components
 @tailwind utilities
 
-@layer base    
+@layer base 
   html,
-  body
+  body 
     padding: 0
+    background-image: url("/bg.svg")
+    background-size: cover
+    background-position: center
+    background-repeat: no-repeat
+
     margin: 0
     font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif
 
-  a
+
+  a 
     color: inherit
     text-decoration: none
-
-  *
-    box-sizing: border-box
