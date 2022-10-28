@@ -10,7 +10,7 @@ export default function Input(props:Props){
       <div className="py-2 pl-2 absolute">
       {props.icon}
       </div>
-      <input className="rounded-sm w-full text-center p-5 bg-[#f1ecec] h-8  text-[#31302f]" type={props.type}>
+      <input className="rounded-sm w-full text-center p-5 bg-[#f1ecec] h-8  text-[#31302f]" type={props.type} value={props.value}>
       </input>
     </div>
     </>

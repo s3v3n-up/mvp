@@ -14,10 +14,10 @@ export default function CreateMatch(){
           <h1 className="text-[#f3f2ef] text-3xl text-center pt-3">Create a Match</h1>
         </div>
         <form  action="">
-          <Input text="Location" icon=<AddLocationAlt/>  />
-          <SelectOption text="Sport" option="Tennis" icon=<SportsBasketball/> />
-          <SelectOption text="Type of Match" option="1 vs 1" icon=<PeopleAlt/> />
-          <Input text="Date and Time" type="datetime-local" icon=<AccessTime/> />
+          <Input text="Location" icon=<AddLocationAlt/> value=""  />
+          <SelectOption text="Sport" option="Tennis" icon=<SportsBasketball/> value="" />
+          <SelectOption text="Type of Match" option="1 vs 1" icon=<PeopleAlt/> value="" />
+          <Input text="Date and Time" type="datetime-local" icon=<AccessTime/> value="" />
           <div className="my-2">
           <label className="text-[#f3f2ef]" htmlFor="description">Description</label>
           </div>
@@ -29,7 +29,6 @@ export default function CreateMatch(){
           <button className="rounded-sm w-80 bg-[#fc5c3e] h-10  font-extrabold  text-[#f1ecec]" >CREATE</button>
         </div>
       </div>
-  
     </div>
-    )
+  )
 }

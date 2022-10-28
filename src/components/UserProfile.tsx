@@ -10,9 +10,9 @@ export default function UserProfile(){
       </div>
       <div className="flex w-1/4 flex-col space-y-3 lg:justify-end">
         <img src="/mvp-logo.png" alt="" width={150} height={100}/>
-        <Input text="Full Name" icon=<Person/> />
-        <Input text="User Name" icon=<FolderSharedOutlined/> />
-        <Input text="Email" icon=<Email/> />
+        <Input text="Full Name" icon=<Person/> value="" />
+        <Input text="User Name" icon=<FolderSharedOutlined/> value="" />
+        <Input text="Email" icon=<Email/> value="" />
       </div>
     </div>
   )
