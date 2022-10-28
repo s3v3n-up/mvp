@@ -16,7 +16,7 @@ export default function Scoreboard(){
             <div className={styles.scoreboard}>
                 <div className={styles.hometeam}>
                     <h1 className={styles.home}>Home</h1>
-                    <div className="relative w-full h-40 flex flex-col justify-center">
+                    <div className="relative w-full h-48 flex flex-col justify-center">
                         <div className="absolute bg-white w-full h-full rounded">
                             <Image
                                 src="/scorebg.svg"
@@ -51,7 +51,7 @@ export default function Scoreboard(){
                 </div>
                 <div className={styles.awayteam}>
                     <h1 className={styles.away}>Away</h1>
-                    <div className="relative w-full h-40 flex flex-col justify-center">
+                    <div className="relative w-full h-48 flex flex-col justify-center">
                         <div className="absolute bg-orange-600 w-full h-full rounded">
                             <Image
                                 src="/scorebg.svg"
