@@ -3,11 +3,14 @@ import { ObjectId } from "mongodb";
 // Namespace to contain the enums used by the match model
 export namespace Matches {
 
-	// Matches type enum
+	// Matches type
 	export type MatchType = "REGULAR" | "QUICK";
 
-	// Matches status enum
-	export type Status = "WIN" | "LOSE" | "DRAW" | "UNFINISHED";
+	// Matches team status type
+	export type TeamStatus = "WIN" | "LOSE" | "DRAW" | "UNFINISHED";
+
+	// Matches status type
+	export type MatchStatus = "UPCOMING" | "ONGOING" | "FINISHED";
 }
 
 /**
@@ -19,7 +22,7 @@ export namespace Matches {
 interface Team {
 	members: string[];
 	score: number;
-	status: Matches.Status;
+	status: Matches.TeamStatus;
 }
 
 /**
