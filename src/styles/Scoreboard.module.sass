@@ -1,16 +1,19 @@
+//page container
 .page
     @apply flex flex-col justify-center items-center py-5
 
+    //scoreboard style
     .scoreboard
-        @apply sm:grid sm:grid-cols-2 sm:w-4/5 w-11/12 m-auto  gap-7 flex flex-col items-center
-        margin-top: 4rem
+        @apply md:grid md:grid-cols-2 sm:w-4/5 w-11/12 m-auto  gap-7 flex flex-col items-center mt-5
         color: white
 
+        //home team scoreboard style
         .hometeam 
             @apply flex flex-col w-full
             &>*
                 @apply w-full
 
+            //title 
             .home
                 text-align: center
                 font-weight: 700
@@ -18,24 +21,22 @@
                 color: #FC5C3E
                 margin-bottom: 2rem
 
+            //list of players
             .homeplayers
                 margin-top: 1.5rem
                 @apply flex flex-col items-center py-3 px-5 bg-white items-center gap-3 rounded-md 
-                
-                .homeplayer
-                    @apply flex flex-row justify-between items-center text-orange-600 w-full sm:text-base text-sm
 
-                    .homeleave
-                        @apply rounded-md border-2 border-orange-500 px-7 py-0.5 sm:text-base text-sm
-
+            //pause match button
             .pause
-                @apply px-7 py-2 text-center text-orange-500 bg-white mt-7 sm:w-1/2 w-full ml-auto rounded-md
+                @apply px-7 py-2 text-center text-orange-500 bg-white mt-7 md:w-1/2 w-full ml-auto rounded-md
 
+        //away team scoreboard style
         .awayteam
             @apply flex flex-col w-full
             &>*
                 @apply w-full
 
+            //title
             .away
                 text-align: center
                 font-weight: 700
@@ -43,17 +44,13 @@
                 margin-bottom: 2rem
                 @media screen and (max-width: 768px)
                     font-size: 2rem 
-
+            
+            //list of players
             .awayplayers
                 margin-top: 1.5rem
                 @apply flex flex-col items-center py-3 px-5 bg-orange-600 items-center gap-3 rounded-md
-
-                .player
-                    @apply flex flex-row justify-between items-center text-white w-full sm:text-base text-sm
-
-                    .leave
-                        @apply rounded-md border-2 border-white sm:px-7 px-3 py-0.5 sm:text-base text-sm
-
+            
+            //finish match button
             .finish
-                @apply px-7 py-2 text-center text-white bg-orange-600 mt-7 sm:w-1/2 w-full mr-auto rounded-md
+                @apply px-7 py-2 text-center text-white bg-orange-600 mt-7 md:w-1/2 w-full mr-auto rounded-md
 
