@@ -6,11 +6,7 @@ export default function CreateMatchPage(){
   return (
     <div>
       <Navbar/>
-    <div>
       <CreateMatch/>
     </div>
-    
-    </div>
-    
   )
 }

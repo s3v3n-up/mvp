@@ -6,8 +6,6 @@ export default function Profile(){
     <div>
       <Navbar/>
       <UserProfile/>
-      
     </div>
-    
   )
 }

@@ -10,10 +10,9 @@ export default function ViewUserProfile(){
       </div>
       <div className="flex w-1/4 flex-col space-y-3 lg:justify-end">
         <img src="/mvp-logo.png" alt="" width={150} height={100}/>
-        <Input text="Full Name" icon=<Person/> />
-        <Input text="User Name" icon=<FolderSharedOutlined/> />
-        <Input text="Contact" icon=<Phone/> />
-
+        <Input text="Full Name" icon=<Person/> value=""  />
+        <Input text="User Name" icon=<FolderSharedOutlined/> value="" />
+        <Input text="Contact" icon=<Phone/> value="" />
         <table className="table-fixed border-collapse border border-slate-800 rounded-ml my-6 ">
           <thead className=" bg-[#fc5c3e] text-[#f3f2ef] my-3" >
             <tr>
