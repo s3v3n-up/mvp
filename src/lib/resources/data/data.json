@@ -7,10 +7,26 @@
 },
 
 {
+    "name": "Basketball",
+    "gameModes": [{
+        "modeNames": "2V2",
+        "requiredPlayers": 4
+    }]
+},
+
+{
     "name": "Tennis",
     "gameModes": [{
         "modeNames": "1V1",
         "requiredPlayers": 2
+    }]
+},
+
+{
+    "name": "Tennis",
+    "gameModes": [{
+        "modeNames": "2V2",
+        "requiredPlayers": 4
     }]
 },
 
