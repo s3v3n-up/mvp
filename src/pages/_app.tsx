@@ -1,8 +1,20 @@
-import '../styles/globals.sass'
-import type { AppProps } from 'next/app'
+//third-party import
+import type { AppProps } from "next/app";
+import type { Session } from "next-auth";
+import { SessionProvider } from "next-auth/react";
 
-function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+//local import
+import "../styles/globals.sass";
+
+interface PageProps {
+    session: Session
 }
 
-export default MyApp
+function MyApp({ Component, pageProps }: AppProps<PageProps>) {
+    return (
+        <SessionProvider session={pageProps.session} refetchInterval={1}>
+            <Component {...pageProps} />
+        </SessionProvider>
+    );
+}
+export default MyApp;

@@ -1,15 +1,18 @@
-import Image from "next/image";
-import Link from "next/link";
-import styles from "@/styles/Buttons.module.sass";
+//local import
+import styles from "@/styles/Components.module.sass";
+
+/**
+ * components for buttons
+ */
 
 export default function PrimaryButton() {
-  return (
-    <>
-      <div className={styles.primarybutton}>
-        <button type="button" placeholder="button">
+    return (
+        <>
+            <div className={styles.primarybutton}>
+                <button type="button" placeholder="button">
           primary button
-        </button>
-      </div>
-    </>
-  );
+                </button>
+            </div>
+        </>
+    );
 }

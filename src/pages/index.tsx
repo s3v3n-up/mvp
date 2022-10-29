@@ -1,15 +1,11 @@
+import type { NextPage } from "next";
 
-import PrimaryButton from "@/components/button/primaryButton";
-import SecondaryButton from "@/components/buttons/secondaryButton";
-import Layout from "@/components/layout/Layout";
+const Home: NextPage = () => {
+    return (
+        <div>
+            hello
+        </div>
+    );
+};
 
-export default function Home() {
-  return (
-    <Layout>
-      <div>
-        {/* <PrimaryButton/>
-        <SecondaryButton/> */}
-      </div>
-    </Layout>
-  );
-}
+export default Home;
