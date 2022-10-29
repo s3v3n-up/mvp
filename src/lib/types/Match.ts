@@ -1,73 +1,63 @@
 import { ObjectId } from "mongodb";
-import { UserProfile } from "@/lib/types/User";
+
+// Namespace to contain the enums used by the match model
+export namespace Matches {
+
+	// Matches type
+	export type MatchType = "REGULAR" | "QUICK";
+
+	// Matches team status type
+	export type TeamStatus = "WIN" | "LOSE" | "DRAW" | "UNFINISHED";
+
+	// Matches status type
+	export type MatchStatus = "UPCOMING" | "ONGOING" | "FINISHED";
+}
+
+/**
+ * Match Team type
+ * @property members - The members of the team
+ * @property score - The score of the team
+ * @property status - The status of the team
+ */
+interface Team {
+	members: string[];
+	score: number;
+	status: Matches.TeamStatus;
+}
 
 /**
  * Interface for creating a match
- * @id This is automatically added by mongodb
- * @matchHost this is the user who created the match
- * @sport This is the type of sport
- * @matchType This is the type of the match either REGULAR or QUICK
- * @location This is the location where the match is or will happen
- * @matchStart This is the start date/time of the match
- * @matchEnd This is the end date/time of the match
- * @description This is the match details
- * @teamA This is the home team
- * @teamB This is the away team
  */
-
 export interface Match {
+
+	// This is automatically added by mongodb
 	id?: string | ObjectId;
-	matchHost: string | ObjectId | UserProfile;
+
+	// This is the user who created the match
+	matchHost: string;
+
+	// This is the type of sport
 	sport: string;
-	matchType: Matches.Type;
+
+	// This is the chosen game mode for the chosen sport
+	gameMode: string;
+
+	// This is the type of the match either REGULAR or QUICK
+	matchType: Matches.MatchType;
+
+	// This is the location where the match is or will happen
 	location: object;
+
+	// This is the start date/time of the match
 	matchStart: Date;
+
+	// This is the end date/time of the match
 	matchEnd: Date;
+
+	// This is the additional details for the match eg. discord links, whatsapp or zoom links, or any other information you would like to add.
 	description: string;
-	// players: object[] | User[];
-	teamA: {
-		members: string[],
-		score: number,
-		status: Matches.Status
-	}
-	teamB: {
-		members: string[],
-		score: number,
-		status: Matches.Status
 
-	}
+	//this is the teams that are playing in the match
+	teams: [Team, Team];
 }
-
-export namespace Matches {
-
-	export enum Type {
-		Regular = "REGULAR",
-		Quick = "QUICK",
-	}
-
-	export enum Status {
-		Win = "WIN",
-		Lose = "LOSE",
-		Draw = "DRAW",
-		Unfinished = "UNFINISHED"
-	}
-
-}
-
-// export enum Sport {
-// 	Basketball = "BASKETBALL",
-// 	Tennis = "TENNIS",
-// 	Pingpong = "PINGPONG",
-// 	Volleyball = "VOLLEYBALL",
-// 	Badminton = "BADMINTON",
-// }
-
-// export enum MatchSubType {
-// 	Onevsone = "1V1",
-// 	Twovstwo = "2V2",
-// 	Threevsthree = "3V3",
-// 	Fourvsfour = "4V4",
-// 	Fivevsfive = "5V5",
-// 	Sixbysix = "6V6",
-// }
 

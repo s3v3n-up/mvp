@@ -1,33 +1,43 @@
 // Imports UserProfile interface
 import { UserProfile } from "@/lib/types/User";
-// Imports UserModel and MatchModel Schema
+
+// Imports UserModel Schema
 import UserModel from "../resources/models/User";
-import MatchModel from "../resources/models/Match";
-// import Database from  '@/lib/resources/database'
+
+// Import Database from  '@/lib/resources/database'
 import Database from "@/lib/resources/database";
+
+// Import MatchModel Schema
+import MatchModel from "../resources/models/Match";
 
 /**
  * @description a function that creates user and save to the database
  * @param user accepts a user object
- * @returns = returns a code and a message if successful user creation or user already taken
+ * @returns a code and a message if successful user creation or user already taken
  */
 export async function createUser(user: UserProfile) {
     try {
+
+        // Sets up the database
+        await Database.setup();
+
         // Deconstruct user to get username and email
         const { userName, email } = user;
 
         // Check if the username already exist in the database
         const existingUser = await UserModel.findOne({ userName });
+
         // Check if the email already exist in the database
         const existingEmail = await UserModel.findOne({ email });
 
         // If username exist returns an error code and message
-        if(existingUser || existingEmail) {
+        if (existingUser || existingEmail) {
             return {
                 code: 400,
-                message: "Username or Email already taken"
+                message: "Username or Email already taken",
             };
         }
+
         // Creates a UserModel
         const player = new UserModel<UserProfile>(user);
 
@@ -37,20 +47,21 @@ export async function createUser(user: UserProfile) {
         // Returns a code and message for successful creation of user
         return {
             code: 200,
-            message: "User successfully created"
+            message: "User successfully created",
         };
-        // Catch any errors and throws a message
-    } catch(error: any) {
+
+    // Catch any errors and throws a message
+    } catch (error: any) {
         throw new Error("Error creating a user", error.message);
     }
-
 }
 
 /**
- * @description = A function that gets all users in the database and returns it
+ * @description A function that gets all users in the database and returns it
  */
 export async function getUsers() {
     try {
+
         // Sets up the database
         await Database.setup();
 
@@ -75,11 +86,16 @@ export async function getUsers() {
  * @param {string} image the image/logo of the user to be change
  * @returns the updated user
  */
-export async function updateUser(username: string, firstName: string, lastName: string, phonenumber: string, image: string) {
+export async function updateUser(userName: string, firstName: string, lastName: string, phonenumber: string, image: string) {
 
     try {
-        // Stores and look for a specific user and updates it in the database
-        const updatedUser = await UserModel.findOneAndUpdate({ username }, {
+
+        // Gets the user by username
+        const user = await UserModel.findOne({ userName });
+
+        // Stores and look for a specific user id and updates it in the database
+        const updatedUser = await UserModel.findOneAndUpdate({ _id: user?.id }, {
+            userName,
             firstName,
             lastName,
             phonenumber,
@@ -90,6 +106,7 @@ export async function updateUser(username: string, firstName: string, lastName: 
 
         // returns the updated user
         return updatedUser;
+
         // Catches any errors and throws it
     } catch (error: any) {
         throw new Error("Error updating the user", error.message);
@@ -98,22 +115,32 @@ export async function updateUser(username: string, firstName: string, lastName: 
 
 
 /**
- * @userExist This is a function to check if the user exists on the database
+ * @getUserByEmail This is a function to check if the user exists on the database
  * @param {string} email the email of the user
  * @returns the user if it exist
  */
-export async function userExist(email: string) {
+export async function getUserByEmail(email: string) {
     try {
+
         // Sets up Database connection
         await Database.setup();
 
         // Stores and looks for a specific user by email
         const user = await UserModel.findOne({ email });
 
+        // Checks if user exist
+        if (!user) {
+            throw new Error("email not exist");
+        }
+
         // Returns the user
         return user;
+
         // Catches and throws error
     } catch(error: any) {
+        if (error.message) {
+            throw error;
+        }
         throw new Error("Error something wrong", error);
     }
 }
@@ -131,6 +158,7 @@ export async function findUserByUsername(userName: string): Promise<UserProfile[
 
         //return users
         return users;
+
     // Catches and throws error
     } catch(error: any) {
         throw new Error("error searching user", { cause: error });
@@ -144,41 +172,53 @@ export async function findUserByUsername(userName: string): Promise<UserProfile[
  */
 export async function calculateStats(userName: string) {
     try {
+
         // Sets up database connection
         await Database.setup();
+
         // Stores and look for a specific user in the database
         const userFound = await UserModel.findOne({ userName });
+
         // Stores and look for all matches of the user
         const userMatches = await MatchModel.find({ matches: userFound?.matches });
+
         // Created a stats object to store win/lose/draw of the user
         let stats = {
             win: 0,
             lose: 0,
             draw: 0
         };
+
         // Checks all the matches of the user when he is on team A
         userMatches.map((e) => {
-            if (e.teamA.members.includes(userName)) {
+            if (e.teams[0].members.includes(userName)) {
+
                 // win Increments by 1 if they Win
-                if (e.teamA.status === "WIN") {
+                if (e.teams[0].status === "WIN") {
                     stats.win++;
+
                 // lose Increments by 1 if they Lose
-                } else if (e.teamA.status === "LOSE") {
+                } else if (e.teams[0].status === "LOSE") {
                     stats.lose++;
+
                 // draw Increments by 1 if they Draw
-                } else if (e.teamA.status === "DRAW") {
+                } else if (e.teams[0].status === "DRAW") {
                     stats.draw++;
                 }
+
             // Checks all the matches of the user when he is on team B
-            } else if (e.teamB.members.includes(userName)) {
+            } else if (e.teams[1].members.includes(userName)) {
+
                 // win Increments by 1 if they Win
-                if (e.teamB.status === "WIN") {
+                if (e.teams[1].status === "WIN") {
                     stats.win++;
+
                 // lose Increments by 1 if they Lose
-                } else if (e.teamB.status === "LOSE") {
+                } else if (e.teams[1].status === "LOSE") {
                     stats.lose++;
+
                 // draw Increments by 1 if they Draw
-                } else if (e.teamB.status === "DRAW") {
+                } else if (e.teams[1].status === "DRAW") {
                     stats.draw++;
                 }
             }
@@ -186,6 +226,7 @@ export async function calculateStats(userName: string) {
 
         // Returns the stats (win/lose/draw) of the user
         return stats;
+
     // Catches and throws error
     } catch (error: any) {
         throw new Error("Error Cannot Calculate win/lose/draw", error);
