@@ -8,7 +8,7 @@ import { MongoClient } from "mongodb";
 export default class Database {
     static mongooseClient: typeof mongoose;
     static mongoClientPromise: Promise<MongoClient>;
-    static mongoUri: string = process.env.MONGODB_URI ?? "mongodb://localhost:27017/mvplab";
+    static mongoUri: string = process.env.MONGODB_URI??"mongodb://localhost:27017/mvplab";
 
     /**
      * set up single database connection
@@ -34,7 +34,7 @@ export default class Database {
     * @returns {Promise<MongoClient>} - mongodb client connection promise
     * @throws {Error} - error setting up mongodb connection
     */
-    static async setupAdapterConnection(uri: string = this.mongoUri): Promise<MongoClient> {
+    static async setupAdapterConnection(uri: string= this.mongoUri): Promise<MongoClient> {
         try {
             if (!this.mongoClientPromise) {
                 this.mongoClientPromise = MongoClient.connect(uri);

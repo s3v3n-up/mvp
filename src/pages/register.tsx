@@ -1,11 +1,9 @@
-//third-party imports
+import Head from "next/head";
 import Image from "next/image";
-import Link from "next/link";
-import React, { useEffect } from "react";
-import { useSession } from "next-auth/react";
-
-//local imports
 import styles from "@/styles/Register.module.sass";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 export default function Register() {
     const { data: session } = useSession();
