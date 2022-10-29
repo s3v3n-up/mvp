@@ -1,19 +1,23 @@
 import { ObjectId } from "mongodb";
 
-
 /**
- * @description interface for the type of sports
- * @id This is automatically added by mongodb
- * @name This is the sport name
- * @gameModes This is the type of modes in each sport
- * @requiredPlayers This the minimum number of players for each game mode
+ Interface for the type of sports
  */
-
 export interface Sport {
+
+	// This is automatically added by mongodb
 	id?: string | ObjectId;
+
+	// This is the sport name
     name: string;
+
+	// This is the type of modes in each sport
     gameModes: [{
-		modeNames: string,
+
+		// This is the name of the game mode
+		name: string,
+
+		// This the minimum number of players for each game mode
 		requiredPlayers: number
 	}];
 	records: [{
