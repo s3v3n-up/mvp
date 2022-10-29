@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Stores the admin_api_key
     const adminAPIKey = req.headers.admin_api_key;
 
-    // Checks if there is a admin_api_key 
+    // Checks if there is a admin_api_key
     if (!adminAPIKey || adminAPIKey !== process.env.ADMIN_API_KEY) {
 
         // Returns Bad request
