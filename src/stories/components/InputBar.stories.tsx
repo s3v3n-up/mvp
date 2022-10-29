@@ -3,7 +3,7 @@
 import InputBar from "@/components/placeholder/Inputbar";
 
 const config = {
-    title: 'InputBar',
+    title: "InputBar",
     component: InputBar,
 };
 

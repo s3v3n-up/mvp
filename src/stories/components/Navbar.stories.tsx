@@ -3,7 +3,7 @@
 import Navbar from "@/components/navbar/Navbar";
 
 const config = {
-    title: 'Navbar',
+    title: "Navbar",
     component: Navbar,
 };
 

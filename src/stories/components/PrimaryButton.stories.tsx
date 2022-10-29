@@ -3,7 +3,7 @@
 import PrimaryButton from "@/components/button/primaryButton";
 
 const config = {
-    title: 'Primary',
+    title: "Primary",
     component: PrimaryButton,
 };
 
