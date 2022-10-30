@@ -1,7 +1,9 @@
-import Head from "next/head";
+//third-party imports
 import Image from "next/image";
-import styles from "@/styles/Login.module.sass";
 import Link from "next/link";
+
+//local imports
+import styles from "@/styles/Login.module.sass";
 
 export default function Login() {
     return (

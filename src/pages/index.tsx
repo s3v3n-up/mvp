@@ -1,8 +1,18 @@
-import Layout from "@/components/layout/Layout";
+//third-party import
 import Image from "next/image";
+
+//local import
+import Layout from "@/components/layout/Layout";
 import styles from "@/styles/Home.module.sass";
 
+//create fake data for card components
 const names = ["whale", "squid", "turtle", "coral", "starfish", "star"];
+
+/**
+ * *
+ * @description this page displays all the matches created by users from regular matches to quick matches
+ *
+ */
 
 export default function Home() {
     return (
