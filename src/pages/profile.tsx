@@ -1,3 +1,4 @@
+//this is user profile page
 import Navbar from "@/components/Navbar";
 import UserProfile from "@/components/UserProfile";
 

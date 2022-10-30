@@ -1,3 +1,4 @@
+//this component is used in profile page, which shows user's fullname, username and email
 import Image from "next/image";
 import Input from "../components/Input";
 import { Person,FolderSharedOutlined, Email } from "@mui/icons-material";

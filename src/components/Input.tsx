@@ -1,3 +1,4 @@
+// this is input component which can be reused in any user input field.
 import { ReactNode, ChangeEvent } from "react";
 
 interface Props {
