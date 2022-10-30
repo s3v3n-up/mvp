@@ -1,5 +1,3 @@
-import PrimaryButton from "@/components/buttons/primaryButton";
-import SecondaryButton from "@/components/buttons/secondaryButton";
 import Layout from "@/components/layout/Layout";
 import Image from "next/image";
 import styles from "@/styles/Home.module.sass";

@@ -1,12 +1,27 @@
+//third-party import
 import Image from "next/image";
 import Link from "next/link";
-import styles from "@/styles/Navbar.module.sass";
+
+//local import
+import styles from "@/styles/Components.module.sass";
+
+/**
+ * *
+ *  @description components for navigation bar and bottom navigation, both responsive for mobile and desktop
+ */
+
 
 export default function Navbar() {
     return (
         <>
             <div className={styles.nav}>
-                <Image className={styles.img} src={"/icons/logo.png"} alt="logo" width={130} height={100} />
+                <Image
+                    className={styles.img}
+                    src={"/icons/logo.png"}
+                    alt="logo"
+                    width={130}
+                    height={100}
+                />
 
                 <div className={styles.option}>
                     <Link href={"/"}>
@@ -31,7 +46,7 @@ export default function Navbar() {
                 </div>
             </div>
 
-            <div className={styles.bottomnav}>
+            <div className={styles.bottomNav}>
                 <div className={styles.option}>
                     <Link href={"/"}>
                         <p>Ranking</p>

@@ -1,11 +1,22 @@
+//third-party import
 import Navbar from "@/components/navbar/Navbar";
-import style from "@/styles/Layout.module.sass";
-import React from "react";
+import React, { ReactNode } from "react";
 
-const Layout = ({ children }) => {
+//local import
+import styles from "@/styles/Components.module.sass";
+
+/**
+ * *
+ * @description page that handles all that similar components for all pages
+ */
+
+ interface Props {
+    children: ReactNode
+}
+
+const Layout = ({ children }: Props) => {
     return (
-
-        <div className={style.container}>
+        <div className={styles.container}>
             <Navbar/>
             { children }
         </div>

@@ -1,0 +1,114 @@
+.container
+  display: flex
+  user-select: none
+
+.box
+  background-color: #fc5c3e
+  width: 50%
+  height: 100vh
+  user-select: none
+
+.background
+  background-image: url("/img/mobile.png")
+  background-position: 50%
+  background-size: cover
+  background-repeat: no-repeat
+
+  width: 50%
+  height: 100vh
+  user-select: none
+
+@import url('https://fonts.googleapis.com/css2?family=Aldrich&display=swap')
+
+.about
+  display: flex-block
+  word-spacing: 10px
+  margin-top: 250px
+
+  font-family: 'Aldrich', sans-serif
+  font-weight: 400
+  font-size: 36px
+  text-align: center
+  line-height: 35px
+  text-align: center
+  color: #FFFF
+
+.imgwrapper
+  display: flex
+  justify-content: center
+  margin-top: 20px
+
+.input
+  display: flex
+  justify-content: center
+  margin-top: 10px
+
+.info input
+  display: flex
+  align-self: center
+  border-bottom: 1px solid #A4A4A4
+  background-color: #FFFF
+
+  border-style: none
+  border-radius: 10px
+  width: 400px
+  height: 51.11px
+  margin-top: 13px
+
+  font-size: 13px
+  text-transform: uppercase
+
+.imgupload
+  display: flex
+  justify-content: center
+
+.imgupload input
+  display: none
+
+.imgupload button
+  width: 100px
+  height: 100px
+  background: #FC5C3E
+  color: white
+  border-radius: 60px
+  border: none
+
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap')
+
+.signup
+  display: flex
+  justify-content: center
+  background-color: #fc5c3e
+  color: white
+  border-radius: 10px
+  padding-top: 20px
+
+  font-family: 'Inter', sans-serif
+  font-weight: bold
+  font-size: 17pxx
+  text-align: center
+  letter-spacing: 5px
+  text-transform: uppercase
+
+  width: 400px
+  height: 55px
+  margin-top: 25px
+  margin-bottom: 25px
+
+  filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.25))
+  border-radius: 10px
+
+@media screen and (max-width: 1000px)
+  .container
+    flex-direction: column
+
+  .background
+    background-image: url("/img/mobile.png")
+    background-position: 50%
+    background-size: cover
+    background-repeat: no-repeat
+    width: 100%
+    height: 100vh
+
+  .box
+    display: none
