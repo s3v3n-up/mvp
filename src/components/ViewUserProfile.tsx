@@ -1,8 +1,14 @@
 import Input from "../components/Input"
-import {Person,FolderSharedOutlined, Phone} from '@mui/icons-material';
+import {Person,FolderSharedOutlined, Phone} from "@mui/icons-material";
 import Image from "next/image";
 
-export default function ViewUserProfile(){
+interface Data {
+  fullName: string,
+  userName: string, 
+  phone: string
+}
+
+export default function ViewUserProfile({data}: {data:Data}){
   return (
     <div className="flex justify-evenly">
       <div className="absolute top-0 left-0 -z-10 h-screen w-screen">
@@ -10,9 +16,15 @@ export default function ViewUserProfile(){
       </div>
       <div className="flex w-1/4 flex-col space-y-3 lg:justify-end">
         <img src="/mvp-logo.png" alt="" width={150} height={100}/>
-        <Input text="Full Name" icon=<Person/> value="" />
-        <Input text="User Name" icon=<FolderSharedOutlined/> value="" />
-        <Input text="Contact" icon=<Phone/> value="" />
+        <Input label="Full Name" value={data.fullName} name="fullname" >
+          <Person/>
+        </Input>
+        <Input label="User Name" value={data.userName} name="username">
+          <FolderSharedOutlined/>
+        </Input>
+        <Input label="Phone" value={data.phone} name="phone" >
+          <Phone/>
+        </Input>
         <table className=" border-collapse border border-slate-800 rounded-ml text-center mt-6 ">
           <thead className=" bg-[#fc5c3e] text-[#f3f2ef] my-5 py-5 mt-6" >
             <tr className="my-5 py-5 mt-6">
