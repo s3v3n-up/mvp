@@ -1,9 +1,13 @@
 //third-party import
 import Image from "next/image";
+import { Search } from "@mui/icons-material";
+import { useState, ChangeEvent } from "react";
+import ScrollContainer from "react-indiana-drag-scroll";
 
 //local import
-import Layout from "@/components/layout/Layout";
 import styles from "@/styles/Home.module.sass";
+import Input from "@/components/Input";
+
 
 //create fake data for card components
 const names = ["whale", "squid", "turtle", "coral", "starfish", "star"];
@@ -14,45 +18,51 @@ const names = ["whale", "squid", "turtle", "coral", "starfish", "star"];
  *
  */
 export default function Home() {
-    return (
-        <Layout>
-            <div className={styles.matches}>
-                <div className={styles.search}>
-                    <h1>Matches</h1>
-                    <div className={styles.searchitem}>
-                        <input type={"text"} placeholder={"Enter username or location"} />
-                        <button>
-                            <Image
-                                src={"/icons/search.png"}
-                                width={17}
-                                height={17}
-                                alt={"logo"}
-                            ></Image>
-                        </button>
-                    </div>
-                </div>
+    const [search, setSearch] = useState("");
 
-                <div>
-                    <p>Quick Matches</p>
-                    <div className={styles.container}>
-                        {names.map((name) => (
-                            <div className={styles.cards} key={name}>
-                                {name}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-                <div>
-                    <p>Regular Matches</p>
-                    <div className={styles.container}>
-                        {names.map((name) => (
-                            <div className={styles.cards} key={name}>
-                                {name}
-                            </div>
-                        ))}
-                    </div>
+    /**
+     * handle search input change
+     */
+    function handleSearchChange(e: ChangeEvent<HTMLInputElement>) {
+        setSearch(e.target.value);
+    }
+
+    return (
+        <div className={styles.matches}>
+            <div className={styles.search}>
+                <h1>Matches</h1>
+                <div className={styles.searchitem}>
+                    <Input
+                        type="text"
+                        placeholder="Enter username or location"
+                        value={search}
+                        onChange={handleSearchChange}
+                    />
+                    <button>
+                        <Search fontSize="medium"/>
+                    </button>
                 </div>
             </div>
-        </Layout>
+            <div>
+                <p>Quick Matches</p>
+                <ScrollContainer className="flex w-full" horizontal hideScrollbars>
+                    {names.map((name) => (
+                        <div className={styles.cards} key={name}>
+                            {name}
+                        </div>
+                    ))}
+                </ScrollContainer>
+            </div>
+            <div className="sm:mt-3 mt-10">
+                <p>Regular Matches</p>
+                <ScrollContainer className="flex w-full" horizontal hideScrollbars nativeMobileScroll>
+                    {names.map((name) => (
+                        <div className={styles.cards} key={name}>
+                            {name}
+                        </div>
+                    ))}
+                </ScrollContainer>
+            </div>
+        </div>
     );
 }

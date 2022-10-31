@@ -40,7 +40,16 @@ export default function UserProfile() {
                 <Image src="/bg.png" layout="fill" alt="black" />
             </div>
             <div className="flex w-1/4 flex-col space-y-3 lg:justify-end">
-                <Image src="/mvp-logo.png" width={150} height={100} alt="logo"></Image>
+                <div className="relative w-40 h-40 rounded-full m-auto mb-5">
+                    <Image
+                        src="https://i.pravatar.cc/300?img=2"
+                        layout="fill"
+                        objectFit="cover"
+                        objectPosition="center"
+                        alt="logo"
+                        className="rounded-full"
+                    />
+                </div>
                 <Input
                     label="Full Name"
                     value={data.fullName}

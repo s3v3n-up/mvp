@@ -50,16 +50,13 @@ export default function CreateMatch() {
     return (
         <div className="flex justify-evenly">
             <div className="flex flex-col space-y-2 lg:justify-end ">
-                <div className="absolute top-0 left-0 -z-10 h-screen w-screen">
-                    <Image src="/bg.png" layout="fill" alt="black" />
-                </div>
-                <div>
+                <div className="mt-5">
                     <h1 className="text-[#f3f2ef] text-3xl text-center pt-3">
                         Create a Match
                     </h1>
                 </div>
                 <form action="">
-                    <Input label="Location" value={data.location} name="location">
+                    <Input label="Location" value={data.location} name="location" onChange={handleInputChange}>
                         <AddLocationAlt />
                     </Input>
                     <SelectOption
@@ -83,6 +80,7 @@ export default function CreateMatch() {
                         value={data.date}
                         name="date"
                         type="datetime-local"
+                        onChange={handleInputChange}
                     >
                         <AccessTime />
                     </Input>
@@ -93,7 +91,7 @@ export default function CreateMatch() {
                     </div>
                     <div>
                         <textarea
-                            className="w-full rounded-sm"
+                            className="w-full rounded-md bg-[##f1ecec] px-3 py-2"
                             required
                             rows={3}
                         ></textarea>
