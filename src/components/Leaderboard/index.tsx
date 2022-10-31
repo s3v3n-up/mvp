@@ -1,5 +1,5 @@
 //import styling for standings component
-import styles from './leaderboard.module.sass';
+import styles from "./leaderboard.module.sass";
 
 //leaderboard component
 export default function Standings() {
@@ -46,5 +46,5 @@ export default function Standings() {
                 <div className={styles.inforight}>4</div>
             </div>
         </div>
-    )
+    );
 }
