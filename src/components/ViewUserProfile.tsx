@@ -1,16 +1,21 @@
-//this component is for viewprofile page, when user check other user's profile, will display his fullname, username
-//phone and match results.
-
 import Input from "../components/Input";
 import { Person, FolderSharedOutlined, Phone } from "@mui/icons-material";
 import Image from "next/image";
 
+/*
+ *
+*/
 export interface Data {
   fullName: string;
   userName: string;
   phone: string;
 }
 
+/*
+ * this component is for viewprofile page
+ * @param data type
+ * @returns display the other user's profile:fullname, username,phone
+ */
 export default function ViewUserProfile({ data }: { data: Data }) {
     return (
         <div className="flex justify-evenly">

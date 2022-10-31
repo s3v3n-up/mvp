@@ -10,6 +10,9 @@ import {
     AccessTime,
 } from "@mui/icons-material";
 
+/*
+* interface for type of match
+*/
 interface Data {
   location: string;
   sport: string;
@@ -47,7 +50,7 @@ export default function CreateMatch() {
                 </div>
                 <div>
                     <h1 className="text-[#f3f2ef] text-3xl text-center pt-3">
-            Create a Match
+                        Create a Match
                     </h1>
                 </div>
                 <form action="">
@@ -80,7 +83,7 @@ export default function CreateMatch() {
                     </Input>
                     <div className="my-2">
                         <label className="text-[#f3f2ef]" htmlFor="description">
-              Description
+                            Description
                         </label>
                     </div>
                     <div>
@@ -93,7 +96,7 @@ export default function CreateMatch() {
                 </form>
                 <div className="flex justify-center pt-5 cursor-pointer">
                     <button className="rounded-sm w-80 bg-[#fc5c3e] h-10  font-extrabold  text-[#f1ecec]">
-            CREATE
+                        CREATE
                     </button>
                 </div>
             </div>

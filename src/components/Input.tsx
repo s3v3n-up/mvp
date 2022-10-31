@@ -1,6 +1,8 @@
-// this is input component which can be reused in any user input field.
 import { ReactNode, ChangeEvent } from "react";
 
+/*
+ * interface for input type: value,label,type,option,name
+ */
 interface Props {
   value: string;
   label?: string;
@@ -11,6 +13,9 @@ interface Props {
   name?: string
 }
 
+/**
+ * this input component which can be reused in any user input field.
+ */
 export default function Input(props:Props){
     return (
         <>

@@ -1,6 +1,8 @@
-//Select option component is used in the create match page for user select match type and sports.
 import { ReactNode, ChangeEvent } from "react";
 
+/*
+ * interface for the type of option which included name and value.
+ */
 interface Option {
   value: string;
   name: string;
@@ -15,8 +17,9 @@ interface Props {
   name?: string;
 }
 
-//options {value, name, key}
-
+/*
+ * Select option component is used in the create match page for user select match type and sports.
+ */
 export default function SelectOption(props: Props) {
     return (
         <div>
