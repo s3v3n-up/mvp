@@ -7,7 +7,7 @@ import styles from "@/styles/Login.module.sass";
 
 /**
  * *
- * @description this page lets user login using their email 
+ * @description this page lets user login using their email
  *
  */
 export default function Login() {
