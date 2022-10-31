@@ -63,14 +63,13 @@ export default async function handler(
             await schema.validate(req.body);
 
             // Converts first letter of the firstname to capital and the rest is lowercase
-
             // Stores the updated user
             const updatedUser = await updateUser(
-        username as string,
-        firstName.charAt(0) + firstName.substring(1).toLowerCase(),
-        lastName.charAt(0) + lastName.substring(1).toLowerCase(),
-        phonenumber,
-        image
+                username as string,
+                firstName.charAt(0) + firstName.substring(1).toLowerCase(),
+                lastName.charAt(0) + lastName.substring(1).toLowerCase(),
+                phonenumber,
+                image
             );
 
             // Returns code 200 and the updated user
