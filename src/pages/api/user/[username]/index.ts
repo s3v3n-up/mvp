@@ -76,6 +76,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         // Catches and throws error
     } catch (error: any) {
-        throw new Error("Failed searching for user",error);
+        res.status(400).json({
+            message: "Bad Request",
+            error
+        })
     }
 }
