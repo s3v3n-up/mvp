@@ -12,7 +12,6 @@ import styles from "@/styles/Components.module.sass";
  interface Props {
     children: ReactNode
 }
-
 const Layout = ({ children }: Props) => {
     return (
         <div className={styles.container}>

@@ -9,7 +9,6 @@ import styles from "@/styles/Components.module.sass";
  * *
  *  @description components for navigation bar and bottom navigation, both responsive for mobile and desktop
  */
-
 export default function Navbar() {
     return (
         <>

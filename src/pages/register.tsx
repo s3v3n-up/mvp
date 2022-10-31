@@ -7,6 +7,11 @@ import { useSession } from "next-auth/react";
 //local imports
 import styles from "@/styles/Register.module.sass";
 
+/**
+ * *
+ * @description this page lets user register an account
+ *
+ */
 export default function Register() {
     const { data: session } = useSession();
 
