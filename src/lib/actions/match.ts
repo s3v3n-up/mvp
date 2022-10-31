@@ -21,6 +21,23 @@ export async function createMatch(match: Match): Promise<Match> {
 }
 
 /**
+ * get all matches from the database
+ * @returns {Promise<Match[]>} promise that resolves to an array of matches
+ */
+export async function getMatches(): Promise<Match[]> {
+    try {
+
+        // get all matches
+        const matches = await MatchModel.find({});
+
+        // return matches
+        return matches;
+    } catch(error: any) {
+        throw new Error("error getting matches", { cause: error });
+    }
+}
+
+/**
  * find match by _id
  * @param {string} id of match to find
  * @returns {Promise<Match>} promise that resolves to a match
