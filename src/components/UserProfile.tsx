@@ -36,9 +36,6 @@ export default function UserProfile() {
 
     return (
         <div className="flex justify-evenly">
-            <div className="absolute top-0 left-0 -z-10 h-screen w-screen">
-                <Image src="/bg.png" layout="fill" alt="black" />
-            </div>
             <div className="flex w-1/4 flex-col space-y-3 lg:justify-end">
                 <div className="relative w-40 h-40 rounded-full m-auto mb-5">
                     <Image
