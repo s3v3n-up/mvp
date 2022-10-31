@@ -3,8 +3,10 @@ import Image from "next/image";
 import { getMatches, getMatchById } from "@/lib/actions/match";
 import type { Match } from "@/lib/types/Match";
 import { GetStaticPropsContext } from "next";
+import Player from "@/components/scoreboard/player";
 import Database from "@/lib/resources/database";
 
+//fake players data
 const teams = [
     [
         {
@@ -35,45 +37,11 @@ const teams = [
     ]
 ];
 
-interface PlayerProps {
-    image: string;
-    name: string;
-    onLeave: () => void;
-    variant: "home" | "away";
-}
-
-const Player = (props: PlayerProps) => {
-    const variantStyle = {
-        home: {
-            container: "text-orange-500",
-            button: "rounded-md border-2 border-orange-500 px-7 py-0.5 md:text-base text-sm"
-        },
-        away: {
-            container: "text-white",
-            button: "rounded-md border-2 border-white px-7 py-0.5 md:text-base text-sm"
-        }
-    };
-
-    return (
-        <div
-            className={`flex flex-row justify-between items-center w-full sm:text-base text-sm ${variantStyle[props.variant].container}`}
-        >
-            <div className="relative rounded-full w-12 h-12">
-                <Image
-                    src={props.image}
-                    alt="player avatar"
-                    layout="fill"
-                    objectFit="contain"
-                    objectPosition="center"
-                    className="rounded-full"
-                />
-            </div>
-            <div>{props.name}</div>
-            <button onClick={props.onLeave} className={variantStyle[props.variant].button}>Leave</button>
-        </div>
-    );
-};
-
+/**
+ * scoreboard page
+ * @param props - match of the scoreboard
+ * @returns {JSX.Element} scoreboard page element
+ */
 export default function Scoreboard(props: Match) {
     return(
         <div className={styles.page}>
@@ -155,7 +123,9 @@ export default function Scoreboard(props: Match) {
     );
 }
 
-
+/**
+ * generate all path for static generate scoreboard
+ */
 export async function getStaticPaths() {
     await Database.setup();
     const matches = await getMatches();
@@ -167,6 +137,10 @@ export async function getStaticPaths() {
     };
 }
 
+/**
+ * incrementally generate scoreboard page every 10 seconds
+ * @param context - context of the page
+ */
 export async function getStaticProps(context: GetStaticPropsContext) {
     const { id } = context.params!;
     await Database.setup();
