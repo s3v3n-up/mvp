@@ -2,6 +2,7 @@ import styles from '../styles/leaderboard.module.sass'
 import Image from 'next/image'
 import Standings from '@/components/Leaderboard/Leaderboard'
 
+//Leaderboard page
 export default function Leaderboard() {
     return(
         <div className={styles.container}>
@@ -12,5 +13,4 @@ export default function Leaderboard() {
             <Standings/>
         </div>
     )
-
 }

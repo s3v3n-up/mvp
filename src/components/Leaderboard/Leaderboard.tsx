@@ -1,5 +1,6 @@
 import styles from './leaderboard.module.sass';
 
+//leaderboard component
 export default function Standings() {
     return (
         <div className={styles.leaderboard}>
