@@ -91,7 +91,7 @@ export const authOptions: NextAuthOptions = {
                 return token;
             } catch {
                 return token;
-            };
+            }
         },
 
         // Sends back the session
