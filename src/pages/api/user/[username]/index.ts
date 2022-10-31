@@ -66,11 +66,11 @@ export default async function handler(
 
             // Stores the updated user
             const updatedUser = await updateUser(
-        username as string,
-        firstName.charAt(0) + firstName.substring(1).toLowerCase(),
-        lastName.charAt(0) + lastName.substring(1).toLowerCase(),
-        phonenumber,
-        image
+                username as string,
+                firstName.charAt(0) + firstName.substring(1).toLowerCase(),
+                lastName.charAt(0) + lastName.substring(1).toLowerCase(),
+                phonenumber,
+                image
             );
 
             // Returns code 200 and the updated user
