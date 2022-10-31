@@ -31,7 +31,7 @@ interface Team {
 export interface Match {
 
 	// This is automatically added by mongodb
-	id?: string | ObjectId;
+	_id?: string | ObjectId;
 
 	// This is the user who created the match
 	matchHost: string;

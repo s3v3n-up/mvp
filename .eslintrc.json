@@ -1,19 +1,20 @@
 {
-	"extends": "next/core-web-vitals",
-	"rules": {
-	  "indent": ["warn", 4],
-	  "semi": ["warn", "always"],
-	  "quotes": ["warn", "double"],
-	  "no-multi-spaces": "warn",
-	  "no-trailing-spaces": "warn",
-	  "object-curly-spacing": ["warn", "always"],
-	  "no-var": "error",
-	  "newline-before-return": "warn",
-	  "camelcase": "warn",
-	  "padding-line-between-statements": [
-		"warn",
-		{ "blankLine": "always", "prev": "*", "next": ["return", "function"] }
-	  ],
-	  "lines-around-comment": ["warn", { "beforeLineComment": true}]
-	}
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "indent": ["warn", 4],
+    "semi": ["warn", "always"],
+    "quotes": ["warn", "double"],
+    "no-multi-spaces": "warn",
+    "no-trailing-spaces": "warn",
+    "object-curly-spacing": ["warn", "always"],
+    "no-var": "error",
+    "newline-before-return": "warn",
+    "camelcase": "warn",
+    "padding-line-between-statements": [
+      "warn",
+      { "blankLine": "always", "prev": "*", "next": ["return", "function"] }
+    ],
+    "lines-around-comment": ["warn", { "beforeLineComment": true }],
+    "@typescript-eslint/no-explicit-any": "off"
   }
+}
