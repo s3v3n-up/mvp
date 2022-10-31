@@ -4,36 +4,35 @@
 
 // This the styles for login page 
 .container
-  display: flex
+  @apply grid grid-cols-2
   user-select: none
 
 // This the styles for left container shown in the browser
 .box
-  background-color: #fc5c3e
-  width: 50%
-  height: 100vh
+  background-color: rgba(#FC5C3E, 0.8)
+  width: 100%
+  min-height: 100vh
   user-select: none
 
 .about
-  display: flex-block
+  display: flex
+  flex-direction: column
+  gap: 2.5rem
   word-spacing: 10px
-  margin-top: 250px
-
+  margin-top: 200px
   font-family: 'Aldrich', sans-serif
   font-weight: 400
-  font-size: 36px
   text-align: center
-  line-height: 35px
   text-align: center
   color: #FFFF
+  h2 
+    font-size: 2rem
+    display: block
+  p
+    font-size: 1.75rem
 
 // This the styles for right container shown in the browser
 .background
-  background-image: url("/img/mobile.png")
-  background-position: 50%
-  background-repeat: no-repeat
-  background-size: cover
-
   width: 50%
   height: 100vh
   user-select: none
@@ -50,43 +49,21 @@
   justify-content: center
   margin-top: 20px
 
-.email input
-  display: flex
-  align-self: center
-  border-bottom: 1px solid #A4A4A4
-  background-color: #FFFF
-
-  border-style: none
-  border-radius: 10px
-  width: 400px
-  height: 51.11px
-
-  font-size: 13px
-  text-transform: uppercase
-
 
 .login
   display: flex
   justify-content: center
+  align-items: center
   background-color: #fc5c3e
   color: white
-  border-radius: 10px
-  padding-top: 20px
-
+  width: 100%
   font-family: 'Inter', sans-serif
   font-weight: bold
-  font-size: 17pxx
+  font-size: 17px
   text-align: center
   letter-spacing: 5px
   text-transform: uppercase
-
-  width: 400px
-  height: 55px
   margin-top: 50px
-  margin-bottom: 50px
-
-  filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.25))
-  border-radius: 10px
 
 .line
   display: flex
@@ -94,24 +71,29 @@
 
 .discord
   display: flex
-  justify-content: center
+  justify-content: space-between
+  align-items: center
   width: 400px
   height: 50px
-
+  padding: 0 0.5rem
   font-weight: bold
   font-size: 17px
   margin-bottom: 17px
-
   background: #FFFFFF
   box-shadow: 0px 4px 7px rgba(0, 0, 0, 0.25)
   border-radius: 5px
   border: none
 
+  p 
+    @apply flex-auto
+
 .google
   display: flex
-  justify-content: center
+  justify-content: space-between
+  align-items: center
   width: 400px
   height: 50px
+  padding: 0 0.5rem
 
   font-weight: bold
   font-size: 17px
@@ -121,11 +103,14 @@
   border-radius: 5px
   border: none
 
+  p 
+    @apply flex-auto
 
 // This uses media query where when its max-width is below 1000 it changes styles to be responsive 
 @media screen and (max-width: 1000px)
 
   .container
+    display: flex
     flex-direction: column
 
   .background

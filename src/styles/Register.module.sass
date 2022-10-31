@@ -1,31 +1,34 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Aldrich&display=swap')
 @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap')
 
 // This the styles for register page 
 .container
-  display: flex
+  @apply grid grid-cols-2
   user-select: none
 
 // This the styles for left container shown in the browser
 .box
-  background-color: #fc5c3e
-  width: 50%
-  height: 100vh
+  background-color: rgba(#fc5c3e, 0.8)
+  width: 100%
+  min-height: 100vh
   user-select: none
 
 .about
-  display: flex-block
+  display: flex
+  flex-direction: column
+  gap: 2.5rem
   word-spacing: 10px
-  margin-top: 250px
-
+  margin-top: 200px
   font-family: 'Aldrich', sans-serif
   font-weight: 400
-  font-size: 36px
   text-align: center
-  line-height: 35px
   text-align: center
   color: #FFFF
+  h2 
+    font-size: 2rem
+    display: block
+  p
+    font-size: 1.75rem
 
 // This the styles for right container shown in the browser
 .background
@@ -49,21 +52,10 @@
   display: flex
   justify-content: center
   margin-top: 10px
-
-.info input
-  display: flex
-  align-self: center
-  border-bottom: 1px solid #A4A4A4
-  background-color: #FFFF
-
-  border-style: none
-  border-radius: 10px
-  width: 400px
-  height: 51.11px
-  margin-top: 13px
-
-  font-size: 13px
-  text-transform: uppercase
+  .info
+    display: flex
+    flex-direction: column
+    gap: 0.25rem
 
 .imgupload
   display: flex
@@ -83,29 +75,25 @@
 .signup
   display: flex
   justify-content: center
+  align-items: center
   background-color: #fc5c3e
   color: white
-  border-radius: 10px
-  padding-top: 20px
-
   font-family: 'Inter', sans-serif
   font-weight: bold
   font-size: 17pxx
   text-align: center
   letter-spacing: 5px
   text-transform: uppercase
-
   width: 400px
   height: 55px
   margin-top: 25px
   margin-bottom: 25px
-
   filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.25))
-  border-radius: 10px
 
 // This uses media query where when its max-width is below 1000 it changes styles to be responsive 
 @media screen and (max-width: 1000px)
   .container
+    display: flex
     flex-direction: column
 
   .background

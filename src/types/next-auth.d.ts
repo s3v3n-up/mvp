@@ -25,6 +25,9 @@ declare module "next-auth" {
     } & DefaultSession["user"];
   }
 
+  /**
+   * user type return by jwt callback
+   */
   interface User {
     isFinishedSignup: boolean;
   }
