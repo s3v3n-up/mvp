@@ -1,10 +1,19 @@
-import styles from "@/styles/Scoreboard.module.sass";
+//nextjs import
 import Image from "next/image";
-import { getMatches, getMatchById } from "@/lib/actions/match";
-import type { Match } from "@/lib/types/Match";
 import { GetStaticPropsContext } from "next";
-import Player from "@/components/scoreboard/player";
+
+//backend import
+import { getMatches, getMatchById } from "@/lib/actions/match";
 import Database from "@/lib/resources/database";
+
+//types import
+import type { Match } from "@/lib/types/Match";
+
+//components import
+import Player from "@/components/scoreboard/player";
+
+//styles import
+import styles from "@/styles/Scoreboard.module.sass";
 
 //fake players data
 const teams = [
