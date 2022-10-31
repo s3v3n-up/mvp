@@ -14,6 +14,12 @@ import styles from "@/styles/Components.module.sass";
  interface Props {
     children: ReactNode
 }
+
+/**
+ * main layout of website contain the global navbar and website content
+ * @param website content
+ * @returns {JSX.Element} layout of website
+ */
 const Layout = ({ children }: Props) => {
     const router = useRouter();
     const isAuthPage = router.pathname === "/login" || router.pathname === "/register";
