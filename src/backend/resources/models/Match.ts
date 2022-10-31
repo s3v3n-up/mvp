@@ -1,5 +1,5 @@
 import { models, model, Model, Schema } from "mongoose";
-import { Match } from "@/lib/types/Match";
+import { Match } from "@/types/Match";
 
 /**
  * subdocument schema for teams

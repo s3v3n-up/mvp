@@ -1,11 +1,11 @@
 // Imports UserProfile interface
-import { UserProfile } from "@/lib/types/User";
+import { UserProfile } from "@/types/User";
 
 // Imports UserModel Schema
 import UserModel from "../resources/models/User";
 
 // Import Database from  '@/lib/resources/database'
-import Database from "@/lib/resources/database";
+import Database from "@/backend/resources/database";
 
 // Import MatchModel Schema
 import MatchModel from "../resources/models/Match";

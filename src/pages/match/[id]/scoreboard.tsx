@@ -3,11 +3,11 @@ import Image from "next/image";
 import { GetStaticPropsContext } from "next";
 
 //backend import
-import { getMatches, getMatchById } from "@/lib/actions/match";
-import Database from "@/lib/resources/database";
+import { getMatches, getMatchById } from "@/backend/actions/match";
+import Database from "@/backend/resources/database";
 
 //types import
-import type { Match } from "@/lib/types/Match";
+import type { Match } from "@/types/Match";
 
 //components import
 import Player from "@/components/scoreboard/player";

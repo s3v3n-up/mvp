@@ -1,5 +1,5 @@
 // import cloudinary
-import cloudinary from "@/lib/resources/cloudinary";
+import cloudinary from "@/backend/resources/cloudinary";
 
 // Get the uploader in the cloudinary
 const { uploader } = cloudinary;

@@ -1,5 +1,5 @@
 import { model, models, Model, Schema } from "mongoose";
-import type { Sport } from "@/lib/types/Sport";
+import type { Sport } from "@/types/Sport";
 
 /**
  * @description This is the sport schema

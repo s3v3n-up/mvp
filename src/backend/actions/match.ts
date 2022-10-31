@@ -1,5 +1,5 @@
 import MatchModel from "../resources/models/Match";
-import type { Match } from "@/lib/types/Match";
+import type { Match } from "@/types/Match";
 
 /**
  * add a new match to the database

@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { Match } from "@/lib/types/Match";
+import { Match } from "@/types/Match";
 
 /**
  * Interface for creating a user

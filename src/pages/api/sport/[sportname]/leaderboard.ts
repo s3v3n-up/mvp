@@ -1,5 +1,5 @@
-import { getLeaderboardOfSport } from "@/lib/actions/match";
-import Database from "@/lib/resources/database";
+import { getLeaderboardOfSport } from "@/backend/actions/match";
+import Database from "@/backend/resources/database";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

@@ -2,16 +2,16 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 // Imports Database
-import Database from "@/lib/resources/database";
+import Database from "@/backend/resources/database";
 
 // Imports calculateStats, findUserByUsername and updateUser functions
-import { calculateStats, findUserByUsername, updateUser } from "@/lib/actions/user";
+import { calculateStats, findUserByUsername, updateUser } from "@/backend/actions/user";
 
 // Imports object and string type from yup
 import { object, string } from "yup";
 
 // Imports PHONE_REGEX
-import { PHONE_REGEX } from "@/lib/helpers/validation";
+import { PHONE_REGEX } from "@/helpers/validation";
 
 export default async function handler(
     req: NextApiRequest,

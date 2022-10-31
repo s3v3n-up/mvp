@@ -1,5 +1,5 @@
 // Imports the Database
-import Database from "@/lib/resources/database";
+import Database from "@/backend/resources/database";
 
 // Imports the function seedAll
 import seedAll from "@/seed";

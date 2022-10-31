@@ -1,4 +1,4 @@
-import type { Match } from "@/lib/types/Match";
+import type { Match } from "@/types/Match";
 
 /**
  * email pattern

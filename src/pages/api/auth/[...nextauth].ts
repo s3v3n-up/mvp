@@ -10,9 +10,9 @@ import DiscordProvider from "next-auth/providers/discord";
 import GoogleProvider from "next-auth/providers/google";
 
 // Imports Database
-import Database from "@/lib/resources/database";
+import Database from "@/backend/resources/database";
 
-import { getUserByEmail } from "@/lib/actions/user";
+import { getUserByEmail } from "@/backend/actions/user";
 
 /**
  * @description

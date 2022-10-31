@@ -2,13 +2,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
 // Imports UserProfile interface
-import { UserProfile } from "@/lib/types/User";
+import { UserProfile } from "@/types/User";
 
 // Imports createUser function
-import { createUser } from "@/lib/actions/user";
+import { createUser } from "@/backend/actions/user";
 
 // Imports PHONE_REGEX and EMAIL_REGEX
-import { PHONE_REGEX, EMAIL_REGEX } from "@/lib/helpers/validation";
+import { PHONE_REGEX, EMAIL_REGEX } from "@/helpers/validation";
 
 // Imports object and string types from yup
 import { object, string } from "yup";
