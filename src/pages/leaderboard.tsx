@@ -1,5 +1,8 @@
+//import styling from styles folder
 import styles from '../styles/leaderboard.module.sass'
+//import next/image
 import Image from 'next/image'
+//import the standings component from the components folder
 import Standings from '@/components/Leaderboard/Leaderboard'
 
 //Leaderboard page
