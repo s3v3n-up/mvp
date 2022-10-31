@@ -4,8 +4,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 // Imports Database
 import Database from "@/lib/resources/database";
 
-// Imports findUserByUsername and updateUser functions
-import { getUserByEmail, updateUser } from "@/lib/actions/user";
+// Imports calculateStats, findUserByUsername and updateUser functions
+import { calculateStats, findUserByUsername, updateUser } from "@/lib/actions/user";
 
 // Imports object and string type from yup
 import { object, string } from "yup";
@@ -26,11 +26,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (req.method === "GET") {
 
             // Stores and looks for a specific username
-            const user = await getUserByEmail(username as string);
+            const user = await findUserByUsername(username as string);
 
-            // return user;
+            // Gets the username of the user
+            const { userName } = user[0];
+
+            // Store and calculate the stats (win/lose/draw) of the user
+            const stats = await calculateStats(userName);
+
+            // return user and stats;
             res.status(200).json({
-                user
+                user,
+                stats
             });
 
             // Checks if the method is PUT
@@ -67,8 +74,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             });
         }
 
-        // Catches and throws error
+        // Catches and sends response status 400 and error
     } catch (error: any) {
-        throw new Error("Failed searching for user",error);
+        res.status(400).json({
+            message: "Bad Request",
+            error
+        });
     }
 }
