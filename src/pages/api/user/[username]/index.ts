@@ -63,7 +63,6 @@ export default async function handler(
             await schema.validate(req.body);
 
             // Converts first letter of the firstname to capital and the rest is lowercase
-
             // Stores the updated user
             const updatedUser = await updateUser(
                 username as string,
