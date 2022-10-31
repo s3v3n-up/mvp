@@ -5,7 +5,6 @@
         "requiredPlayers": 2
     }]
 },
-
 {
     "name": "Basketball",
     "gameModes": [{
@@ -13,7 +12,6 @@
         "requiredPlayers": 4
     }]
 },
-
 {
     "name": "Tennis",
     "gameModes": [{
@@ -21,7 +19,6 @@
         "requiredPlayers": 2
     }]
 },
-
 {
     "name": "Tennis",
     "gameModes": [{
@@ -29,7 +26,6 @@
         "requiredPlayers": 4
     }]
 },
-
 {
     "name": "Table Tennis",
     "gameModes": [{
