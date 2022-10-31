@@ -9,7 +9,6 @@ import styles from "@/styles/Components.module.sass";
  * *
  * @description page that handles all that similar components for all pages
  */
-
  interface Props {
     children: ReactNode
 }
@@ -22,5 +21,4 @@ const Layout = ({ children }: Props) => {
         </div>
     );
 };
-
 export default Layout;

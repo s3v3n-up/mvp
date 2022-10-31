@@ -13,7 +13,6 @@ const names = ["whale", "squid", "turtle", "coral", "starfish", "star"];
  * @description this page displays all the matches created by users from regular matches to quick matches
  *
  */
-
 export default function Home() {
     return (
         <Layout>

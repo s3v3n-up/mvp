@@ -5,7 +5,6 @@ import styles from "@/styles/Buttons.module.sass";
  * *
  * @description this  a button component
  */
-
 export default function PrimaryButton() {
     return (
         <>
