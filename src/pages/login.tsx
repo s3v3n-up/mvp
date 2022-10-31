@@ -1,8 +1,15 @@
-import Head from "next/head";
+//third-party imports
 import Image from "next/image";
-import styles from "@/styles/Login.module.sass";
 import Link from "next/link";
 
+//local imports
+import styles from "@/styles/Login.module.sass";
+
+/**
+ * *
+ * @description this page lets user login using their email
+ *
+ */
 export default function Login() {
     return (
         <div className={styles.container}>
@@ -15,12 +22,10 @@ export default function Login() {
                     <p>Can you be #1?</p>
                 </div>
             </div>
-
             <div className={styles.background}>
                 <div className={styles.imgwrapper}>
                     <Image src={"/img/logo.png"} alt="logo" width={263} height={184} />
                 </div>
-
                 <div className={styles.input}>
                     <div className={styles.email}>
                         <input type="email" placeholder="enter your email" />
@@ -43,7 +48,6 @@ export default function Login() {
                             />
                             <p>Continue with Discord</p>
                         </button>
-
                         <button className={styles.google}>
                             <Image
                                 width={50}

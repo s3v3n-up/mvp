@@ -1,0 +1,120 @@
+// Styles for layout component
+.container
+    background-image: url("/img/desktop.png")
+    background-repeat: no-repeat
+    background-position: center
+    background-size: cover
+    position: absolute
+    width: 100%
+    height: 100vh
+
+// Styles for inputbar component
+.inputbar input
+    border-bottom: 1px solid #A4A4A4
+    background-color: #FFFF
+
+    border-radius: 10px
+    width: 400px
+    height: 51.11px
+
+    font-size: 13px
+    font-family: 'Inter'
+    font-style: normal
+    font-weight: 400
+    font-size: 18px
+    line-height: 77px
+
+// Styles for buttons component
+.primarybutton button
+    color: white
+    text-transform: uppercase
+    font-family: 'Inter'
+    font-style: normal
+    font-weight: 700
+    font-size: 17px
+    line-height: 29px
+
+    background: #fc5c3e
+    width: 200px
+    height: 55px
+
+    filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.25))
+    border-radius: 10px
+    border: none
+
+    &:hover
+        color: gray
+        
+// Styles for navbar component
+.nav
+    width: 100%
+    display: flex
+    height: 74px
+    overflow: hidden
+    user-select: none
+
+.bottom-nav
+    width: 100%
+    display: flex
+    height: 74px
+    margin-right: 50px
+    overflow: hidden
+    user-select: none
+
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap')
+
+.nav p
+    position: flex
+    color: white
+    font-family: 'Inter'
+    font-weight: 600
+    font-size: 13px
+    line-height: 22px
+    display: inline-block
+    text-transform: uppercase
+    padding-right: 20px
+    padding-top: 14px
+    user-select: none
+
+    &:hover
+        color: #fc5c3e
+
+.option
+    position: absolute
+    left: 25%
+
+.auth
+    position: absolute
+    right: 0
+
+.bottomnav p
+    position: flex
+    justify-content: left
+    color: white
+    font-family: 'Inter'
+    font-weight: 600
+    font-size: 13px
+    line-height: 22px
+    display: inline-block
+    text-transform: uppercase
+    padding-right: 50px
+    padding-top: 14px
+    user-select: none
+
+    &:hover
+        color: #fc5c3e
+
+@media screen and (max-width: 700px )
+    .nav
+        display: none
+    .bottomnav
+        position: absolute
+        bottom: 0
+        right: 0
+
+    .auth
+        display: none
+
+@media screen and (min-width: 700px)
+    .bottomnav
+        display: none
