@@ -1,4 +1,3 @@
-//this is create match page component
 import Image from "next/image";
 import Input from "../components/Input";
 import SelectOption from "./SelectOption";
@@ -20,6 +19,9 @@ interface Data {
   date: string;
 }
 
+/*
+* this component is used in create match page
+*/
 export default function CreateMatch() {
     const [data, setData] = useState<Data>({
         location: "",
@@ -33,6 +35,9 @@ export default function CreateMatch() {
         { value: "basketball", name: "basketball" },
     ];
 
+    /*
+    *this function is to catch the user input value
+    */
     function handleInputChange(
         e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) {

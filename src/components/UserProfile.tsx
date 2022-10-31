@@ -22,6 +22,9 @@ export default function UserProfile() {
         email: "",
     });
 
+    /*
+    *this function is to catch the user input value
+    */
     function handleInputChange(
         e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) {

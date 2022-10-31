@@ -8,6 +8,9 @@ interface Option {
   name: string;
 }
 
+/*
+ * interface for the type of input.
+ */
 interface Props {
   children?: ReactNode;
   value: string;
