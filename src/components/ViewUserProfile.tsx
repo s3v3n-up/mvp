@@ -3,7 +3,7 @@ import { Person, FolderSharedOutlined, Phone } from "@mui/icons-material";
 import Image from "next/image";
 
 /*
- *
+ * interface type of user data
 */
 export interface Data {
   fullName: string;
