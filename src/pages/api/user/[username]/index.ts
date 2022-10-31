@@ -74,7 +74,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             });
         }
 
-        // Catches and throws error
+        // Catches and sends response status 400 and error
     } catch (error: any) {
         res.status(400).json({
             message: "Bad Request",
