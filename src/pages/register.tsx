@@ -109,13 +109,13 @@ export default function Register() {
                 <div className={styles.imgwrapper}>
                     <Image src={"/img/logo.png"} alt={"logo"} width={263} height={184} />
                 </div>
-                <ImagePicker
-                    onChange={handleImageChange}
-                    onRemove={handleRemoveSelectedImage}
-                    image={formData.image}
-                />
                 <div className={styles.input}>
                     <div className={styles.info}>
+                        <ImagePicker
+                            onChange={handleImageChange}
+                            onRemove={handleRemoveSelectedImage}
+                            image={formData.image}
+                        />
                         <Input
                             type="text"
                             placeholder="Enter your first name"

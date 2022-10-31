@@ -19,11 +19,17 @@ export interface Data {
 export default function ViewUserProfile({ data }: { data: Data }) {
     return (
         <div className="flex justify-evenly">
-            <div className="absolute top-0 left-0 -z-10 h-screen w-screen">
-                <Image src="/bg.png" layout="fill" alt="black" />
-            </div>
-            <div className="flex w-1/4 flex-col space-y-3 lg:justify-end">
-                <Image src="/mvp-logo.png" alt="" width={150} height={100} />
+            <div className="flex w-1/4 flex-col space-y-3 lg:justify-end mt-10">
+                <div className="relative w-40 h-40 rounded-full m-auto mb-5">
+                    <Image
+                        src="https://i.pravatar.cc/300?img=4"
+                        layout="fill"
+                        objectFit="cover"
+                        objectPosition="center"
+                        alt="logo"
+                        className="rounded-full"
+                    />
+                </div>
                 <Input label="Full Name" value={data.fullName} name="fullname">
                     <Person />
                 </Input>

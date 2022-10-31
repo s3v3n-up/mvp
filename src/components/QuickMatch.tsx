@@ -43,9 +43,6 @@ export default function QuickMatch() {
     return (
         <div className="flex justify-evenly">
             <div className="flex flex-col space-y-2 lg:justify-end ">
-                <div className="absolute top-0 left-0 -z-10 h-screen w-screen">
-                    <Image src="/bg.png" layout="fill" alt="black" />
-                </div>
                 <div>
                     <h1 className="text-[#f3f2ef] text-3xl text-center pt-3">
                         Create Quick Match
