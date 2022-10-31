@@ -14,16 +14,16 @@ export async function middleware(req: NextRequest) {
     const secret = process.env.NEXTAUTH_SECRET;
 
     // Pass the token into a token variable
-    let token = await getToken({ req, secret });
+    const token = await getToken({ req, secret });
 
     // If there is no token meaning no session, redirect to login page
     if (!token) {
         return NextResponse.rewrite(new URL("/login", req.url));
-    };
+    }
 
     if (!token.user.isFinishedSignup) {
         return NextResponse.redirect(new URL("/register", req.url));
-    };
+    }
 }
 
 /**

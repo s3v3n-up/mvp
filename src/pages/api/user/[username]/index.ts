@@ -13,7 +13,10 @@ import { object, string } from "yup";
 // Imports PHONE_REGEX
 import { PHONE_REGEX } from "@/lib/helpers/validation";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+    req: NextApiRequest,
+    res: NextApiResponse
+) {
     try {
 
         // Sets up the Database connection
@@ -44,7 +47,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         } else if (req.method === "PUT") {
 
             // Gets the firstName, lastName, phonenumber and image
-            let { firstName, lastName, phonenumber, image } = req.body;
+            const { firstName, lastName, phonenumber, image } = req.body;
 
             // Yup validation criteria
             const schema = object({
@@ -60,17 +63,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             await schema.validate(req.body);
 
             // Converts first letter of the firstname to capital and the rest is lowercase
-            firstName = firstName.charAt(0) + firstName.substring(1).toLowerCase();
-
-            // Converts first letter of the lastname to capital and the rest is lowercase
-            lastName = lastName.charAt(0) + lastName.substring(1).toLowerCase();
 
             // Stores the updated user
-            const updatedUser = await updateUser(username as string, firstName, lastName, phonenumber, image);
+            const updatedUser = await updateUser(
+        username as string,
+        firstName.charAt(0) + firstName.substring(1).toLowerCase(),
+        lastName.charAt(0) + lastName.substring(1).toLowerCase(),
+        phonenumber,
+        image
+            );
 
             // Returns code 200 and the updated user
             res.status(200).json({
-                updatedUser
+                updatedUser,
             });
         }
 
