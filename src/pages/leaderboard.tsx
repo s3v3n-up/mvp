@@ -7,7 +7,7 @@ import Image from "next/image";
 //import the standings component from the components folder
 import Standings from "@/components/Leaderboard";
 import axios from "axios";
-import {useState , useEffect} from "react";
+import { useState , useEffect } from "react";
 
 //Leaderboard page
 export default function Leaderboard() {
@@ -17,7 +17,7 @@ export default function Leaderboard() {
     //get the top 10 standings from the api
     useEffect(() => {
         axios.get("/api/sport/soccer/leaderboard/10").then((res) => {
-            const {data} = res;
+            const { data } = res;
             setStandings(data);
         });
     },[]);

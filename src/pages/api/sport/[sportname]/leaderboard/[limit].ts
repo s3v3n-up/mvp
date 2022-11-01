@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method !== "GET") {
         res.status(405).json({ message: "Method not allowed" });
     } else {
-        const {sportname, limit} = req.query; 
+        const { sportname, limit } = req.query;
 
         //validate the query parameters
         if(!sportname || !limit || typeof sportname !== "string" || typeof limit !== "string") {
@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         //validate the limit
         if(isNaN(Number(limit))) {
-            res.status(400).json({ message: "Invalid limit"});
+            res.status(400).json({ message: "Invalid limit" });
         }
 
         //get the leaderboard from the database

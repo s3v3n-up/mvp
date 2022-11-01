@@ -22,14 +22,15 @@ export default function Standings(props: Props) {
 
                 //change the color of the bar based on the rank
                 const style = index <= 2 ? styles.ranks: index <= 5 ? styles.ranks2: styles.ranks3;
+
                 return (
                     <div key={index} className={style}>
                         <div className={styles.infoleft}>{index+1}</div>
                         <div className={styles.info}>{standing._id}</div>
                         <div className={styles.inforight}>{standing.numberOfWins}</div>
                     </div>
-                )})
-            }
+                );
+            })}
         </div>
     );
 }
