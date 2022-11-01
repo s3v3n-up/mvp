@@ -133,7 +133,7 @@ export default function Register() {
                 router.push("/");
             }
         } catch(err: any) {
-            if (err!.response) {
+            if (err.response && err.response !== undefined) {
                 setError(err.response.data.message);
             } else {
                 setError(err.message);
