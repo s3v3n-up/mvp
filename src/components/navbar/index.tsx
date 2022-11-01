@@ -15,7 +15,6 @@ import { ProfileContext } from "@/context/profile";
  *  @description components for navigation bar and bottom navigation, both responsive for mobile and desktop
  */
 export default function Navbar() {
-
     const profileContext = useContext(ProfileContext);
 
     //user profile image
