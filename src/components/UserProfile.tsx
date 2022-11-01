@@ -23,8 +23,8 @@ export default function UserProfile() {
     });
 
     /*
-    *this function is to catch the user input value
-    */
+   *this function is to catch the user input value
+   */
     function handleInputChange(
         e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) {
@@ -35,7 +35,7 @@ export default function UserProfile() {
     }
 
     return (
-        <div className="flex justify-evenly">
+        <div className="flex justify-evenly pt-10">
             <div className="flex w-1/4 flex-col space-y-3 lg:justify-end">
                 <div className="relative w-40 h-40 rounded-full m-auto mb-5">
                     <Image

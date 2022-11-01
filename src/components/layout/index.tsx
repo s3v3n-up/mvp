@@ -36,7 +36,7 @@ const Layout = ({ children }: Props) => {
                     priority={true}
                 />
             </div>
-            {!isAuthPage && <Navbar/> }
+            {!isAuthPage && <Navbar /> }
             <main className="flex-auto z-10">
                 { children }
             </main>

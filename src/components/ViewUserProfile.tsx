@@ -4,7 +4,7 @@ import Image from "next/image";
 
 /*
  * interface type of user data
-*/
+ */
 export interface Data {
   fullName: string;
   userName: string;
@@ -18,7 +18,7 @@ export interface Data {
  */
 export default function ViewUserProfile({ data }: { data: Data }) {
     return (
-        <div className="flex justify-evenly">
+        <div className="flex justify-evenly pt-10">
             <div className="flex w-1/4 flex-col space-y-3 lg:justify-end mt-10">
                 <div className="relative w-40 h-40 rounded-full m-auto mb-5">
                     <Image
