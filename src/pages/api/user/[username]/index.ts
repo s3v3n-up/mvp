@@ -5,7 +5,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import Database from "@/lib/resources/database";
 
 // Imports calculateStats, findUserByUsername and updateUser functions
-import { calculateStats, findUserByUsername, updateUser } from "@/lib/actions/user";
+import { getUserByUserName, updateUser } from "@/lib/actions/user";
 
 // Imports object and string type from yup
 import { object, string } from "yup";
@@ -25,23 +25,16 @@ export default async function handler(
         // Gets the username in the req.query
         const { username } = req.query;
 
+        //validates the username
+        if (typeof username !== "string" || username.length < 8 || username.length > 30) {
+            throw new Error("invalid username");
+        }
+
         // Checks if the method is GET
         if (req.method === "GET") {
-
-            // Stores and looks for a specific username
-            const user = await findUserByUsername(username as string);
-
-            // Gets the username of the user
-            const { userName } = user[0];
-
-            // Store and calculate the stats (win/lose/draw) of the user
-            const stats = await calculateStats(userName);
-
-            // return user and stats;
-            res.status(200).json({
-                user,
-                stats
-            });
+            await Database.setup();
+            const user = await getUserByUserName(username);
+            res.status(200).json(user);
 
             // Checks if the method is PUT
         } else if (req.method === "PUT") {
@@ -86,3 +79,4 @@ export default async function handler(
         });
     }
 }
+
