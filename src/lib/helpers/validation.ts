@@ -8,7 +8,7 @@ export const EMAIL_REGEX = /^[a-zA-Z0-9.!#$%&’+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:.
 /**
  * phone number pattern
  */
-export const PHONE_REGEX = /\d{3}-\d{3}-\d{4}/;
+export const PHONE_REGEX = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
 
 /**
  * validate a match object
@@ -26,5 +26,3 @@ export function validateMatch(match: Match) {
 
     return match;
 }
-
-

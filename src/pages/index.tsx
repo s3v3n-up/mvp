@@ -1,8 +1,10 @@
 //third-party import
 import Image from "next/image";
 import { Search } from "@mui/icons-material";
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import ScrollContainer from "react-indiana-drag-scroll";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 //local import
 import styles from "@/styles/Home.module.sass";
@@ -18,6 +20,14 @@ const names = ["whale", "squid", "turtle", "coral", "starfish", "star"];
  *
  */
 export default function Home() {
+    const { status } = useSession();
+    const router = useRouter();
+    useEffect(()=> {
+        if (status === "unauthenticated") {
+            router.push("/login");
+        }
+    }, [status, router]);
+
     const [search, setSearch] = useState("");
 
     /**
