@@ -126,12 +126,6 @@ export default function Register() {
                 image: imageUrl,
                 matches: []
             });
-            const { ok, error } = res.data;
-            if (!ok) {
-                throw error;
-            } else {
-                router.push("/");
-            }
         } catch(err: any) {
             if (err!.response) {
                 setError(err.response.data.message);
