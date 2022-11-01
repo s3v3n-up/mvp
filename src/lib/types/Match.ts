@@ -19,7 +19,7 @@ export namespace Matches {
  * @property score - The score of the team
  * @property status - The status of the team
  */
-interface Team {
+export interface Team {
 	members: string[];
 	score: number;
 	status: Matches.TeamStatus;
