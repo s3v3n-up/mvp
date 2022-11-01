@@ -1,4 +1,5 @@
 import { DefaultSession } from "next-auth";
+import type { UserProfile } from "@/lib/types/User";
 
 declare module "next-auth/jwt" {
 
@@ -22,6 +23,7 @@ declare module "next-auth" {
        * if user have finished setting up their profile
        */
       isFinishedSignup: boolean;
+      profile?: UserProfile;
     } & DefaultSession["user"];
   }
 
@@ -30,5 +32,6 @@ declare module "next-auth" {
    */
   interface User {
     isFinishedSignup: boolean;
+    profile?: UserProfile;
   }
 }

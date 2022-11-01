@@ -13,11 +13,11 @@ interface PageProps {
 
 function MyApp({ Component, pageProps }: AppProps<PageProps>) {
     return (
-        <Layout>
-            <SessionProvider session={pageProps.session} refetchInterval={1}>
+        <SessionProvider session={pageProps.session} refetchInterval={1}>
+            <Layout>
                 <Component {...pageProps} />
-            </SessionProvider>
-        </Layout>
+            </Layout>
+        </SessionProvider>
     );
 }
 export default MyApp;

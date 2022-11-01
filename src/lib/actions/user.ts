@@ -39,7 +39,7 @@ export async function createUser(user: UserProfile) {
         }
 
         // Creates a UserModel
-        const player = new UserModel<UserProfile>(user);
+        const player = new UserModel(user);
 
         // Saves the UserModel in the database
         await player.save();
@@ -52,6 +52,7 @@ export async function createUser(user: UserProfile) {
 
     // Catch any errors and throws a message
     } catch (error: any) {
+        console.log(error);
         throw new Error("Error creating a user", error.message);
     }
 }
@@ -142,6 +143,37 @@ export async function getUserByEmail(email: string) {
             throw error;
         }
         throw new Error("Error something wrong", error);
+    }
+}
+
+/**
+ * get user by username
+ * @param {string} username the username of the user
+ * @returns the user if it exist
+ */
+export async function getUserByUserName(userName: string) {
+    try {
+
+        // Sets up Database connection
+        await Database.setup();
+
+        // Stores and looks for a specific user by username
+        const user = await UserModel.findOne({ userName });
+
+        // Checks if user exist
+        if (!user) {
+            throw new Error("username not exist");
+        }
+
+        // Returns the user
+        return user;
+
+        // Catches and throws error
+    } catch(error: any) {
+        if (error.message) {
+            throw error;
+        }
+        throw new Error("Error getting user", error);
     }
 }
 

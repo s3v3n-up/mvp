@@ -84,8 +84,9 @@ export const authOptions: NextAuthOptions = {
             try {
                 if (!token.user.isFinishedSignup) {
                     await Database.setup();
-                    await getUserByEmail(token.user.email!);
+                    const profile = await getUserByEmail(token.user.email!);
                     token.user.isFinishedSignup = true;
+                    token.user.profile = profile;
                 }
 
                 return token;
@@ -103,7 +104,6 @@ export const authOptions: NextAuthOptions = {
             return session;
         }
     },
-    secret: process.env.NEXTAUTH_SECRET!
 };
 
 // Exports the NextAuth

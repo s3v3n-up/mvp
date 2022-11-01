@@ -40,9 +40,9 @@ const userSchema = new Schema<UserProfile>({
             validator: function (v: string) {
                 return EMAIL_REGEX.test(v);
             },
-            message: props => `${props.value} is not a valid phone number!`
+            message: props => `${props.value} is not a valid email!`
         },
-        required: [true, "User phone number required"],
+        required: [true, "User email required"],
         unique: true
     },
 
