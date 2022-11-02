@@ -8,24 +8,24 @@ import { useContext } from "react";
 
 //local import
 import styles from "@/styles/Components.module.sass";
-import { ProfileContext } from "@/context/profile";
+import { AvatarContext } from "@/context/avatar";
 
 /**
  * *
  *  @description components for navigation bar and bottom navigation, both responsive for mobile and desktop
  */
 export default function Navbar() {
-    const profileContext = useContext(ProfileContext);
+    const avatarContext = useContext(AvatarContext);
 
     //user profile image
     const [avatar, setAvatar] = useState("/img/logo.png");
 
     //set user profile image
     useEffect(() => {
-        if (profileContext && profileContext.currProfile) {
-            setAvatar(profileContext.currProfile.image);
+        if (avatarContext && avatarContext.currAvatar) {
+            setAvatar(avatarContext.currAvatar);
         }
-    }, [profileContext]);
+    }, [avatarContext]);
 
     const router = useRouter();
 
