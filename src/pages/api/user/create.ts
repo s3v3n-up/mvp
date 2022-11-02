@@ -39,7 +39,7 @@ export default async function handler(
                 userName: string().required().min(8).max(30),
                 firstName: string().required().min(2).max(64),
                 lastName: string().required().min(2).max(64),
-                phonenumber: string()
+                phoneNumber: string()
                     .required()
                     .matches(PHONE_REGEX, "invalid input for phone number"),
                 image: string().required(),

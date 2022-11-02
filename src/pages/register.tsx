@@ -5,12 +5,14 @@ import { useSession } from "next-auth/react";
 import { useState, ChangeEvent } from "react";
 import { Person, Phone, Badge } from "@mui/icons-material";
 import { useRouter } from "next/router";
+import axios from "axios";
 
 //local imports
 import styles from "@/styles/Register.module.sass";
 import Input from "@/components/Input";
 import Button from "@/components/buttons/primaryButton";
 import ImagePicker from "@/components/imagepicker";
+import AlertMessage from "@/components/alertMessage";
 
 /**
  * register data type
@@ -20,7 +22,7 @@ import ImagePicker from "@/components/imagepicker";
  * @property {string} phoneNumber
  * @property {File | null} image
  */
-interface FormData {
+interface RegisterData {
     firstName: string;
     lastName: string;
     userName: string;
@@ -35,23 +37,31 @@ interface FormData {
  */
 export default function Register() {
 
-    //guard page against logged in users
+    //guard page against logged and unauthenticated in users
     const { data: session } = useSession();
     const router = useRouter();
     useEffect(()=> {
         if(session && session.user.isFinishedSignup) {
             router.push("/");
         }
+
+        if (!session) {
+            router.push("/login");
+        }
     }, [session, router]);
 
     //register form data state
-    const [formData, setFormData] = useState<FormData>({
+    const [formData, setFormData] = useState<RegisterData>({
         firstName: "",
         lastName: "",
         userName: "",
         phoneNumber: "",
         image: null
     });
+
+    //form submission state
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     /**
      * handle form input change
@@ -85,11 +95,52 @@ export default function Register() {
     }
 
     /**
+     * handle image submit
+     */
+    async function handleImageSubmit() {
+        const data = new FormData();
+        data.append("files", formData.image!);
+        try {
+            const res = await axios.post("/api/file", data);
+            const { data: { data: { url: imageUrl } } } = res;
+
+            return imageUrl;
+        } catch(error) {
+            throw new Error("error uploading image");
+        }
+    }
+
+    /**
      * handle form submission
      */
-    function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
+    async function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        console.log(formData);
+        setError("");
+        try {
+            setLoading(true);
+            const imageUrl = await handleImageSubmit();
+            console.log(formData);
+            const res = await axios.post("/api/user/create", {
+                ...formData,
+                email: session!.user.email,
+                image: imageUrl,
+                matches: []
+            });
+            const { ok, error } = res.data;
+            if (!ok) {
+                throw error;
+            } else {
+                router.push("/");
+            }
+        } catch(err: any) {
+            if (err!.response) {
+                setError(err.response.data.message);
+            } else {
+                setError(err.message);
+            }
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -110,12 +161,14 @@ export default function Register() {
                     <Image src={"/img/logo.png"} alt={"logo"} width={263} height={184} />
                 </div>
                 <div className={styles.input}>
-                    <div className={styles.info}>
+                    <form className={styles.info} onSubmit={handleFormSubmit}>
                         <ImagePicker
                             onChange={handleImageChange}
                             onRemove={handleRemoveSelectedImage}
                             image={formData.image}
                         />
+                        { error && <AlertMessage message={error} type="error"/> }
+                        { loading && <AlertMessage message="Loading..." type="loading"/> }
                         <Input
                             type="text"
                             placeholder="Enter your first name"
@@ -155,7 +208,7 @@ export default function Register() {
                         <Button type="submit" className={styles.signup}>
                             Sign up
                         </Button>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
