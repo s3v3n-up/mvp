@@ -13,6 +13,9 @@ import { object, string } from "yup";
 // Imports PHONE_REGEX
 import { PHONE_REGEX } from "@/lib/helpers/validation";
 
+/**
+ * api route for updating and getting user by username
+ */
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse

@@ -2,6 +2,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import Database from "@/lib/resources/database";
 import { calculateStats } from "@/lib/actions/user";
 
+/**
+ * api route for getting user stats
+ */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         const { username } = req.query;
