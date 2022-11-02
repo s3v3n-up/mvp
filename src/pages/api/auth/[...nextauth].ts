@@ -104,6 +104,9 @@ export const authOptions: NextAuthOptions = {
             return session;
         }
     },
+    pages: {
+        signIn: "/login"
+    }
 };
 
 // Exports the NextAuth
