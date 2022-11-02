@@ -1,32 +1,31 @@
 //third-party import
 import Image from "next/image";
 import Link from "next/link";
-import Icon from "@mui/material/Icon";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
+import { useContext } from "react";
 
 //local import
 import styles from "@/styles/Components.module.sass";
+import { ProfileContext } from "@/context/profile";
 
 /**
  * *
  *  @description components for navigation bar and bottom navigation, both responsive for mobile and desktop
  */
 export default function Navbar() {
-
-    //auth session
-    const { data: session } = useSession();
+    const profileContext = useContext(ProfileContext);
 
     //user profile image
     const [avatar, setAvatar] = useState("/img/logo.png");
 
     //set user profile image
     useEffect(() => {
-        if (session && session.user.isFinishedSignup) {
-            setAvatar(session.user.profile!.image);
+        if (profileContext && profileContext.currProfile) {
+            setAvatar(profileContext.currProfile.image);
         }
-    }, [session]);
+    }, [profileContext]);
 
     const router = useRouter();
 

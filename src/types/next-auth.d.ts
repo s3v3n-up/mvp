@@ -23,7 +23,7 @@ declare module "next-auth" {
        * if user have finished setting up their profile
        */
       isFinishedSignup: boolean;
-      profile?: UserProfile;
+      userName: string;
     } & DefaultSession["user"];
   }
 
@@ -31,7 +31,7 @@ declare module "next-auth" {
    * user type return by jwt callback
    */
   interface User {
+    userName: string;
     isFinishedSignup: boolean;
-    profile?: UserProfile;
   }
 }

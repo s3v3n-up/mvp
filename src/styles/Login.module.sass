@@ -41,14 +41,16 @@
 .imgwrapper
   display: flex
   justify-content: center
-  margin-top: 50px
+  @apply mt-14
 
 // This the styles for input component
 .input
   display: flex
   justify-content: center
   margin-top: 20px
-
+  width: 50%
+  @media screen and (max-width: 768px)
+    width: 90%
 
 .login
   display: flex
@@ -59,11 +61,11 @@
   width: 100%
   font-family: 'Inter', sans-serif
   font-weight: bold
-  font-size: 17px
+  font-size: 1rem
   text-align: center
-  letter-spacing: 5px
   text-transform: uppercase
-  margin-top: 50px
+  margin-top: 2rem
+  padding: 0.5rem
 
 .line
   display: flex
@@ -73,7 +75,7 @@
   display: flex
   justify-content: space-between
   align-items: center
-  width: 400px
+  width: 100%
   height: 50px
   padding: 0 0.5rem
   font-weight: bold
@@ -91,7 +93,7 @@
   display: flex
   justify-content: space-between
   align-items: center
-  width: 400px
+  width: 100%
   height: 50px
   padding: 0 0.5rem
 
