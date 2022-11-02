@@ -23,6 +23,7 @@ export default function useLocalStorage<T>(key: string, initialValue: T) {
         }
     });
 
+    // function to update the state and local storage value
     const setValue = (value: T) => {
         try {
             const valueToStore = value instanceof Function ? value(storedValue) : value;
