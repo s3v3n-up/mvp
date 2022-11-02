@@ -90,7 +90,7 @@ export default function Navbar() {
                     <Link href={"/login"} >
                         <button className="text-white bg-[#FC5C3E] rounded py-1 px-2 hidden md:flex" onClick={ ()=>signOut() }>Logout</button>
                     </Link>
-                    
+
                 </div>
                 <div className="relative h-10 w-10 rounded-full flex justify-end sm:hidden cursor-pointer">
                     <Link href={"/profile"}>
