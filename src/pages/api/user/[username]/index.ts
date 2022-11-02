@@ -74,7 +74,7 @@ export default async function handler(
             });
         }
 
-        // Catches and sends response status 400 and error
+    // Catches and sends response status 400 and error
     } catch (error: any) {
         res.status(400).json({
             message: "Bad Request",
@@ -82,4 +82,3 @@ export default async function handler(
         });
     }
 }
-

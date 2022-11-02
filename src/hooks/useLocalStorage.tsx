@@ -26,6 +26,8 @@ export default function useLocalStorage<T>(key: string, initialValue: T) {
     // function to update the state and local storage value
     const setValue = (value: T) => {
         try {
+
+            //if new value has type function run the function inside setState, else setState to new value
             const valueToStore = value instanceof Function ? value(storedValue) : value;
             setStoredValue(valueToStore);
             window.localStorage.setItem(key, JSON.stringify(valueToStore));
