@@ -120,12 +120,13 @@ export default function Register() {
             setLoading(true);
             const imageUrl = await handleImageSubmit();
             console.log(formData);
-            const res = await axios.post("/api/user/create", {
+            await axios.post("/api/user/create", {
                 ...formData,
                 email: session!.user.email,
                 image: imageUrl,
                 matches: []
             });
+            router.push("/");
         } catch(err: any) {
             if (err!.response) {
                 setError(err.response.data.message);
