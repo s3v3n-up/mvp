@@ -21,39 +21,24 @@ export async function createUser(user: UserProfile) {
         // Sets up the database
         await Database.setup();
 
-        // Deconstruct user to get username and email
-        const { userName, email } = user;
-
-        // Check if the username already exist in the database
-        const existingUser = await UserModel.findOne({ userName });
-
-        // Check if the email already exist in the database
-        const existingEmail = await UserModel.findOne({ email });
-
-        // If username exist returns an error code and message
-        if (existingUser || existingEmail) {
-            return {
-                code: 400,
-                message: "Username or Email already taken",
-            };
-        }
-
         // Creates a UserModel
         const player = new UserModel(user);
 
         // Saves the UserModel in the database
         await player.save();
 
-        // Returns a code and message for successful creation of user
-        return {
-            code: 200,
-            message: "User successfully created",
-        };
+        return player;
 
     // Catch any errors and throws a message
     } catch (error: any) {
-        console.log(error);
-        throw new Error("Error creating a user", error.message);
+        if (error.code === 11000 ) {
+            if (error.keyPattern.userName) {
+                throw new Error("Username already taken", { cause: error });
+            } else {
+                throw new Error("Email already taken", { cause: error });
+            }
+        }
+        throw new Error(error.message);
     }
 }
 
@@ -167,6 +152,37 @@ export async function getUserByUserName(userName: string) {
 
         // Returns the user
         return user;
+
+        // Catches and throws error
+    } catch(error: any) {
+        if (error.message) {
+            throw error;
+        }
+        throw new Error("Error getting user", error);
+    }
+}
+
+/**
+ * get a list of users by username
+ * @param {string[]} usernames of user we need to get
+ * @returns the list users document
+ */
+export async function getUsersByUserName(userNames: string[]) {
+    try {
+
+        // Sets up Database connection
+        await Database.setup();
+
+        // Stores and looks for a specific user by username
+        const users = await UserModel.find({ userName: { $in: userNames } });
+
+        // Checks if user exist
+        if (!users) {
+            throw new Error("username not exist");
+        }
+
+        // Returns the user
+        return users;
 
         // Catches and throws error
     } catch(error: any) {

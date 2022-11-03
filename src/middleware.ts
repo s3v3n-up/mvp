@@ -22,7 +22,7 @@ export async function middleware(req: NextRequest) {
             return NextResponse.redirect(new URL("/login", req.url));
         }
 
-        return NextResponse.rewrite(new URL("/login", req.url));
+        return;
     }
 
     if (!token.user.isFinishedSignup) {
@@ -34,5 +34,5 @@ export async function middleware(req: NextRequest) {
  * @config This is where you specify the routes, it should be an absolute path
  */
 export const config = {
-    matcher: ["/", "/login", "/api/register"]
+    matcher: ["/", "/login", "/api/register", "/user/:path*",]
 };

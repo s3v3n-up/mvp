@@ -4,13 +4,14 @@ import Image from "next/image";
 /**
  * player props
  * @prop {string} image - palyer image
- * @prop {string} name - player name
+ * @prop {string} userName - player name
  * @props onLeave - callback function when player leaves
  * @prop {string} variant - player variant (home/away)
  */
  interface PlayerProps {
     image: string;
-    name: string;
+    userName: string;
+    isLeavable: boolean;
     onLeave: () => void;
     variant: "home" | "away";
 }
@@ -50,8 +51,10 @@ export default function Player(props: PlayerProps) {
                     className="rounded-full"
                 />
             </div>
-            <div>{props.name}</div>
-            <button onClick={props.onLeave} className={variantStyle[props.variant].button}>Leave</button>
+            <div>{props.userName}</div>
+            {props.isLeavable && (
+                <button onClick={props.onLeave} className={variantStyle[props.variant].button}>Leave</button>
+            )}
         </div>
     );
 };

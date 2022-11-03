@@ -16,6 +16,12 @@ export default async function handler(
 
         // Deconstructruct id from query request
         const { id } = req.query;
+        if (typeof id !== "string") {
+            throw {
+                code: 400,
+                message: "bad request"
+            };
+        }
 
         // If the HTTP method is GET
         if (req.method === "GET") {
@@ -58,6 +64,7 @@ export default async function handler(
 
         // Catches a specific error when there is no match for the id set
     } catch (error: any) {
-        throw new Error("Failed searching for match", error);
+        const { code = 500, message = "internal server error" } = error;
+        res.status(code).json({ message });
     }
 }

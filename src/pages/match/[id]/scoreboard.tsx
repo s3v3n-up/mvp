@@ -1,57 +1,102 @@
-//nextjs import
+//third party imports
 import Image from "next/image";
 import { GetStaticPropsContext } from "next";
+import { useState, useEffect } from "react";
+import useSWR from "swr";
+import axios from "axios";
 
-//backend import
+//local import
 import { getMatches, getMatchById } from "@/lib/actions/match";
+import { getUsersByUserName } from "@/lib/actions/user";
 import Database from "@/lib/resources/database";
-
-//types import
 import type { Match } from "@/lib/types/Match";
-
-//components import
 import Player from "@/components/scoreboard/player";
-
-//styles import
 import styles from "@/styles/Scoreboard.module.sass";
+import fetcher from "@/lib/helpers/fetcher";
+import { UserProfile } from "@/lib/types/User";
 
-//fake players data
-const teams = [
-    [
-        {
-            name: "Player 1",
-            image: "https://i.pravatar.cc/300?img=1",
-        },
-        {
-            name: "Player 2",
-            image: "https://i.pravatar.cc/300?img=2",
-        },
-        {
-            name: "Player 3",
-            image: "https://i.pravatar.cc/300?img=3",
-        },
-    ],[
-        {
-            name: "Player 4",
-            image: "https://i.pravatar.cc/300?img=4",
-        },
-        {
-            name: "Player 5",
-            image: "https://i.pravatar.cc/300?img=5",
-        },
-        {
-            name: "Player 6",
-            image: "https://i.pravatar.cc/300?img=6",
-        }
-    ]
-];
+/**
+ * scoreboard props type
+ * @property {Match} match
+ * @property {UserProfile[]} players list of players in the match
+ */
+interface Props {
+    match: Match;
+    players: UserProfile[];
+}
+
+/**
+ * map players in a list to their team(home or away)
+ * @param {UserProfile[]} players list of players to map
+ * @param {{members: string[]}, {members: string[]}} teams to map players to
+ */
+function mapPlayerToTeam(players: UserProfile[], teams: [{members: string[]}, {members: string[]}]) {
+    const [home, away] = teams;
+    const team1Players = players.filter((player) => home.members.includes(player.userName));
+    const team2Players = players.filter((player) => away.members.includes(player.userName));
+
+    return [team1Players, team2Players];
+}
 
 /**
  * scoreboard page
  * @param props - match of the scoreboard
  * @returns {JSX.Element} scoreboard page element
  */
-export default function Scoreboard(props: Match) {
+export default function Scoreboard({ match, players }: Props) {
+
+    //state for keeping track of if user could leave the match
+    const [isLeavable, setIsLeavable] = useState<boolean>(true);
+
+    //match state
+    const [currMatch, setMatch] = useState<Match>(match);
+
+    //current all players state
+    const [currPlayers, setPlayers] = useState<UserProfile[]>(players);
+
+    //current home team members state
+    const [homeTeam, setHomeTeam] = useState<UserProfile[]>(
+        mapPlayerToTeam(players, currMatch.teams)[0]
+    );
+
+    //current away team members state
+    const [awayTeam, setAwayTeam] = useState<UserProfile[]>(
+        mapPlayerToTeam(players, currMatch.teams)[1]
+    );
+
+    //refetch match data every 1 seconds
+    const { data, error } = useSWR<{match: Match}>(`/api/match/${match._id}`,fetcher, {
+        refreshInterval: 1000,
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+        fallback: match
+    });
+
+    useEffect(()=> {
+        (async()=> {
+            if (data && !error) {
+                setMatch(data.match);
+                const allPlayers = data.match.teams[0].members.concat(data.match.teams[1].members);
+                const players = await axios.get<UserProfile[]>(`/api/user?usernames=${allPlayers.join(",")}`);
+                setPlayers(players.data);
+                const mappedTeams = mapPlayerToTeam(players.data, data.match.teams);
+                setHomeTeam(mappedTeams[0]);
+                setAwayTeam(mappedTeams[1]);
+            }
+        })();
+    },[data, error]);
+
+    //if members is full, send start time to server and start the count down
+    //send ably start event to server, trigger 30 seconds count down, after 30 seconds, no player can leave the match
+
+    //if match is started, start match countup
+
+    //if match is pauseed, send ably pause event to server, stop match countup
+
+    //if match is resumed, send ably resume event to server, start match countup
+
+    //if match is ended, send ably end event to server, stop match countup
+
     return(
         <div className={styles.page}>
             <div className="relative h-7 w-full">
@@ -85,15 +130,18 @@ export default function Scoreboard(props: Match) {
                         </div>
                     </div>
                     <div className={styles.homeplayers}>
-                        { teams[0].map((player, index) => (
-                            <Player
-                                key={index}
-                                image={player.image}
-                                name={player.name}
-                                onLeave={() => console.log("leave")}
-                                variant="home"
-                            />
-                        ))}
+                        {
+                            homeTeam.map((player, index) =>
+                                <Player
+                                    key={index}
+                                    userName={player.userName}
+                                    image={player.image}
+                                    isLeavable={isLeavable}
+                                    onLeave={()=> {}}
+                                    variant="home"
+                                />
+                            )
+                        }
                     </div>
                     <button className={styles.pause}> Pause </button>
                 </div>
@@ -115,15 +163,18 @@ export default function Scoreboard(props: Match) {
                         </div>
                     </div>
                     <div className={styles.awayplayers}>
-                        { teams[1].map((player, index) => (
-                            <Player
-                                key={index}
-                                image={player.image}
-                                name={player.name}
-                                onLeave={() => console.log("leave")}
-                                variant="away"
-                            />
-                        ))}
+                        {
+                            awayTeam.map((player, index) =>
+                                <Player
+                                    key={index}
+                                    userName={player.userName}
+                                    image={player.image}
+                                    isLeavable={isLeavable}
+                                    onLeave={()=> {}}
+                                    variant="away"
+                                />
+                            )
+                        }
                     </div>
                     <button className={styles.finish}> Finish </button>
                 </div>
@@ -154,10 +205,12 @@ export async function getStaticProps(context: GetStaticPropsContext) {
     const { id } = context.params!;
     await Database.setup();
     const match = await getMatchById(id as string);
+    const players = await getUsersByUserName(match.teams[0].members.concat(match.teams[1].members));
 
     return {
         props: {
-            match: JSON.parse(JSON.stringify(match))
+            match: JSON.parse(JSON.stringify(match)),
+            players: JSON.parse(JSON.stringify(players))
         },
         revalidate: 10
     };

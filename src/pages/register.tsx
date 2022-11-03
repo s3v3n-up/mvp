@@ -1,7 +1,7 @@
 //third-party imports
 import Image from "next/image";
 import React, { useEffect, MouseEvent, FormEvent } from "react";
-import { useSession } from "next-auth/react";
+import { useSession, getSession } from "next-auth/react";
 import { useState, ChangeEvent } from "react";
 import { Person, Phone, Badge } from "@mui/icons-material";
 import { useRouter } from "next/router";
@@ -126,6 +126,7 @@ export default function Register() {
                 image: imageUrl,
                 matches: []
             });
+            await getSession();
             router.push("/");
         } catch(err: any) {
             if (err!.response) {
