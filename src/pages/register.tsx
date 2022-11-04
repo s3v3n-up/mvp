@@ -16,8 +16,8 @@ import Button from "@/components/buttons/primaryButton";
 const Person = dynamic(() => import("@mui/icons-material/Person"));
 const Phone = dynamic(() => import("@mui/icons-material/Phone"));
 const Badge = dynamic(() => import("@mui/icons-material/Badge"));
-const AlertMessage = dynamic(() => import("@/components/alertMessage"));
-const ImagePicker = dynamic(() => import("@/components/imagepicker"));
+const AlertMessage = dynamic(() => import("@/components/alertMessage"), { ssr: false });
+const ImagePicker = dynamic(() => import("@/components/imagepicker"), { ssr: false });
 
 /**
  * register data type
