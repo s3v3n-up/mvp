@@ -24,8 +24,8 @@ const TeamSchema = new Schema({
     status: {
         type: String,
         required: true,
-        default: "UNFINISHED",
-        enum: ["WIN", "LOSE", "DRAW", "UNFINISHED"]
+        default: "UNSET",
+        enum: ["WIN", "LOSE", "DRAW", "UNSET"]
     }
 });
 
