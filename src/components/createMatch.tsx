@@ -1,19 +1,20 @@
 // Third-party imports
 import { useSession } from "next-auth/react";
 import { ChangeEvent, FormEvent, useState } from "react";
-import {
-    AddLocationAlt,
-    SportsBasketball,
-    PeopleAlt,
-    AccessTime,
-} from "@mui/icons-material";
 import router from "next/router";
 import axios from "axios";
+import dynamic from "next/dynamic";
 
 // Local imports
 import Input from "./Input";
 import SelectOption from "./SelectOption";
 import { Location, Sports, Props, Modes } from "@/lib/types/General";
+
+//dnamic imports
+const AddLocationAlt = dynamic(() => import("@mui/icons-material/AddLocationAlt"));
+const SportsBasketball = dynamic(() => import("@mui/icons-material/SportsBasketball"));
+const PeopleAlt = dynamic(() => import("@mui/icons-material/PeopleAlt"));
+const AccessTime = dynamic(() => import("@mui/icons-material/AccessTime"));
 
 /*
  * this component is used in create match page
@@ -39,7 +40,7 @@ export default function CreateMatch({ props }: Props) {
     const [description, setDescription] = useState("");
 
     // Array containing all existing sport
-    const allSports: Sports[] = [];
+    const allSports: Sports[] = [{ value: "basketball", name: "basketball" }, { value: "football", name: "football" }, { value: "tennis", name: "tennis" }, { value: "volleyball", name: "volleyball" }];
 
     // Array containing all accessed modes per existing sport
     const allModes: Modes[] = [];
@@ -120,18 +121,20 @@ export default function CreateMatch({ props }: Props) {
             router.push("/");
         } catch (err: any) {
             throw new Error("NETWORK ERROR", err);
+        } finally {
+            setLoading(false);
         }
     }
 
     return (
         <div className="flex justify-evenly">
-            <div className="flex flex-col space-y-2 lg:justify-end ">
+            <div className="flex flex-col gap-2 lg:justify-end ">
                 <div className="mt-5">
                     <h1 className="text-[#f3f2ef] text-3xl text-center pt-3">
-            Create a Match
+                        Create a Match
                     </h1>
                 </div>
-                <form onSubmit={handleFormSubmit}>
+                <form onSubmit={handleFormSubmit} className="w-full">
                     <Input
                         label="Location"
                         value={"0"}
@@ -169,7 +172,7 @@ export default function CreateMatch({ props }: Props) {
                     </Input>
                     <div className="my-2">
                         <label className="text-[#f3f2ef]" htmlFor="description">
-              Description
+                            Description
                         </label>
                     </div>
                     <div>
@@ -187,7 +190,7 @@ export default function CreateMatch({ props }: Props) {
                             type="submit"
                             className="rounded-sm w-80 bg-[#fc5c3e] h-10  font-extrabold  text-[#f1ecec]"
                         >
-              CREATE
+                            CREATE
                         </button>
                     </div>
                 </form>

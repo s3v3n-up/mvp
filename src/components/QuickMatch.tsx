@@ -2,11 +2,17 @@ import Image from "next/image";
 import Input from "./Input";
 import SelectOption from "./SelectOption";
 import { ChangeEvent, FormEvent, useState } from "react";
-import { AddLocationAlt,SportsBasketball,PeopleAlt } from "@mui/icons-material";
 import { Location, Sports, Props, Modes } from "@/lib/types/General";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import router from "next/router";
+import dynamic from "next/dynamic";
+
+//dynamic imports
+const AddLocationAlt = dynamic(() => import("@mui/icons-material/AddLocationAlt"));
+const SportsBasketball = dynamic(() => import("@mui/icons-material/SportsBasketball"));
+const PeopleAlt = dynamic(() => import("@mui/icons-material/PeopleAlt"));
+
 
 
 /*
@@ -71,7 +77,7 @@ export default function QuickMatch({ props }: Props) {
 
 
     // Array containing all existing sport
-    const allSports: Sports[] = [];
+    const allSports: Sports[] = [{ value: "basketball", name:"basketball" }, { value: "soccer", name: "soccer" } ];
 
     // Array containing all accessed modes per existing sport
     const allModes: Modes[] = [];
