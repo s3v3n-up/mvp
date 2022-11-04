@@ -1,5 +1,7 @@
 //import from nextjs
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 /**
  * player props
@@ -22,6 +24,18 @@ import Image from "next/image";
  * @returns {JSX.Element} - player component for scoreboard page
  */
 export default function Player(props: PlayerProps) {
+
+    //check to see should leave button be shown
+    const { data: session } = useSession();
+    const [showLeave, setShowLeave] = useState<boolean>(false);
+
+    useEffect(()=> {
+        if (session && session.user) {
+            if (session.user.userName === props.userName) {
+                setShowLeave(true);
+            }
+        }
+    }, [session, props.userName]);
 
     /**
      * component styles for different player variant
@@ -52,8 +66,10 @@ export default function Player(props: PlayerProps) {
                 />
             </div>
             <div>{props.userName}</div>
-            {props.isLeavable && (
+            {props.isLeavable && showLeave ? (
                 <button onClick={props.onLeave} className={variantStyle[props.variant].button}>Leave</button>
+            ): (
+                <div className="px-7 py-0.5"></div>
             )}
         </div>
     );
