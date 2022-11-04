@@ -1,21 +1,30 @@
+//Import card style module
 import styles from "./Card.module.sass";
 
-export default function Card() {
+//Interface for match detail props
+interface Props {
+    startTime: string;
+    sport: string;
+    location: string;
+}
+
+//Card component to display match information
+export default function Card(details: Props) {
     return(
         <div className={styles.cardContainer}>
             <div className={styles.cardInfo}>
                 <div className={styles.time}>
-                    <p>Time</p>
+                    <p>{details.startTime}</p>
                 </div>
                 <div className={styles.sportType}>
-                    <p>Soccer</p>
+                    <p>{details.sport}</p>
                 </div>
                 <div className={styles.miniContainer}>
                     <div className={styles.location}>
-                        <p>Location</p>
+                        <p>{details.location}</p>
                     </div>
-
-                    <button className={styles.leaveButton}>Leave</button>
+                    <button className={styles.cancelButton}>Leave</button>
+                    <button className={styles.cancelButton}>Delete</button>
                 </div>
             </div>
         </div>
