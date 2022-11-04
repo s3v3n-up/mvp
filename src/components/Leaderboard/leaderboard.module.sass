@@ -9,7 +9,7 @@
 
 // styling for the info in the leaderboard bars
 .topics 
-    display: inline-flex
+    display: flex
     flex-direction: row
     justify-content: space-between
     align-items: center
@@ -58,21 +58,18 @@
 //padding on the left of the rank numbers
 .infoleft
     padding-left: 1rem
+    width: 2rem
 
 //padding on the right of the wins numbers
 .inforight
     padding-right: 1rem
+    width: 3rem
 
 //Media Queries for mobile view
 @media screen and (max-width: 768px)
-    .topics
-        width: 21.875rem
-    .ranks
-        width: 21.875rem
-    .ranks2
-        width: 21.875rem
-    .ranks3
-        width: 21.875rem
+    .ranks, .ranks2, .ranks3, .topics
+        width: 90%
+    
     .leaderboard
         padding-bottom: 5rem
         height: 100%        
