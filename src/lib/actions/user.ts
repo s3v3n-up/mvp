@@ -9,7 +9,6 @@ import Database from "@/lib/resources/database";
 
 // Import MatchModel Schema
 import MatchModel from "../resources/models/Match";
-import { string } from "yup";
 
 /**
  * @description a function that creates user and save to the database
