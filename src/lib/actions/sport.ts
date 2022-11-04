@@ -5,7 +5,6 @@ import Database from "../resources/database";
 /**
  * @description this is a function that gets all sports from the sport models
  */
-
 export async function getAllSports() {
     try {
 
@@ -22,5 +21,4 @@ export async function getAllSports() {
     } catch(error: any) {
         throw new Error("Error retrieving sports");
     }
-
 }

@@ -7,7 +7,6 @@ import { getAllSports } from "@/lib/actions/sport";
 /**
  * @description this a function that handles api request for getting all sports
  */
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     // If the HTTP method is GET
