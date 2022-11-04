@@ -77,7 +77,8 @@ const matchSchema = new Schema<Match>({
     // This is the end date/time of the match
     matchEnd: {
         type: Date,
-        required: true
+        required: true,
+        default: Date.now()
     },
 
     // This is the match details, also a place where you can input extra details eg. Discord link, Facebook messenger link etc.
