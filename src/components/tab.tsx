@@ -39,7 +39,7 @@ export default function Tab() {
           </>
         },
     ];
-    
+
     //The rendered content
     return(
         <div className={styles.background}>
