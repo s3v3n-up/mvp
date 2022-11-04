@@ -191,7 +191,7 @@ export default function Scoreboard({ match, players }: Props) {
                             className="z-10 bg-white p-5 py-9 w-11/12 m-auto rounded-md text-black font-extrabold text-3xl text-center"
                             type="number"
                             value={awayScore}
-                            onChange={(e)=> handleScoreChange("away", parseInt(e.target.value))}
+                            onChange={(e)=> handleScoreChange("away", e.target.value)}
                             readOnly={!isMatchHost}
                         />
                     </div>
