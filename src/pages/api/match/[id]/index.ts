@@ -51,9 +51,10 @@ export default async function handler(
                 matchType: "REGULAR",
                 matchEnd: new Date(Date.now()),
                 teams: [
-                    { members: [""], score: 0, status: "UNFINISHED" },
-                    { members: [""], score: 0, status: "UNFINISHED" },
+                    { members: [""], score: 0, status: "UNSET" },
+                    { members: [""], score: 0, status: "UNSET" },
                 ],
+                status: "UPCOMING",
             });
 
             // Then return updateMatch as a json response
