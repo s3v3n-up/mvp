@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import useSWR from "swr";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 //local import
 import { getMatches, getMatchById } from "@/lib/actions/match";
@@ -15,28 +16,16 @@ import Player from "@/components/scoreboard/player";
 import styles from "@/styles/Scoreboard.module.sass";
 import fetcher from "@/lib/helpers/fetcher";
 import { UserProfile } from "@/lib/types/User";
+import { mapPlayerToTeam } from "@/lib/helpers/scoreboard";
 
 /**
  * scoreboard props type
  * @property {Match} match
- * @property {UserProfile[]} players list of players in the match
+ * @property {UserProfile[]} players list of profiles of players in the match
  */
 interface Props {
     match: Match;
     players: UserProfile[];
-}
-
-/**
- * map players in a list to their team(home or away)
- * @param {UserProfile[]} players list of players to map
- * @param {{members: string[]}, {members: string[]}} teams to map players to
- */
-function mapPlayerToTeam(players: UserProfile[], teams: [{members: string[]}, {members: string[]}]) {
-    const [home, away] = teams;
-    const team1Players = players.filter((player) => home.members.includes(player.userName));
-    const team2Players = players.filter((player) => away.members.includes(player.userName));
-
-    return [team1Players, team2Players];
 }
 
 /**
@@ -46,24 +35,56 @@ function mapPlayerToTeam(players: UserProfile[], teams: [{members: string[]}, {m
  */
 export default function Scoreboard({ match, players }: Props) {
 
-    //state for keeping track of if user could leave the match
-    const [isLeavable, setIsLeavable] = useState<boolean>(true);
+    //guard page against unauthenticated users and check if user is host of the match or in the match
+    const { data: session, status } = useSession();
+    const router = useRouter();
+    const [isMatchHost, setIsMatchHost] = useState<boolean>(false);
+
+    useEffect(()=> {
+        if (status === "unauthenticated") {
+            router.push("/login");
+
+            return;
+        }
+        if (session && session.user) {
+            setIsMatchHost(session.user.userName === match.matchHost);
+        }
+    }, [session, status, router, match]);
 
     //match state
     const [currMatch, setMatch] = useState<Match>(match);
 
-    //current all players state
-    const [currPlayers, setPlayers] = useState<UserProfile[]>(players);
+    //state for keeping track of if user could leave the match
+    const [isLeavable, setIsLeavable] = useState<boolean>(true);
 
-    //current home team members state
+    //current home and away team members state
     const [homeTeam, setHomeTeam] = useState<UserProfile[]>(
+
+        //map players profiles to home team
         mapPlayerToTeam(players, currMatch.teams)[0]
     );
-
-    //current away team members state
     const [awayTeam, setAwayTeam] = useState<UserProfile[]>(
+
+        //map players profiles to away team
         mapPlayerToTeam(players, currMatch.teams)[1]
     );
+
+    //team score states
+    const [homeScore, setHomeScore] = useState<number>(0);
+    const [awayScore, setAwayScore] = useState<number>(0);
+
+    //is match over state
+    const [isFinished, setFinished] = useState<boolean>(false);
+
+    //handle match score change
+    function handleScoreChange(team: "home" | "away", score: number) {
+        if (team === "home") {
+            setHomeScore(score);
+        }
+        else {
+            setAwayScore(score);
+        }
+    }
 
     //refetch match data every 1 seconds
     const { data, error } = useSWR<{match: Match}>(`/api/match/${match._id}`,fetcher, {
@@ -80,7 +101,6 @@ export default function Scoreboard({ match, players }: Props) {
                 setMatch(data.match);
                 const allPlayers = data.match.teams[0].members.concat(data.match.teams[1].members);
                 const players = await axios.get<UserProfile[]>(`/api/user?usernames=${allPlayers.join(",")}`);
-                setPlayers(players.data);
                 const mappedTeams = mapPlayerToTeam(players.data, data.match.teams);
                 setHomeTeam(mappedTeams[0]);
                 setAwayTeam(mappedTeams[1]);
@@ -89,8 +109,6 @@ export default function Scoreboard({ match, players }: Props) {
     },[data, error]);
 
     //guard against if match is finished or cancelled
-    const router = useRouter();
-
     useEffect(()=> {
         if (currMatch.status === "FINISHED") {
             router.push(`/match/${currMatch._id}/result`);
@@ -128,9 +146,13 @@ export default function Scoreboard({ match, players }: Props) {
                                 priority={true}
                             />
                         </div>
-                        <div className="z-10 bg-white p-5 py-9 w-11/12 m-auto rounded-md border-2 border-orange-600">
-                            <h1 className="text-black font-extrabold text-3xl text-center">0</h1>
-                        </div>
+                        <input
+                            className="z-10 bg-white p-5 py-9 w-11/12 m-auto rounded-md text-black font-extrabold text-3xl text-center border-2 border-orange-500"
+                            type="number"
+                            value={homeScore}
+                            onChange={(e)=> handleScoreChange("home", parseInt(e.target.value))}
+                            readOnly={!isMatchHost}
+                        />
                     </div>
                     <div className={styles.homeplayers}>
                         {
@@ -161,9 +183,13 @@ export default function Scoreboard({ match, players }: Props) {
                                 priority={true}
                             />
                         </div>
-                        <div className="z-10 bg-white p-5 py-9 w-11/12 m-auto rounded-md">
-                            <h1 className="text-black font-extrabold text-3xl text-center">0</h1>
-                        </div>
+                        <input
+                            className="z-10 bg-white p-5 py-9 w-11/12 m-auto rounded-md text-black font-extrabold text-3xl text-center"
+                            type="number"
+                            value={awayScore}
+                            onChange={(e)=> handleScoreChange("away", parseInt(e.target.value))}
+                            readOnly={!isMatchHost}
+                        />
                     </div>
                     <div className={styles.awayplayers}>
                         {
@@ -179,7 +205,12 @@ export default function Scoreboard({ match, players }: Props) {
                             )
                         }
                     </div>
-                    <button className={styles.finish}> Finish </button>
+                    <button
+                        className={styles.finish}
+                        onClick={()=> setFinished(true)}
+                    >
+                        Finish
+                    </button>
                 </div>
             </div>
         </div>
@@ -207,7 +238,11 @@ export async function getStaticPaths() {
 export async function getStaticProps(context: GetStaticPropsContext) {
     const { id } = context.params!;
     await Database.setup();
+
+    //get match data
     const match = await getMatchById(id as string);
+
+    //guards against finished or cancelled matches
     if (match.status === "FINISHED") {
         return {
             redirect: {
@@ -216,6 +251,17 @@ export async function getStaticProps(context: GetStaticPropsContext) {
             }
         };
     }
+
+    if (match.status === "CANCELLED") {
+        return {
+            redirect: {
+                destination: `/match/${id}/cancel`,
+                permanent: false
+            }
+        };
+    }
+
+    //get all profiles of players in the match
     const players = await getUsersByUserName(match.teams[0].members.concat(match.teams[1].members));
 
     return {
