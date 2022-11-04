@@ -47,7 +47,7 @@ export default async function handler(
             await schema.validate(req.body);
 
             // Inserting the values into an object variable
-            const match = {
+            const match: Match = {
                 matchHost,
                 sport,
                 gameMode,
@@ -57,6 +57,7 @@ export default async function handler(
                 matchEnd,
                 description,
                 teams,
+                status: "UPCOMING",
             };
 
             // Initialize connection to database

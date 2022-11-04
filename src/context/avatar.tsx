@@ -23,17 +23,17 @@ export const AvatarContext = createContext<ContextAvatar | null>(null);
  */
 export default function AvatarProvider ({ children }: {children: ReactNode}) {
     const { data: session } = useSession();
-    const [isDataLoaded, setIsLoaded] = useState<boolean>(false);
+    const [isAvatarLoaded, setIsAvatarLoaded] = useState<boolean>(false);
     const [currAvatar, setCurrAvatar] = useLocalStorage<string | null>("currAvatar", null);
 
     //fetch user profile and set it's image as current avatar
     useMemo(async () => {
-        if (session && session.user.isFinishedSignup && !currAvatar && !isDataLoaded) {
+        if (session && session.user.isFinishedSignup && !currAvatar && !isAvatarLoaded) {
             const { data } = await axios.get(`/api/user/${session.user.userName}`);
             setCurrAvatar(data.image);
-            setIsLoaded(true);
+            setIsAvatarLoaded(true);
         }
-    }, [session, currAvatar, setCurrAvatar, isDataLoaded, setIsLoaded]);
+    }, [session, currAvatar, isAvatarLoaded, setCurrAvatar]);
 
     return (
         <AvatarContext.Provider value={{ currAvatar, setCurrAvatar }}>

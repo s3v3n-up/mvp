@@ -1,18 +1,23 @@
 //third-party imports
 import Image from "next/image";
 import React, { useEffect, MouseEvent, FormEvent } from "react";
-import { useSession } from "next-auth/react";
+import { useSession, getSession } from "next-auth/react";
 import { useState, ChangeEvent } from "react";
-import { Person, Phone, Badge } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import axios from "axios";
+import dynamic from "next/dynamic";
 
 //local imports
 import styles from "@/styles/Register.module.sass";
 import Input from "@/components/Input";
 import Button from "@/components/buttons/primaryButton";
-import ImagePicker from "@/components/imagepicker";
-import AlertMessage from "@/components/alertMessage";
+
+//dynamic imports
+const Person = dynamic(() => import("@mui/icons-material/Person"));
+const Phone = dynamic(() => import("@mui/icons-material/Phone"));
+const Badge = dynamic(() => import("@mui/icons-material/Badge"));
+const AlertMessage = dynamic(() => import("@/components/alertMessage"));
+const ImagePicker = dynamic(() => import("@/components/imagepicker"));
 
 /**
  * register data type
@@ -126,9 +131,10 @@ export default function Register() {
                 image: imageUrl,
                 matches: []
             });
+            await getSession();
             router.push("/");
         } catch(err: any) {
-            if (err.response && err.response !== undefined) {
+            if (err!.response) {
                 setError(err.response.data.message);
             } else {
                 setError(err.message);
@@ -153,7 +159,7 @@ export default function Register() {
             </div>
             <div className="flex flex-col items-center flex-auto">
                 <div className={styles.imgwrapper}>
-                    <Image src={"/img/logo.png"} alt={"logo"} width={263} height={184} />
+                    <Image src={"/img/logo.png"} alt={"logo"} width={263} height={184} priority/>
                 </div>
                 <div className={styles.input}>
                     <form className={styles.info} onSubmit={handleFormSubmit}>

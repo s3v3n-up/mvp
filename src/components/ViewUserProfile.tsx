@@ -1,6 +1,11 @@
 import Input from "../components/Input";
-import { Person, FolderSharedOutlined, Phone } from "@mui/icons-material";
 import Image from "next/image";
+import dynamic from "next/dynamic";
+
+//dynamic imports
+const Person = dynamic(() => import("@mui/icons-material/Person"));
+const Phone = dynamic(() => import("@mui/icons-material/Phone"));
+const FolderSharedOutlined = dynamic(() => import("@mui/icons-material/FolderSharedOutlined"));
 
 /*
  * type of user data
@@ -34,6 +39,8 @@ export default function ViewUserProfile({ data }: { data: Data }) {
                         objectPosition="center"
                         alt="avatar"
                         className="rounded-full"
+                        placeholder="blur"
+                        blurDataURL="/img/logo.png"
                     />
                 </div>
                 <Input label="Full Name" value={data.fullName} name="fullname" readonly>
@@ -65,3 +72,4 @@ export default function ViewUserProfile({ data }: { data: Data }) {
         </div>
     );
 }
+

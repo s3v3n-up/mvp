@@ -1,12 +1,11 @@
 //third-party imports
 import Image from "next/image";
-import { Icon } from "@mui/material";
-import { Email } from "@mui/icons-material";
 import { ChangeEvent, FormEvent, useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import dynamic from "next/dynamic";
 // eslint-disable-next-line camelcase
 import { unstable_getServerSession } from "next-auth";
 import { GetServerSidePropsContext } from "next";
@@ -15,7 +14,11 @@ import { GetServerSidePropsContext } from "next";
 import styles from "@/styles/Login.module.sass";
 import Button from "@/components/buttons/primaryButton";
 import Input from "@/components/Input";
-import AlertMessage from "@/components/alertMessage";
+
+//dynamic imports
+const EmailIcon = dynamic(() => import("@mui/icons-material/Email"));
+const IconComponent = dynamic(() => import("@mui/material/Icon"));
+const AlertMessage = dynamic(() => import("@/components/alertMessage"));
 
 /**
  * @description this page lets user login using their email
@@ -84,7 +87,7 @@ export default function Login() {
             </div>
             <div className="flex flex-col items-center flex-auto">
                 <div className={styles.imgwrapper}>
-                    <Image src={"/img/logo.png"} alt="logo" width={263} height={184} />
+                    <Image src={"/img/logo.png"} alt="logo" width={263} height={184} priority/>
                 </div>
                 <div className={styles.input}>
                     <div className="w-full">
@@ -96,7 +99,7 @@ export default function Login() {
                                 value={email}
                                 onChange={handleEmailChange}
                             >
-                                <Email />
+                                <EmailIcon />
                             </Input>
                             <Button type="submit" className={styles.login}>
                                 Log in
@@ -113,7 +116,7 @@ export default function Login() {
                             onClick={ ()=> {
                                 signIn("discord");
                             } }>
-                            <Icon fontSize="large">
+                            <IconComponent fontSize="large">
                                 <Image
                                     width={100}
                                     height={100}
@@ -121,7 +124,7 @@ export default function Login() {
                                     alt={"icon"}
                                     layout="responsive"
                                 />
-                            </Icon>
+                            </IconComponent>
                             <p>Continue with Discord</p>
                         </button>
                         <button
@@ -131,7 +134,7 @@ export default function Login() {
                                 signIn("google");
                             }}
                         >
-                            <Icon fontSize="large">
+                            <IconComponent fontSize="large">
                                 <Image
                                     width={100}
                                     height={100}
@@ -139,7 +142,7 @@ export default function Login() {
                                     alt={"icon"}
                                     layout="responsive"
                                 />
-                            </Icon>
+                            </IconComponent>
                             <p>Continue with Google</p>
                         </button>
                     </div>
