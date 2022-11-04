@@ -88,6 +88,7 @@ export const authOptions: NextAuthOptions = {
                     const profile = await getUserByEmail(token.user.email!);
                     token.user.isFinishedSignup = true;
                     token.user.userName = profile.userName;
+                    token.user.id = profile.id; // Added this to be accessed for matchHost entry
                 }
 
                 return token;
