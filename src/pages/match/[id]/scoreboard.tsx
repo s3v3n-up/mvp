@@ -72,6 +72,7 @@ export default function Scoreboard({ match, players }: Props) {
         fallback: match
     });
 
+    //every time match data is updated, update the states
     useEffect(()=> {
         (async()=> {
             if (data && !error) {
@@ -85,17 +86,6 @@ export default function Scoreboard({ match, players }: Props) {
             }
         })();
     },[data, error]);
-
-    //if members is full, send start time to server and start the count down
-    //send ably start event to server, trigger 30 seconds count down, after 30 seconds, no player can leave the match
-
-    //if match is started, start match countup
-
-    //if match is pauseed, send ably pause event to server, stop match countup
-
-    //if match is resumed, send ably resume event to server, start match countup
-
-    //if match is ended, send ably end event to server, stop match countup
 
     return(
         <div className={styles.page}>
