@@ -7,6 +7,7 @@ declare module "next-auth/jwt" {
   interface JWT {
     user: {
       isFinishedSignup: boolean;
+	  id: string
     } & User;
   }
 }
@@ -24,6 +25,7 @@ declare module "next-auth" {
        */
       isFinishedSignup: boolean;
       userName: string;
+	  id: string;
     } & DefaultSession["user"];
   }
 
