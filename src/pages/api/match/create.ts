@@ -37,10 +37,10 @@ export default async function handler(
                 gameMode: string().required(),
                 matchType: string().required(),
                 location: object().required(),
-                matchStart: date(),
+                matchStart: date().required(),
                 matchEnd: date(),
                 description: string().required(),
-                teams: array().required(),
+                teams: array(),
             });
 
             // Checks if the values from the request body are meeting the validation rules set.

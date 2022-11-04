@@ -1,3 +1,4 @@
+// Import Response & Request
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -25,6 +26,7 @@ export async function middleware(req: NextRequest) {
         return NextResponse.rewrite(new URL("/login", req.url));
     }
 
+    // If user is not finished signing up then redirect to register page
     if (!token.user.isFinishedSignup) {
         return NextResponse.redirect(new URL("/register", req.url));
     }
@@ -34,5 +36,5 @@ export async function middleware(req: NextRequest) {
  * @config This is where you specify the routes, it should be an absolute path
  */
 export const config = {
-    matcher: ["/", "/login", "/api/register"]
+    matcher: ["/", "/api/match/create", "/create", "/api/sport/all"]
 };
