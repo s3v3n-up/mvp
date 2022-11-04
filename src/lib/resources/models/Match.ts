@@ -80,8 +80,7 @@ const matchSchema = new Schema<Match>({
 
     // This is the match details, also a place where you can input extra details eg. Discord link, Facebook messenger link etc.
     description: {
-        type: String,
-        required: true,
+        type: String
     },
 
     // These are the details or records for the home team, such as members, score and match result.

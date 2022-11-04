@@ -39,7 +39,7 @@ export default async function handler(
                 location: object().required(),
                 matchStart: date().required(),
                 matchEnd: date(),
-                description: string().required(),
+                description: string(),
                 teams: array(),
             });
 

@@ -13,29 +13,7 @@ import axios from "axios";
 // Local imports
 import Input from "./Input";
 import SelectOption from "./SelectOption";
-
-// Location interface
-interface Location {
-  lng: number;
-  lat: number;
-}
-
-// Props interface
-interface Props {
-  props: string[];
-}
-
-// Modes interface for all sport game modes
-interface Modes {
-  value: string;
-  name: string;
-}
-
-// Sports interface for all sports
-interface Sports {
-  value: string;
-  name: string;
-}
+import { Location, Sports, Props, Modes } from "@/lib/types/General";
 
 /*
  * this component is used in create match page
@@ -52,7 +30,7 @@ export default function CreateMatch({ props }: Props) {
     const [sportname, setSportname] = useState("Basketball");
 
     // Mode useState
-    const [mode, setMode] = useState("");
+    const [mode, setMode] = useState("1V1");
 
     // Date useState
     const [date, setDate] = useState("");
@@ -103,21 +81,18 @@ export default function CreateMatch({ props }: Props) {
     // Function to handle mode change event
     function handleModeChange(e: ChangeEvent<HTMLSelectElement>) {
         const val = e.target.value;
-        console.log(val);
         setMode(val);
     }
 
     // Function to handle date change event
     function handleDateChange(e: ChangeEvent<HTMLInputElement>) {
         const val = e.target.value;
-
         setDate(val);
     }
 
     // Function to handle description change event
     function handleDescriptionChange(e: ChangeEvent<HTMLTextAreaElement>) {
         const val = e.target.value;
-
         setDescription(val);
     }
 
