@@ -14,7 +14,7 @@ export interface Data {
     win: number;
     lose: number;
     draw: number;
-  }
+  };
 }
 
 /*
@@ -67,3 +67,4 @@ export default function ViewUserProfile({ data }: { data: Data }) {
         </div>
     );
 }
+
