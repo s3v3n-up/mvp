@@ -134,7 +134,7 @@ export default function Register() {
             await getSession();
             router.push("/");
         } catch(err: any) {
-            if (err.response && err.response !== undefined) {
+            if (err!.response) {
                 setError(err.response.data.message);
             } else {
                 setError(err.message);

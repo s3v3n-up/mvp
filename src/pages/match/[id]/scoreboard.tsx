@@ -4,6 +4,7 @@ import { GetStaticPropsContext } from "next";
 import { useState, useEffect } from "react";
 import useSWR from "swr";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 //local import
 import { getMatches, getMatchById } from "@/lib/actions/match";
@@ -86,6 +87,18 @@ export default function Scoreboard({ match, players }: Props) {
             }
         })();
     },[data, error]);
+
+    //guard against if match is finished or cancelled
+    const router = useRouter();
+
+    useEffect(()=> {
+        if (currMatch.status === "FINISHED") {
+            router.push(`/match/${currMatch._id}/result`);
+        }
+        if (currMatch.status === "CANCELLED") {
+            router.push(`/match/${currMatch._id}/cancel`);
+        }
+    }, [currMatch, router]);
 
     return(
         <div className={styles.page}>
@@ -195,6 +208,14 @@ export async function getStaticProps(context: GetStaticPropsContext) {
     const { id } = context.params!;
     await Database.setup();
     const match = await getMatchById(id as string);
+    if (match.status === "FINISHED") {
+        return {
+            redirect: {
+                destination: `/match/${id}/result`,
+                permanent: false
+            }
+        };
+    }
     const players = await getUsersByUserName(match.teams[0].members.concat(match.teams[1].members));
 
     return {

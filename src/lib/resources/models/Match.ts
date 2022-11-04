@@ -93,12 +93,20 @@ const matchSchema = new Schema<Match>({
         default: [{
             members: [],
             score: 0,
-            status: "UNFINISHED"
+            status: "UNSET"
         }, {
             members: [],
             score: 0,
-            status: "UNFINISHED"
+            status: "UNSET"
         }]
+    },
+
+    // This is the status of the match
+    status: {
+        type: String,
+        enum: ["UPCOMING", "INPROGRESS", "FINISHED", "CANCELLED"],
+        required: true,
+        default: "UPCOMING"
     }
 });
 
