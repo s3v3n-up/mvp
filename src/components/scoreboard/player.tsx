@@ -1,16 +1,19 @@
 //import from nextjs
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 /**
  * player props
  * @prop {string} image - palyer image
- * @prop {string} name - player name
+ * @prop {string} userName - player name
  * @props onLeave - callback function when player leaves
  * @prop {string} variant - player variant (home/away)
  */
  interface PlayerProps {
     image: string;
-    name: string;
+    userName: string;
+    isLeavable: boolean;
     onLeave: () => void;
     variant: "home" | "away";
 }
@@ -21,6 +24,18 @@ import Image from "next/image";
  * @returns {JSX.Element} - player component for scoreboard page
  */
 export default function Player(props: PlayerProps) {
+
+    //check to see should leave button be shown
+    const { data: session } = useSession();
+    const [showLeave, setShowLeave] = useState<boolean>(false);
+
+    useEffect(()=> {
+        if (session && session.user) {
+            if (session.user.userName === props.userName) {
+                setShowLeave(true);
+            }
+        }
+    }, [session, props.userName]);
 
     /**
      * component styles for different player variant
@@ -38,20 +53,24 @@ export default function Player(props: PlayerProps) {
 
     return (
         <div
-            className={`flex flex-row justify-between items-center w-full sm:text-base text-sm ${variantStyle[props.variant].container}`}
+            className={`flex flex-row justify-between items-center w-full h-full sm:text-base text-sm ${variantStyle[props.variant].container}`}
         >
             <div className="relative rounded-full w-12 h-12">
                 <Image
                     src={props.image}
                     alt="player avatar"
                     layout="fill"
-                    objectFit="contain"
+                    objectFit="cover"
                     objectPosition="center"
                     className="rounded-full"
                 />
             </div>
-            <div>{props.name}</div>
-            <button onClick={props.onLeave} className={variantStyle[props.variant].button}>Leave</button>
+            <div>{props.userName}</div>
+            {props.isLeavable && showLeave ? (
+                <button onClick={props.onLeave} className={variantStyle[props.variant].button}>Leave</button>
+            ): (
+                <div className="px-7 py-0.5"></div>
+            )}
         </div>
     );
 };

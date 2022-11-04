@@ -74,13 +74,24 @@ export default async function handler(
                 matches,
             };
 
-            // Stores the created user into the response
-            const response = await createUser(user);
+            try {
 
-            // Returns the code and the user created
-            res.status(response.code).json({
-                response,
-            });
+                // Stores the created user into the response
+                const response = await createUser(user);
+
+                // Returns the code and the user created
+                res.status(200).json({
+                    response,
+                });
+            } catch(error: any) {
+                if (error.cause.code === "11000") {
+                    throw {
+                        code: 400,
+                        message: error.message,
+                    };
+                }
+                throw error;
+            }
 
             //Catches any error and throws it in message
         } catch (error: any) {

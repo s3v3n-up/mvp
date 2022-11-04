@@ -23,7 +23,7 @@ export async function middleware(req: NextRequest) {
             return NextResponse.redirect(new URL("/login", req.url));
         }
 
-        return NextResponse.rewrite(new URL("/login", req.url));
+        return;
     }
 
     // If user is not finished signing up then redirect to register page

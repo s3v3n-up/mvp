@@ -32,8 +32,9 @@ export default function Navbar() {
     /**
      * handle user sign out
      */
-    function handleLogout() {
-        signOut();
+    async function handleLogout() {
+        await signOut();
+        avatarContext?.setCurrAvatar(null);
         router.push("/");
     }
 

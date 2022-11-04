@@ -14,7 +14,7 @@ interface PageProps {
 
 function MyApp({ Component, pageProps }: AppProps<PageProps>) {
     return (
-        <SessionProvider session={pageProps.session} refetchInterval={1}>
+        <SessionProvider session={pageProps.session} refetchOnWindowFocus={false}>
             <AvatarProvider>
                 <Layout>
                     <Component {...pageProps} />
