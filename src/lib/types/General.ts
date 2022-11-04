@@ -19,4 +19,4 @@ export interface Modes {
 export interface Sports {
     value: string;
     name: string;
-  }
+}
