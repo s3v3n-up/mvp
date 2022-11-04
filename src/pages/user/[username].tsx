@@ -50,16 +50,25 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context: GetStaticPropsContext ) {
     const { username } = context.params as { username: string };
-    const user = await getUserByUserName(username as string);
-    const stats = await calculateStats(username);
+    try {
+        const user = await getUserByUserName(username as string);
+        const stats = await calculateStats(username);
 
-    return {
-        props: {
-            user: JSON.parse(JSON.stringify(user)),
-            stats: JSON.parse(JSON.stringify(stats))
-        },
-        revalidate: 5
-    };
+        return {
+            props: {
+                user: JSON.parse(JSON.stringify(user)),
+                stats: JSON.parse(JSON.stringify(stats))
+            },
+            revalidate: 5
+        };
+    } catch (error: any) {
+        if (error.message="user not found") {
+            return {
+                notFound: true
+            };
+        }
+        throw error;
+    }
 }
 
 

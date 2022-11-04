@@ -34,6 +34,7 @@ export default function Navbar() {
      */
     async function handleLogout() {
         await signOut();
+        avatarContext?.setCurrAvatar(null);
         router.push("/");
     }
 

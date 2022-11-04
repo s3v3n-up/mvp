@@ -39,14 +39,14 @@ export default function Player(props: PlayerProps) {
 
     return (
         <div
-            className={`flex flex-row justify-between items-center w-full sm:text-base text-sm ${variantStyle[props.variant].container}`}
+            className={`flex flex-row justify-between items-center w-full h-full sm:text-base text-sm ${variantStyle[props.variant].container}`}
         >
             <div className="relative rounded-full w-12 h-12">
                 <Image
                     src={props.image}
                     alt="player avatar"
                     layout="fill"
-                    objectFit="contain"
+                    objectFit="cover"
                     objectPosition="center"
                     className="rounded-full"
                 />

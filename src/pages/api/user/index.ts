@@ -1,12 +1,21 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getUsersByUserName } from "@/lib/actions/user";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-    if (req.method === "GET") {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    try {
         const { usernames } = req.query;
-        console.log(usernames);
-        res.status(200).json(usernames);
-    } else {
-        res.status(405).json({ message: "method not allowed" });
+
+        if (typeof usernames !== "string") {
+            throw {
+                code: 400,
+                message: "invalid username"
+            };
+        }
+
+        const users = await getUsersByUserName(usernames.split(","));
+        res.status(200).json(users);
+    } catch (error: any) {
+        const { code = 500, message = "internal server error" } = error;
+        res.status(code).json({ message: message });
     }
 }

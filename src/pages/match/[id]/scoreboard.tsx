@@ -189,7 +189,7 @@ export default function Scoreboard({ match, players }: Props) {
 export async function getStaticPaths() {
     await Database.setup();
     const matches = await getMatches();
-    const paths = matches.map((match: Match)=> ({ params: { id: match._id } }));
+    const paths = matches.map((match: Match)=> ({ params: { id: match._id?.toString() } }));
 
     return {
         paths,

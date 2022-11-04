@@ -34,6 +34,8 @@ export default function ViewUserProfile({ data }: { data: Data }) {
                         objectPosition="center"
                         alt="avatar"
                         className="rounded-full"
+                        placeholder="blur"
+                        blurDataURL="/img/logo.png"
                     />
                 </div>
                 <Input label="Full Name" value={data.fullName} name="fullname" readonly>
