@@ -77,12 +77,16 @@ export default function Scoreboard({ match, players }: Props) {
     const [isFinished, setFinished] = useState<boolean>(false);
 
     //handle match score change
-    function handleScoreChange(team: "home" | "away", score: number) {
+    function handleScoreChange(team: "home" | "away", score: string) {
+        if (isNaN(parseInt(score)) || parseInt(score) < 0) {
+            return;
+        }
         if (team === "home") {
-            setHomeScore(score);
+            setHomeScore(parseInt(score));
+            console.log(score);
         }
         else {
-            setAwayScore(score);
+            setAwayScore(parseInt(score));
         }
     }
 
@@ -150,7 +154,7 @@ export default function Scoreboard({ match, players }: Props) {
                             className="z-10 bg-white p-5 py-9 w-11/12 m-auto rounded-md text-black font-extrabold text-3xl text-center border-2 border-orange-500"
                             type="number"
                             value={homeScore}
-                            onChange={(e)=> handleScoreChange("home", parseInt(e.target.value))}
+                            onChange={(e)=> handleScoreChange("home", e.target.value)}
                             readOnly={!isMatchHost}
                         />
                     </div>
