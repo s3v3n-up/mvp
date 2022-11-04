@@ -68,28 +68,41 @@ export async function getMatchById(_id: string): Promise<Match> {
 }
 
 /**
- * Update a team's score in a match
+ * increase the score of a team in a match
  * @param matchId id of match to update
  * @param teamIdx index of team to update
  * @returns {Promise<Match>} promise that resolves to updated match
  */
-export async function IncreaseMatchScoreOfTeam(matchId: string, teamIdx: number) {
+export async function increaseMatchScoreOfTeam(matchId: string, teamIdx: number) {
     try {
-        const match = await MatchModel.findById(matchId);
-        if (!match) {
-            throw new Error("match not found");
-        }
-
-        //increase score of team
-        match.teams[teamIdx].score++;
-
-        //save match
-        await match.save();
+        const updatedMatch = await MatchModel.findByIdAndUpdate(matchId, {
+            $inc: {
+                [`teams.${teamIdx}.score`]: 1
+            }
+        });
 
         //return updated match
-        return match;
+        return updatedMatch;
     } catch(error: any) {
         throw new Error("error increasing match score", { cause: error });
+    }
+}
+
+/**
+ * decrease a team's score in a match
+ */
+export async function decreaseMatchScoreOfTeam(matchId: string, teamIdx: number) {
+    try {
+        const updatedMatch = await MatchModel.findByIdAndUpdate(matchId, {
+            $inc: {
+                [`teams.${teamIdx}.score`]: -1
+            }
+        });
+
+        //return updated match
+        return updatedMatch;
+    } catch(error: any) {
+        throw new Error("error decreasing match score", { cause: error });
     }
 }
 

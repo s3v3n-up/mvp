@@ -43,19 +43,19 @@ export default function Player(props: PlayerProps) {
     const variantStyle = {
         home: {
             container: "text-orange-500",
-            button: "rounded-md border-2 border-orange-500 px-7 py-0.5 md:text-base text-sm"
+            button: "rounded-md border-2 border-orange-500 py-0.5 lg:text-base text-sm text-center lg:w-4/5 w-full ml-auto"
         },
         away: {
             container: "text-white",
-            button: "rounded-md border-2 border-white px-7 py-0.5 md:text-base text-sm"
+            button: "rounded-md border-2 border-white py-0.5 lg:text-base text-sm text-center lg:w-4/5 w-full ml-auto"
         }
     };
 
     return (
         <div
-            className={`flex flex-row justify-between items-center w-full h-full sm:text-base text-sm ${variantStyle[props.variant].container}`}
+            className={`grid grid-cols-3 gap-3 w-full h-full sm:text-base text-sm ${variantStyle[props.variant].container}`}
         >
-            <div className="relative rounded-full w-12 h-12">
+            <div className="relative rounded-full lg:w-12 lg:h-12 w-10 h-10">
                 <Image
                     src={props.image}
                     alt="player avatar"
@@ -65,11 +65,9 @@ export default function Player(props: PlayerProps) {
                     className="rounded-full"
                 />
             </div>
-            <div>{props.userName}</div>
-            {props.isLeavable && showLeave ? (
+            <p className="lg:text-base text-sm flex flex-row items-center">{props.userName}</p>
+            {props.isLeavable && showLeave && (
                 <button onClick={props.onLeave} className={variantStyle[props.variant].button}>Leave</button>
-            ): (
-                <div className="px-7 py-0.5"></div>
             )}
         </div>
     );

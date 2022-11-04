@@ -2,9 +2,17 @@
 .page
     @apply flex flex-col justify-center items-center py-5
 
+    //pause match button
+    .pause
+        @apply px-7 py-2 text-center text-orange-500 bg-white mt-7 md:w-1/2 w-full ml-auto rounded font-bold
+
+    //finish match button
+    .finish
+        @apply px-7 py-2 text-center text-white bg-orange-600 md:mt-7 mt-0 md:w-1/2 w-full mr-auto rounded font-bold
+
     //scoreboard style
     .scoreboard
-        @apply md:grid md:grid-cols-2 sm:w-4/5 w-11/12 m-auto  gap-7 flex flex-col items-center mt-5
+        @apply md:grid md:grid-cols-2 md:w-4/5 w-11/12 m-auto  gap-7 flex flex-col items-center mt-5 h-full
         color: white
 
         //home team scoreboard style
@@ -19,20 +27,19 @@
                 font-weight: 700
                 font-size: 3rem
                 color: #FC5C3E
-                margin-bottom: 2rem
+                margin-bottom: 1rem
+                @media screen and (max-width: 768px)
+                    font-size: 1.875rem 
+
 
             //list of players
             .homeplayers
                 margin-top: 1.5rem
-                @apply flex flex-col items-center py-3 px-5 bg-white items-center gap-3 rounded-md  h-full
-
-            //pause match button
-            .pause
-                @apply px-7 py-2 text-center text-orange-500 bg-white mt-7 md:w-1/2 w-full ml-auto rounded-md
+                @apply flex flex-col items-center py-3 px-5 bg-white items-center gap-3 rounded-md h-full
 
         //away team scoreboard style
         .awayteam
-            @apply flex flex-col w-full
+            @apply flex flex-col w-full h-full
             &>*
                 @apply w-full
 
@@ -41,16 +48,12 @@
                 text-align: center
                 font-weight: 700
                 font-size: 3rem
-                margin-bottom: 2rem
+                margin-bottom: 1rem
                 @media screen and (max-width: 768px)
-                    font-size: 2rem 
+                    font-size: 1.875rem 
             
             //list of players
             .awayplayers
                 margin-top: 1.5rem
                 @apply flex flex-col items-center py-3 px-5 bg-orange-600 items-center gap-3 rounded-md
-            
-            //finish match button
-            .finish
-                @apply px-7 py-2 text-center text-white bg-orange-600 mt-7 md:w-1/2 w-full mr-auto rounded-md
 
