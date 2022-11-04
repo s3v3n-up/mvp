@@ -49,8 +49,16 @@ const matchSchema = new Schema<Match>({
 
     // This is the chosen game mode for the chosen sport
     gameMode: {
-        type: String,
-        required: true,
+        modeName: {
+            type: String,
+            required: true,
+            default: "1V1"
+        },
+        requiredPlayers: {
+            type: Number,
+            required: true,
+            default: 2
+        }
     },
 
     // This is the type of the match either REGULAR or QUICK
