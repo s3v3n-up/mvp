@@ -1,7 +1,12 @@
 import Image from "next/image";
 import Input from "../components/Input";
-import { Person, FolderSharedOutlined, Email } from "@mui/icons-material";
 import { useState, ChangeEvent } from "react";
+import dynamic from "next/dynamic";
+
+//dynamic imports
+const Person = dynamic(() => import("@mui/icons-material/Person"));
+const FolderSharedOutlined = dynamic(() => import("@mui/icons-material/FolderSharedOutlined"));
+const Email = dynamic(() => import("@mui/icons-material/Email"));
 
 /**
  * interface for type of user data

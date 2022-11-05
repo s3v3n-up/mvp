@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import axios from "axios";
 
 /**
  * player props
@@ -14,8 +15,9 @@ import { useSession } from "next-auth/react";
     image: string;
     userName: string;
     isLeavable: boolean;
-    onLeave: () => void;
     variant: "home" | "away";
+    matchId: string;
+    hostId: string;
 }
 
 /**
@@ -34,8 +36,11 @@ export default function Player(props: PlayerProps) {
             if (session.user.userName === props.userName) {
                 setShowLeave(true);
             }
+            if (session.user.id === props.hostId) {
+                setShowLeave(false);
+            }
         }
-    }, [session, props.userName]);
+    }, [session, props]);
 
     /**
      * component styles for different player variant
@@ -50,6 +55,16 @@ export default function Player(props: PlayerProps) {
             button: "rounded-md border-2 border-white py-0.5 lg:text-base text-sm text-center lg:w-4/5 w-full ml-auto"
         }
     };
+
+    async function onLeave() {
+        const teamIndex = props.variant === "home" ? 0 : 1;
+        const userName= props.userName;
+        try {
+            await axios.put(`/api/match/${props.matchId}/team`,{ teamIndex, userName, operation: "remove" });
+        } catch(error) {
+            alert("Error leaving match");
+        }
+    }
 
     return (
         <div
@@ -67,7 +82,7 @@ export default function Player(props: PlayerProps) {
             </div>
             <p className="lg:text-base text-sm flex flex-row items-center">{props.userName}</p>
             {props.isLeavable && showLeave && (
-                <button onClick={props.onLeave} className={variantStyle[props.variant].button}>Leave</button>
+                <button onClick={onLeave} className={variantStyle[props.variant].button}>Leave</button>
             )}
         </div>
     );

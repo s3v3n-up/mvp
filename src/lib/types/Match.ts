@@ -40,7 +40,7 @@ export interface Match {
 	sport: string;
 
 	// This is the chosen game mode for the chosen sport
-	gameMode: string;
+	gameMode: { modeName: string, requiredPlayers: number };
 
 	// This is the type of the match either REGULAR or QUICK
 	matchType: Matches.MatchType;

@@ -1,15 +1,16 @@
 //third-party import
-import Image from "next/image";
-import { Search } from "@mui/icons-material";
 import { useState, ChangeEvent, useEffect } from "react";
 import ScrollContainer from "react-indiana-drag-scroll";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
 
 //local import
 import styles from "@/styles/Home.module.sass";
 import Input from "@/components/Input";
 
+//dynamic import
+const Search = dynamic(() => import("@mui/icons-material/Search"), { ssr: false });
 
 //create fake data for card components
 const names = ["whale", "squid", "turtle", "coral", "starfish", "star"];
@@ -20,9 +21,10 @@ const names = ["whale", "squid", "turtle", "coral", "starfish", "star"];
  *
  */
 export default function Home() {
-    const { status } = useSession();
+    const { status, data: session } = useSession();
     const router = useRouter();
     useEffect(()=> {
+        if (status==="loading") return;
         if (status === "unauthenticated") {
             router.push("/login");
         }

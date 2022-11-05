@@ -79,6 +79,7 @@ const matchSchema = new Schema<Match>({
     matchStart: {
         type: Date,
         required: true,
+        default: Date.now()
     },
 
     // This is the end date/time of the match

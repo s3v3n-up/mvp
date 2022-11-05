@@ -25,7 +25,7 @@ declare module "next-auth" {
        */
       isFinishedSignup: boolean;
       userName: string;
-	  id: string;
+	    id: string;
     } & DefaultSession["user"];
   }
 
@@ -34,6 +34,7 @@ declare module "next-auth" {
    */
   interface User {
     userName: string;
+    _id: string;
     isFinishedSignup: boolean;
   }
 }

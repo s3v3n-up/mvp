@@ -144,6 +144,11 @@ export async function addMembersToTeam(matchId: string, teamIdx: 0 | 1, userName
             throw new Error("match not found");
         }
 
+        const maxPlayerPerTeam = match.gameMode.requiredPlayers/2;
+        if (match.teams[teamIdx].members.length + userNames.length > maxPlayerPerTeam) {
+            throw new Error("team is full");
+        }
+
         //if member not in team yet, add member to team
         for (const userName of userNames) {
             if (!match.teams[teamIdx].members.includes(userName)) {
@@ -155,6 +160,35 @@ export async function addMembersToTeam(matchId: string, teamIdx: 0 | 1, userName
         return match;
     } catch(error: any) {
         throw new Error("error adding members to team", { cause: error });
+    }
+}
+
+/**
+ * add a new member to a match's team
+ */
+export async function addMemberToTeam(matchId: string, teamIdx: 0 | 1, userName: string) {
+    try {
+        const match = await MatchModel.findById(matchId);
+
+        //if match is not found, throw error
+        if (!match) {
+            throw new Error("match not found");
+        }
+
+        const maxPlayerPerTeam = match.gameMode.requiredPlayers/2;
+        if (match.teams[teamIdx].members.length + 1 > maxPlayerPerTeam) {
+            throw new Error("team is full");
+        }
+
+        //if member not in team yet, add member to team
+        if (!match.teams[teamIdx].members.includes(userName)) {
+            match.teams[teamIdx].members.push(userName);
+        }
+        await match.save();
+
+        return match;
+    } catch(error: any) {
+        throw new Error("error adding member to team", { cause: error });
     }
 }
 
@@ -175,6 +209,10 @@ export async function removeMembersFromTeam(matchId: string, teamIdx: 0 | 1, use
             throw new Error("match not found");
         }
 
+        if (match.teams[teamIdx].members.length - userNames.length < 0) {
+            return;
+        }
+
         //remove specified members from team
         match.teams[teamIdx].members = match.teams[teamIdx].members.filter((member) => !userNames.includes(member));
         await match.save();
@@ -182,6 +220,73 @@ export async function removeMembersFromTeam(matchId: string, teamIdx: 0 | 1, use
         return match;
     } catch (error: any) {
         throw new Error("error removing members from team", { cause: error });
+    }
+}
+
+/**
+ * remove a member from a match's team
+ * @param matchId id of match to update
+ * @param teamIdx index of team to remove member from
+ * @param username username of member to remove from team
+ */
+export async function removeMemberFromTeam(matchId: string, teamIdx: 0 | 1, username: string) {
+    try {
+        const match = await MatchModel.findById(matchId);
+
+        //if match is not found, throw error
+        if (!match) {
+            throw new Error("match not found");
+        }
+
+        if (match?.teams[teamIdx].members.length < 0) {
+            return;
+        }
+
+        //remove specified member from team
+        match.teams[teamIdx].members = match.teams[teamIdx].members.filter((member) => member !== username);
+        await match.save();
+
+        return match;
+    } catch(error: any) {
+        throw new Error("error removing member from team", { cause: error });
+    }
+}
+
+/**
+ * join user to a match
+ */
+export async function joinMatch(matchId: string, userName: string) {
+    try {
+        const match = await MatchModel.findById(matchId);
+
+        //if match is not found, throw error
+        if (!match) {
+            throw new Error("match not found");
+        }
+
+        //if user already joined match, return
+        if (match.teams[0].members.includes(userName) || match.teams[1].members.includes(userName)) {
+            return;
+        }
+
+        //get max player per team
+        const maxPlayers = match.gameMode.requiredPlayers;
+
+        if (match.teams[0].members.concat(match.teams[1].members).length >= maxPlayers) {
+            throw new Error("match is full");
+        }
+
+        //if home team has less members than away team, add user to home team
+        if (match.teams[0].members.length < match.teams[1].members.length) {
+            match.teams[0].members.push(userName);
+        } else {
+            match.teams[1].members.push(userName);
+        }
+        await match.save();
+
+        return match;
+    } catch(error: any) {
+        throw new Error("error joining match", { cause: error });
     }
 }
 
