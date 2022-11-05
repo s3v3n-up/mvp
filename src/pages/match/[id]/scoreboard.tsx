@@ -249,23 +249,29 @@ export default function Scoreboard({ match, players }: Props) {
                     </div>
 
                 </div>
-                <button className={styles.pause}> Pause </button>
-                <button
-                    className={styles.finish}
-                    onClick={()=> setFinished(true)}
-                >
-                        Finish
-                </button>
-                <button
-                    className={
-                        `font-bold px-7 py-2 
+                { isMatchHost &&
+                    <>
+                        <button className={styles.pause}>
+                            Pause
+                        </button>
+                        <button
+                            className={styles.finish}
+                            onClick={()=> setFinished(true)}
+                        >
+                            Finish
+                        </button>
+                        <button
+                            className={
+                                `font-bold px-7 py-2 
                         text-center text-orange-500 
                         rounded border-2 
                         border-orange-500 md:w-1/4 w-full m-auto col-span-2`
-                    }
-                >
-                    Cancel
-                </button>
+                            }
+                        >
+                            Cancel
+                        </button>
+                    </>
+                }
             </div>
         </div>
     );
