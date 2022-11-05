@@ -42,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const session = await unstable_getServerSession(req, res, authOptions);
 
             //guard route against unauthorized access
-            if (!session || session.user.userName !== match.matchHost) {
+            if (!session || session.user.id !== match.matchHost) {
                 throw {
                     code: 401,
                     message: "unauthorized"

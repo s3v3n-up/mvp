@@ -1,11 +1,15 @@
 //third-party import
 import Navbar from "@/components/navbar";
-import React, { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
 
 //local import
 import styles from "@/styles/Components.module.sass";
+
+//dynamic import
+const Skeleton = dynamic(() => import("@mui/material/Skeleton"), { ssr: false });
 
 /**
  * *
@@ -23,10 +27,19 @@ import styles from "@/styles/Components.module.sass";
 const Layout = ({ children }: Props) => {
     const router = useRouter();
     const isAuthPage = router.pathname === "/login" || router.pathname === "/register";
+    const [isBgLoaded, setIsBgLoaded] = useState(false);
 
     return (
         <div className={styles.container}>
             <div className="fixed top-0 bottom-0 right-0 left-0 -z-50">
+                { !isBgLoaded &&
+                    <Skeleton
+                        variant="rectangular"
+                        width="100%"
+                        height="100%"
+                        animation="wave"
+                    />
+                }
                 <Image
                     src="/bg.svg"
                     layout="fill"
@@ -34,6 +47,7 @@ const Layout = ({ children }: Props) => {
                     alt="background"
                     objectPosition={"top center"}
                     priority={true}
+                    onLoad={() => setIsBgLoaded(true)}
                 />
             </div>
             {!isAuthPage && <Navbar/> }

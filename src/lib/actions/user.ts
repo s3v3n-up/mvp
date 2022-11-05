@@ -292,22 +292,6 @@ export async function calculateStatsAggregate(userName: string): Promise<{win: n
 
         //query stats of user from database
         const query = await MatchModel.aggregate([
-            {
-                $match: {
-                    $or: [
-                        { "teams.0.members": userName, $or: [
-                            { "teams.0.status": "WIN" },
-                            { "teams.0.status": "LOSE" },
-                            { "teams.0.status": "DRAW" }
-                        ] },
-                        { "teams.1.members": userName, $or: [
-                            { "teams.1.status": "WIN" },
-                            { "teams.1.status": "LOSE" },
-                            { "teams.1.status": "DRAW" }
-                        ] }
-                    ]
-                },
-            },
             { $unwind: "$teams" },
             { $match: { "teams.members": userName } },
             {
@@ -315,7 +299,7 @@ export async function calculateStatsAggregate(userName: string): Promise<{win: n
                     _id: "$teams.status",
                     count: { $sum: 1 }
                 }
-            }
+            },
         ], { allowDiskUse: true });
 
         //Created a stats object to store win/lose/draw of the user
@@ -325,7 +309,7 @@ export async function calculateStatsAggregate(userName: string): Promise<{win: n
             draw: 0
         };
 
-        //parsing stats from query
+        //loop through query result and add to stats object
         query.forEach((result) => {
             if (result._id === "WIN") {
                 stats.win = result.count;
