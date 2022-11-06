@@ -11,8 +11,6 @@ import SelectOption from "./SelectOption";
 import { Location, SportsOptions, Modes } from "@/lib/types/General";
 import { Sport } from "@/lib/types/Sport";
 
-// import { computeReqPlayers } from "@/lib/actions/match";
-
 //dnamic imports
 const AddLocationAlt = dynamic(
     () => import("@mui/icons-material/AddLocationAlt")
@@ -77,7 +75,6 @@ export default function CreateMatch({ props }: Props) {
    * This splits the mode string then turns into a number to compute for required players
    * @returns a number to be used for requiredPlayers field in match creation
    */
-
     function computeReqPlayers(data: string) {
 
         // Splits mode string into an array of character
