@@ -1,16 +1,15 @@
 //third-party import
 import Image from "next/image";
-import Link from "next/link";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-
 import { useContext } from "react";
 import dynamic from "next/dynamic";
 
 //local import
 import styles from "@/styles/Components.module.sass";
 import { AvatarContext } from "@/context/avatar";
+import NavTab from "./navtab";
 
 //dynamic import
 const Skeleton = dynamic(() => import("@mui/material/Skeleton"));
@@ -51,7 +50,7 @@ export default function Navbar() {
     return (
         <header className="z-50">
             <nav className={styles.nav}>
-                <div className="relative w-32 h-12">
+                <button className="relative w-32 h-12" onClick={()=>router.push("/")}>
                     <Image
                         src={"/img/logo.png"}
                         alt="logo"
@@ -59,22 +58,12 @@ export default function Navbar() {
                         objectFit="cover"
                         objectPosition="left"
                     />
-                </div>
+                </button>
                 <ul className={styles.option}>
-                    <Link href={"/leaderboard"}>
-                        <li>Ranking</li>
-                    </Link>
-                    <Link href={"/"}>
-                        <li>Matches</li>
-                    </Link>
-                    <Link href={"/create"}>
-                        <li>
-                            Create Match
-                        </li>
-                    </Link>
-                    <Link href={"/userHistory"}>
-                        <li>History</li>
-                    </Link>
+                    <NavTab href="/leaderboard" pageName="Leaderboard"/>
+                    <NavTab href="/" pageName="Matches"/>
+                    <NavTab href="/create" pageName="Create"/>
+                    <NavTab href="/userHistory" pageName="History"/>
                 </ul>
                 <ul className={styles.auth}>
                     <button className="relative h-14 w-14 rounded-full" onClick={()=>router.push("/user/profile")}>
@@ -101,30 +90,18 @@ export default function Navbar() {
             </nav>
             <nav className={styles.bottomNav}>
                 <ul className={styles.option}>
-                    <Link href={"/leaderboard"}>
-                        <li className="flex flex-col items-center cursor-pointer">
-                            <LeaderboardIcon/>
-                            Ranking
-                        </li>
-                    </Link>
-                    <Link href={"/"}>
-                        <li className="flex flex-col items-center cursor-pointer">
-                            <HomeIcon />
-                            Matches
-                        </li>
-                    </Link>
-                    <Link href={"/create"}>
-                        <li className="flex flex-col items-center cursor-pointer">
-                            <AddHomeOutlinedIcon />
-                            Create Match
-                        </li>
-                    </Link>
-                    <Link href={"/userHistory"}>
-                        <li className="flex flex-col items-center cursor-pointer">
-                            <Person />
-                            History
-                        </li>
-                    </Link>
+                    <NavTab href="/leaderboard" pageName="Leaderboard">
+                        <LeaderboardIcon/>
+                    </NavTab>
+                    <NavTab href="/" pageName="Matches">
+                        <HomeIcon/>
+                    </NavTab>
+                    <NavTab href="/create" pageName="Create">
+                        <AddHomeOutlinedIcon/>
+                    </NavTab>
+                    <NavTab href="/userHistory" pageName="History">
+                        <Person/>
+                    </NavTab>
                 </ul>
             </nav>
         </header>
