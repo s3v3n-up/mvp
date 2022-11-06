@@ -39,12 +39,13 @@ export default async function handler(
                 gameMode: object().required(),
                 matchType: string().required(),
                 location: object().required(),
-                matchStart: date()
-                    .min(
+                matchStart: date().when("matchType", {
+                    is: (matchType === "REGULAR"),
+                    then: date().min(
                         new Date(Date.now() + 3600000),
-                        "You cannot set a date or time less than 1 hour from now."
-                    )
-                    .required(),
+                        "You cannot set a date or time less than 1 hour from now.").required(),
+                    otherwise: date().min(new Date(Date.now() - 60000), "You cannot set a date or time in the past").required()
+                }),
                 matchEnd: date(),
                 description: string(),
                 teams: array(),
@@ -60,10 +61,12 @@ export default async function handler(
             // Checks if user is host to allow match creation
             const matches = await findUserActiveMatches(matchHost);
 
-            let lapsedMatches: any = [];
-            let activeMatches: any = [];
+            // Variable that will store lapsed and active matches
+            let lapsedMatches: Match[] = [];
+            let activeMatches: Match[] = [];
 
-            matches.map(async (match) => {
+            // Loops through all matches and look for UPCOMING and INPROGRESS matches
+            matches.map(async (match: Match) => {
                 if (Date.now() - match.matchStart.getTime() > 3600000) {
                     lapsedMatches.push(match);
                 } else {
@@ -71,14 +74,19 @@ export default async function handler(
                 }
             });
 
+            // Checks if there is a lapsed match
             if (lapsedMatches.length > 0) {
-                lapsedMatches.map(async (match: any) => {
+
+                // Loops through lapsed matches and update the status to CANCELLED
+                lapsedMatches.map(async (match: Match) => {
                     await MatchModel.updateOne(
                         { _id: match._id },
                         { $set: { status: "CANCELLED" } }
                     );
                 });
             }
+
+            // Checks if there are active matches and return an error if there is
             if (activeMatches.length > 0) {
                 throw new Error("You already have an active match");
             }
