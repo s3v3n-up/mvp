@@ -4,6 +4,10 @@
     min-height: 100vh
     display: flex
     flex-direction: column
+    font-size: 1rem
+    @media screen and (max-width: 768px)
+        font-size: 0.5rem
+
     & > *
         height: 100%
 
@@ -68,7 +72,7 @@
         align-items: center
         gap: 1rem
 
-.nav li, .nav button
+.nav button
     color: white
     font-family: 'Inter'
     font-weight: 600
@@ -97,17 +101,6 @@
     height: 100%
     padding: 0 0.25rem
     gap: 1.5rem
-
-.bottomNav li
-    color: white
-    font-family: 'Inter'
-    font-weight: 600
-    font-size: 0.5rem
-    text-transform: uppercase
-    user-select: none
-
-    &:hover
-        color: #fc5c3e
 
 @media screen and (max-width: 768px )
     .nav
