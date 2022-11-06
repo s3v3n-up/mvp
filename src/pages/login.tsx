@@ -40,15 +40,16 @@ export default function Login() {
 
     //catching next-auth login error
     useEffect(()=> {
-        const params = router.query;
-        if(params.error) {
-            if (params.error === "OAuthAccountNotLinked") {
+        const splitByError = router.asPath.split("error");
+        if (splitByError.length > 1) {
+            const err = splitByError[1].substring(1);
+            if (err == "OAuthAccountNotLinked") {
                 setError("You already login with a different provider, ex: you previously logged in with Google, but now you are trying to log in with email/discord. Please log in with the same provider you used previously.");
             } else {
                 setError("An error has occured when trying to sign you in. Please try again later.");
             }
         }
-    },[router.query]);
+    },[router]);
 
     //email state
     const [email, setEmail] = useState("");
@@ -86,8 +87,8 @@ export default function Login() {
                     <Image src={"/img/logo.png"} alt="logo" width={263} height={184} />
                 </div>
                 <div className={styles.input}>
-                    <div className={styles.email}>
-                        <form onSubmit={handleEmailSubmit}>
+                    <div className="w-full">
+                        <form onSubmit={handleEmailSubmit} className="w-full">
                             {error && <AlertMessage message={error} type="error"/>}
                             <Input
                                 type="email"
@@ -98,7 +99,7 @@ export default function Login() {
                                 <Email />
                             </Input>
                             <Button type="submit" className={styles.login}>
-                                Login
+                                Log in
                             </Button>
                         </form>
                         <div className="flex w-full items-center gap-2 my-5">
@@ -151,6 +152,7 @@ export default function Login() {
 //guards page against unauthenticated users from server side
 export async function getServerSideProps(context: GetServerSidePropsContext) {
     const session = await unstable_getServerSession(context.req, context.res, authOptions);
+
     if (session) {
         if (session.user.isFinishedSignup) {
             return {

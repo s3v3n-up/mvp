@@ -5,7 +5,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import Database from "@/lib/resources/database";
 
 // Imports calculateStats, findUserByUsername and updateUser functions
-import { calculateStats, findUserByUsername, updateUser } from "@/lib/actions/user";
+import { getUserByUserName, updateUser } from "@/lib/actions/user";
 
 // Imports object and string type from yup
 import { object, string } from "yup";
@@ -13,6 +13,9 @@ import { object, string } from "yup";
 // Imports PHONE_REGEX
 import { PHONE_REGEX } from "@/lib/helpers/validation";
 
+/**
+ * api route for updating and getting user by username
+ */
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
@@ -25,35 +28,28 @@ export default async function handler(
         // Gets the username in the req.query
         const { username } = req.query;
 
+        //validates the username
+        if (typeof username !== "string" || username.length < 8 || username.length > 30) {
+            throw new Error("invalid username");
+        }
+
         // Checks if the method is GET
         if (req.method === "GET") {
-
-            // Stores and looks for a specific username
-            const user = await findUserByUsername(username as string);
-
-            // Gets the username of the user
-            const { userName } = user[0];
-
-            // Store and calculate the stats (win/lose/draw) of the user
-            const stats = await calculateStats(userName);
-
-            // return user and stats;
-            res.status(200).json({
-                user,
-                stats
-            });
+            await Database.setup();
+            const user = await getUserByUserName(username);
+            res.status(200).json(user);
 
             // Checks if the method is PUT
         } else if (req.method === "PUT") {
 
             // Gets the firstName, lastName, phonenumber and image
-            const { firstName, lastName, phonenumber, image } = req.body;
+            const { firstName, lastName, phoneNumber, image } = req.body;
 
             // Yup validation criteria
             const schema = object({
                 firstName: string().required().min(2).max(64),
                 lastName: string().required().min(2).max(64),
-                phonenumber: string()
+                phoneNumber: string()
                     .required()
                     .matches(PHONE_REGEX, "invalid input for phone number"),
                 image: string().required(),
@@ -68,7 +64,7 @@ export default async function handler(
                 username as string,
                 firstName.charAt(0) + firstName.substring(1).toLowerCase(),
                 lastName.charAt(0) + lastName.substring(1).toLowerCase(),
-                phonenumber,
+                phoneNumber,
                 image
             );
 
@@ -78,7 +74,7 @@ export default async function handler(
             });
         }
 
-        // Catches and sends response status 400 and error
+    // Catches and sends response status 400 and error
     } catch (error: any) {
         res.status(400).json({
             message: "Bad Request",

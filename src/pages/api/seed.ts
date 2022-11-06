@@ -2,7 +2,7 @@
 import Database from "@/lib/resources/database";
 
 // Imports the function seedAll
-import seedAll from "@/seed";
+import seedAll from "@/shared/seed";
 
 // Imports NextApiRequest and NextApiResponse from next
 import { NextApiRequest, NextApiResponse } from "next";

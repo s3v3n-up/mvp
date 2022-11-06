@@ -1,14 +1,15 @@
 //third-party import
 import Image from "next/image";
 import Link from "next/link";
-import Icon from "@mui/material/Icon";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { Menu, Close } from "@mui/icons-material";
+import { useContext } from "react";
 
 //local import
 import styles from "@/styles/Components.module.sass";
+import { ProfileContext } from "@/context/profile";
 
 /**
  * *
@@ -20,16 +21,17 @@ export default function Navbar() {
 
     //auth session
     const { data: session } = useSession();
+    const profileContext = useContext(ProfileContext);
 
     //user profile image
     const [avatar, setAvatar] = useState("/img/logo.png");
 
     //set user profile image
     useEffect(() => {
-        if (session && session.user.isFinishedSignup) {
-            setAvatar(session.user.profile!.image);
+        if (profileContext && profileContext.currProfile) {
+            setAvatar(profileContext.currProfile.image);
         }
-    }, [session]);
+    }, [profileContext]);
 
     const router = useRouter();
 
@@ -75,8 +77,8 @@ export default function Navbar() {
                     </Link>
                 </div>
                 <div className="hidden md:flex items-center space-x-6 px-4">
-                    <Link href={"/profile"}>
-                        <div className="relative h-14 w-14 rounded-full">
+                    <Link href={"/user/profile"}>
+                        <div className="relative h-14 w-14 rounded-full bg-white">
                             <Image
                                 src={avatar}
                                 alt="avatar"
@@ -87,14 +89,15 @@ export default function Navbar() {
                             />
                         </div>
                     </Link>
+
                     <Link href={"/login"} >
-                        <button className="text-white bg-[#FC5C3E] rounded py-1 px-2 hidden md:flex" onClick={ ()=>signOut() }>Logout</button>
+                        <button className="text-white bg-[#FC5C3E] rounded py-1 px-2 hidden md:flex" onClick={handleLogout}>Logout</button>
                     </Link>
 
                 </div>
                 <div className="relative h-10 w-10 rounded-full flex justify-end sm:hidden cursor-pointer">
-                    <Link href={"/profile"}>
-                        <div className="relative h-14 w-14 rounded-full">
+                    <Link href={"/user/profile"}>
+                        <div className="relative h-14 w-14 rounded-full bg-white">
                             <Image
                                 src={avatar}
                                 alt="avatar"
@@ -142,7 +145,7 @@ export default function Navbar() {
                     </li>
                     <li>
                         <Link href={"/login"} className="py-2 px-4 text-sm hover:bg-white">
-                            <button className="text-white bg-[#FC5C3E] rounded py-0.9 px-1 " onClick={ ()=>signOut() }>Logout</button>
+                            <button className="text-white bg-[#FC5C3E] rounded py-1 px-2 md:flex" onClick={handleLogout}>Logout</button>
                         </Link>
                     </li>
                 </ul>
