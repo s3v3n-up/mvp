@@ -14,7 +14,6 @@ export default function CreateMatchPage({ data }: any) {
 
 // Access every sport detail and pass as props
 export async function getServerSideProps() {
-
     const data = await getAllSports();
 
     return {
