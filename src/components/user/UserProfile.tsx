@@ -207,8 +207,8 @@ export default function Profile() {
                 >
                     <Email />
                 </Input>
-                <p className="mt-3 text-white">Stat</p>
-                <table className=" border-collapse border border-slate-800 rounded-ml text-center mt-6 ">
+                <p className="mt-3 text-white text-base">Stat</p>
+                <table className="text-base border-collapse border border-slate-800 rounded-ml text-center mt-6 ">
                     <thead className=" bg-[#fc5c3e] text-[#f3f2ef] my-5 py-5 mt-6">
                         <tr className="my-5 py-5 mt-6">
                             <th>Win</th>
