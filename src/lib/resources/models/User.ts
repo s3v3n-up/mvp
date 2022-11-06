@@ -43,7 +43,7 @@ const userSchema = new Schema<UserProfile>({
             message: props => `${props.value} is not a valid email!`
         },
         required: [true, "User email required"],
-        unique: true
+        unique: true,
     },
 
     // This is the phonenumber of the user

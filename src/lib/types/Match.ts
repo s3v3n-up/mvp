@@ -7,10 +7,10 @@ export namespace Matches {
 	export type MatchType = "REGULAR" | "QUICK";
 
 	// Matches team status type
-	export type TeamStatus = "WIN" | "LOSE" | "DRAW" | "UNFINISHED";
+	export type TeamStatus = "WIN" | "LOSE" | "DRAW" | "UNSET";
 
 	// Matches status type
-	export type MatchStatus = "UPCOMING" | "ONGOING" | "FINISHED";
+	export type MatchStatus = "UPCOMING" | "INPROGRESS" | "FINISHED" | "CANCELLED";
 }
 
 /**
@@ -40,7 +40,7 @@ export interface Match {
 	sport: string;
 
 	// This is the chosen game mode for the chosen sport
-	gameMode: string;
+	gameMode: { modeName: string, requiredPlayers: number };
 
 	// This is the type of the match either REGULAR or QUICK
 	matchType: Matches.MatchType;
@@ -59,5 +59,8 @@ export interface Match {
 
 	//this is the teams that are playing in the match
 	teams: [Team, Team];
+
+	//This is the status of the match
+	status: Matches.MatchStatus;
 }
 

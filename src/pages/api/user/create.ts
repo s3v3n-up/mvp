@@ -36,15 +36,21 @@ export default async function handler(
 
             // Yup validation criteria
             const schema = object({
-                userName: string().required().min(8).max(30),
-                firstName: string().required().min(2).max(64),
-                lastName: string().required().min(2).max(64),
+                userName: string().required("Please enter a username").min(8).max(30),
+                firstName: string()
+                    .required("Please enter your firstname")
+                    .min(2)
+                    .max(64),
+                lastName: string()
+                    .required("Please enter your lastname")
+                    .min(2)
+                    .max(64),
                 phoneNumber: string()
-                    .required()
+                    .required("Please enter a phone number")
                     .matches(PHONE_REGEX, "invalid input for phone number"),
                 image: string().required(),
                 email: string()
-                    .required()
+                    .required("Please enter your email")
                     .matches(EMAIL_REGEX, "invalid input for email"),
             });
 
@@ -74,13 +80,24 @@ export default async function handler(
                 matches,
             };
 
-            // Stores the created user into the response
-            const response = await createUser(user);
+            try {
 
-            // Returns the code and the user created
-            res.status(response.code).json({
-                response,
-            });
+                // Stores the created user into the response
+                const response = await createUser(user);
+
+                // Returns the code and the user created
+                res.status(200).json({
+                    response,
+                });
+            } catch (error: any) {
+                if (error.cause.code === "11000") {
+                    throw {
+                        code: 400,
+                        message: error.message,
+                    };
+                }
+                throw error;
+            }
 
             //Catches any error and throws it in message
         } catch (error: any) {

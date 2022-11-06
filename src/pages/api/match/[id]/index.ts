@@ -16,6 +16,12 @@ export default async function handler(
 
         // Deconstructruct id from query request
         const { id } = req.query;
+        if (typeof id !== "string") {
+            throw {
+                code: 400,
+                message: "bad request"
+            };
+        }
 
         // If the HTTP method is GET
         if (req.method === "GET") {
@@ -41,13 +47,17 @@ export default async function handler(
                 description,
                 matchHost: "",
                 sport: "",
-                gameMode: "",
+                gameMode: {
+                    modeName: "1v1",
+                    requiredPlayers: 2
+                },
                 matchType: "REGULAR",
                 matchEnd: new Date(Date.now()),
                 teams: [
-                    { members: [""], score: 0, status: "UNFINISHED" },
-                    { members: [""], score: 0, status: "UNFINISHED" },
+                    { members: [""], score: 0, status: "UNSET" },
+                    { members: [""], score: 0, status: "UNSET" },
                 ],
+                status: "UPCOMING",
             });
 
             // Then return updateMatch as a json response
@@ -58,6 +68,7 @@ export default async function handler(
 
         // Catches a specific error when there is no match for the id set
     } catch (error: any) {
-        throw new Error("Failed searching for match", error);
+        const { code = 500, message = "internal server error" } = error;
+        res.status(code).json({ message });
     }
 }

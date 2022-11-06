@@ -1,9 +1,12 @@
 import ViewUserProfile from "@/components/ViewUserProfile";
-import { getUsers, calculateStats } from "@/lib/actions/user";
+import { getUsers, calculateStats, calculateStatsAggregate } from "@/lib/actions/user";
 import { getUserByUserName } from "@/lib/actions/user";
 import { GetStaticPropsContext } from "next";
 import type { UserProfile } from "@/lib/types/User";
 
+/**
+ * view user profile page props type
+ */
 interface Props {
     user: UserProfile;
     stats: {
@@ -13,9 +16,11 @@ interface Props {
     };
 }
 
-/*
-*this is view other user's profile page
-*/
+/**
+ * view other user profile page
+ * @param props - user profile data
+ * @returns {JSX.Element} view user profile page element
+ */
 export default function ViewProfile({ user, stats }: Props) {
     const { firstName, lastName, userName, image, phoneNumber } = user;
     const fullName = `${firstName} ${lastName}`;
@@ -36,6 +41,9 @@ export default function ViewProfile({ user, stats }: Props) {
     );
 }
 
+/**
+ * get all static paths for dynamic page static generation
+ */
 export async function getStaticPaths() {
     const users = await getUsers();
     const paths = users.map((user) => ({
@@ -48,18 +56,30 @@ export async function getStaticPaths() {
     };
 }
 
+/**
+ * incrementally static generate page every 10 seconds
+ */
 export async function getStaticProps(context: GetStaticPropsContext ) {
     const { username } = context.params as { username: string };
-    const user = await getUserByUserName(username as string);
-    const stats = await calculateStats(username);
+    try {
+        const user = await getUserByUserName(username as string);
+        const stats = await calculateStatsAggregate(user.userName);
 
-    return {
-        props: {
-            user: JSON.parse(JSON.stringify(user)),
-            stats: JSON.parse(JSON.stringify(stats))
-        },
-        revalidate: 5
-    };
+        return {
+            props: {
+                user: JSON.parse(JSON.stringify(user)),
+                stats: JSON.parse(JSON.stringify(stats))
+            },
+            revalidate: 10
+        };
+    } catch (error: any) {
+        if (error.message="user not found") {
+            return {
+                notFound: true
+            };
+        }
+        throw error;
+    }
 }
 
 

@@ -1,11 +1,17 @@
 import Image from "next/image";
 import Input from "../components/Input";
-import { Person, FolderSharedOutlined, Email } from "@mui/icons-material";
 import { useState, useEffect, ChangeEvent, useContext } from "react";
-import { ProfileContext } from "@/context/profile";
 import { useSession } from "next-auth/react";
 import { UserProfile } from "@/lib/types/User";
 import axios from "axios";
+import dynamic from "next/dynamic";
+
+//dynamic imports
+const Person = dynamic(() => import("@mui/icons-material/Person"));
+const FolderSharedOutlined = dynamic(() => import("@mui/icons-material/FolderSharedOutlined"));
+const Email = dynamic(() => import("@mui/icons-material/Email"));
+const Phone = dynamic(() => import("@mui/icons-material/Phone"));
+
 
 /**
  * interface for type of user data
@@ -24,7 +30,8 @@ interface Data {
 }
 
 /*
- * this component is used in profile page, which shows user's firstname, lastname, username, email and avatar
+ * this component is used in profile page, which shows user's firstname, lastname, username, phone, email and avatar.
+ *  user also can edit their profile(firstname, lastname and phone)
  */
 export default function Profile() {
 
@@ -37,10 +44,13 @@ export default function Profile() {
     const [userName,setUserName] = useState("");
     const [email,setEmail] = useState("");
     const [phone,setPhone] = useState("");
+
+    //set initial image as logo if user didn't upload their avatar
     const [image,setImage] = useState("/img/logo.png");
     const [stats, setStats] = useState({ win:0, lose:0, draw:0 });
     const [isDataLoaded, setIsDataLoaded] = useState(false);
 
+    //axios to get the userdata and stats from api
     useEffect(() => {
         if (session && session.user && isDataLoaded === false) {
             Promise.all(
@@ -48,6 +58,8 @@ export default function Profile() {
                     axios.get(`/api/user/${session.user.userName}`),
                     axios.get(`/api/user/${session.user.userName}/stats`)
                 ]).then(data => {
+
+                //destructure the object to userData and userStats
                 const [{ data:userData },{ data:userStats }] = data as unknown as [{data:UserProfile}, {data:{win:number,lose:number,draw:number}}];
                 setFirstName(userData.firstName);
                 setLastName(userData.lastName);
@@ -57,19 +69,14 @@ export default function Profile() {
                 setImage(userData.image);
                 setStats(userStats);
                 setIsDataLoaded(true);
-
-                // console.log(userData);
-                // console.log(userStats);
             }
             ).catch(error=>console.log(error));
         }
+
+        //when isDataloaded state and session change, useEffect executes.
     }, [isDataLoaded, session]);
 
-
-
-    /*
-   *this function is to catch the user input value
-   */
+    //get the user firstname input value, update it in the db through axios put api
     const fNameHandle = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
         const value = event.target.value;
         setFirstName(value);
@@ -81,6 +88,7 @@ export default function Profile() {
         });
     };
 
+    //get the user lastname input value, update it in the db through axios put api
     const lNameHandle = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
         const value = event.target.value;
         setLastName(value);
@@ -92,6 +100,7 @@ export default function Profile() {
         });
     };
 
+    //get the user phone input value, update it in the db through axios put api
     const phoneHandle = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
         const value = event.target.value;
         setPhone(value);
@@ -103,10 +112,9 @@ export default function Profile() {
         });
     };
 
-
     return (
         <div className="flex justify-evenly pt-10">
-            <div className="flex w-1/4 flex-col space-y-3 lg:justify-end">
+            <div className="flex lg:w-1/4 md:w-2/4 flex-col space-y-3 lg:justify-end">
                 {isDataLoaded === false && "...Loading"}
                 <div className="relative w-40 h-40 rounded-full m-auto mb-5 bg-white">
                     <Image
@@ -148,7 +156,7 @@ export default function Profile() {
                     name="phone"
                     onChange={phoneHandle}
                 >
-                    <FolderSharedOutlined />
+                    <Phone />
                 </Input>
                 <Input
                     label="Email"

@@ -1,6 +1,11 @@
 import Input from "../components/Input";
-import { Person, FolderSharedOutlined, Phone } from "@mui/icons-material";
 import Image from "next/image";
+import dynamic from "next/dynamic";
+
+//dynamic imports
+const Person = dynamic(() => import("@mui/icons-material/Person"));
+const Phone = dynamic(() => import("@mui/icons-material/Phone"));
+const FolderSharedOutlined = dynamic(() => import("@mui/icons-material/FolderSharedOutlined"));
 
 /*
  * type of user data
@@ -14,7 +19,7 @@ export interface Data {
     win: number;
     lose: number;
     draw: number;
-  }
+  };
 }
 
 /*
@@ -24,8 +29,8 @@ export interface Data {
  */
 export default function ViewUserProfile({ data }: { data: Data }) {
     return (
-        <div className="flex justify-evenly pt-10">
-            <div className="flex w-1/4 flex-col space-y-3 lg:justify-end mt-10">
+        <div className="flex justify-evenly">
+            <div className="flex lg:w-1/4 w-4/5 flex-col space-y-3 lg:justify-end mt-10">
                 <div className="relative w-40 h-40 rounded-full m-auto mb-5">
                     <Image
                         src={data.image}
@@ -34,6 +39,8 @@ export default function ViewUserProfile({ data }: { data: Data }) {
                         objectPosition="center"
                         alt="avatar"
                         className="rounded-full"
+                        placeholder="blur"
+                        blurDataURL="/img/logo.png"
                     />
                 </div>
                 <Input label="Full Name" value={data.fullName} name="fullname" readonly>
@@ -45,6 +52,7 @@ export default function ViewUserProfile({ data }: { data: Data }) {
                 <Input label="Phone" value={data.phone} name="phone" readonly>
                     <Phone />
                 </Input>
+                <p className="text-white mt-5">Stats</p>
                 <table className=" border-collapse border border-slate-800 rounded-ml text-center mt-6 ">
                     <thead className=" bg-[#fc5c3e] text-[#f3f2ef] my-5 py-5 mt-6">
                         <tr className="my-5 py-5 mt-6">
@@ -65,3 +73,4 @@ export default function ViewUserProfile({ data }: { data: Data }) {
         </div>
     );
 }
+

@@ -1,57 +1,144 @@
-//nextjs import
+//third party imports
 import Image from "next/image";
 import { GetStaticPropsContext } from "next";
+import { useState, useEffect } from "react";
+import useSWR from "swr";
+import axios from "axios";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
+import debounce from "lodash.debounce";
 
-//backend import
+//local import
 import { getMatches, getMatchById } from "@/lib/actions/match";
+import { getUsersByUserName } from "@/lib/actions/user";
 import Database from "@/lib/resources/database";
-
-//types import
 import type { Match } from "@/lib/types/Match";
-
-//components import
 import Player from "@/components/scoreboard/player";
-
-//styles import
 import styles from "@/styles/Scoreboard.module.sass";
+import fetcher from "@/lib/helpers/fetcher";
+import { UserProfile } from "@/lib/types/User";
+import { mapPlayerToTeam } from "@/lib/helpers/scoreboard";
 
-//fake players data
-const teams = [
-    [
-        {
-            name: "Player 1",
-            image: "https://i.pravatar.cc/300?img=1",
-        },
-        {
-            name: "Player 2",
-            image: "https://i.pravatar.cc/300?img=2",
-        },
-        {
-            name: "Player 3",
-            image: "https://i.pravatar.cc/300?img=3",
-        },
-    ],[
-        {
-            name: "Player 4",
-            image: "https://i.pravatar.cc/300?img=4",
-        },
-        {
-            name: "Player 5",
-            image: "https://i.pravatar.cc/300?img=5",
-        },
-        {
-            name: "Player 6",
-            image: "https://i.pravatar.cc/300?img=6",
-        }
-    ]
-];
+/**
+ * scoreboard props type
+ * @property {Match} match
+ * @property {UserProfile[]} players list of profiles of players in the match
+ */
+interface Props {
+    match: Match;
+    players: UserProfile[];
+}
 
 /**
  * scoreboard page
  * @param props - match of the scoreboard
  * @returns {JSX.Element} scoreboard page element
  */
-export default function Scoreboard(props: Match) {
+export default function Scoreboard({ match, players }: Props) {
+
+    //guard page against unauthenticated users and check if user is host of the match or in the match
+    const { data: session, status } = useSession();
+    const router = useRouter();
+    const [isMatchHost, setIsMatchHost] = useState<boolean>(false);
+
+    //guard page against unauthenticated users and check if user is host of the match or in the match
+    useEffect(()=> {
+        if (status === "loading") return;
+        if (status === "unauthenticated") {
+            router.push("/login");
+        }
+        if (session && session.user) {
+            setIsMatchHost(session.user.id === match.matchHost);
+            if (!match.teams[0].members.includes(session.user.userName) || !match.teams[1].members.includes(session.user.userName)) {
+                router.push("/");
+            }
+        }
+    }, [session, status, router, match]);
+
+    //match state
+    const [currMatch, setMatch] = useState<Match>(match);
+
+    //state for keeping track of if user could leave the match
+    const [isLeavable, setIsLeavable] = useState<boolean>(true);
+
+    //current home and away team members state
+    const [homeTeam, setHomeTeam] = useState<UserProfile[]>(
+
+        //map players profiles to home team
+        mapPlayerToTeam(players, currMatch.teams)[0]
+    );
+    const [awayTeam, setAwayTeam] = useState<UserProfile[]>(
+
+        //map players profiles to away team
+        mapPlayerToTeam(players, currMatch.teams)[1]
+    );
+
+    //team score states
+    const [homeScore, setHomeScore] = useState<number>(0);
+    const [awayScore, setAwayScore] = useState<number>(0);
+
+    //is match over state
+    const [isFinished, setFinished] = useState<boolean>(false);
+
+    //refetch match data every 1 seconds
+    const { data, error } = useSWR<{match: Match}>(`/api/match/${match._id?.toString()}`,fetcher, {
+        refreshInterval: 1000,
+        revalidateOnFocus: false,
+        revalidateOnReconnect: false,
+        fallback: match
+    });
+
+    //every time match data is updated, update the states
+    useEffect(()=> {
+        (async()=> {
+            if (data && !error) {
+                setMatch(data.match);
+                const allPlayers = data.match.teams[0].members.concat(data.match.teams[1].members);
+                const players = await axios.get<UserProfile[]>(`/api/user?usernames=${allPlayers.join(",")}`);
+                const mappedTeams = mapPlayerToTeam(players.data, data.match.teams);
+                setHomeTeam(mappedTeams[0]);
+                setAwayTeam(mappedTeams[1]);
+                if (!isMatchHost) {
+                    setHomeScore(data.match.teams[0].score);
+                    setAwayScore(data.match.teams[1].score);
+                }
+            }
+        })();
+    },[data, error, isMatchHost]);
+
+    //guard against if match is finished or cancelled
+    useEffect(()=> {
+        if (currMatch.status === "FINISHED") {
+            router.push(`/match/${currMatch._id?.toString()}/result`);
+        }
+        if (currMatch.status === "CANCELLED") {
+            router.push(`/match/${currMatch._id?.toString()}/cancel`);
+        }
+    }, [currMatch, router]);
+
+    //handle increase and decrease score, debounce to prevent spamming
+    const handleScoreChange = debounce(async(team: "home" | "away", type: "increase" | "decrease") => {
+        if (type === "increase") {
+            if (team === "home") {
+                setHomeScore(prev => prev + 1);
+                await axios.put(`/api/match/${currMatch._id?.toString()}/score`, { teamIndex: 0, operation: "increase" });
+            } else {
+                setAwayScore(prev => prev + 1);
+                await axios.put(`/api/match/${currMatch._id?.toString()}/score`, { teamIndex: 1, operation: "increase" });
+            }
+        } else {
+            if (team === "home") {
+                if (homeScore <= 0) return;
+                setHomeScore(prev => prev - 1);
+                await axios.put(`/api/match/${currMatch._id?.toString()}/score`, { teamIndex: 0, operation: "decrease" });
+            } else {
+                if (awayScore <= 0) return;
+                setAwayScore(prev => prev - 1);
+                await axios.put(`/api/match/${currMatch._id?.toString()}/score`, { teamIndex: 1, operation: "decrease" });
+            }
+        }
+    }, 500);
+
     return(
         <div className={styles.page}>
             <div className="relative h-7 w-full">
@@ -80,22 +167,41 @@ export default function Scoreboard(props: Match) {
                                 priority={true}
                             />
                         </div>
-                        <div className="z-10 bg-white p-5 py-9 w-11/12 m-auto rounded-md border-2 border-orange-600">
-                            <h1 className="text-black font-extrabold text-3xl text-center">0</h1>
+                        <div
+                            className={
+                                `z-10 bg-white p-5 py-9 
+                                 w-11/12 m-auto rounded-md
+                                text-black text-3xl text-center 
+                                 border-2 border-orange-500
+                                 flex flex-row justify-evenly
+                                 items-center
+                                 `
+                            }
+                        >
+                            { isMatchHost && <button
+                                className="bg-gray-300 w-5 h-5 rounded text-base p-5 flex items-center justify-center mr-auto"
+                                onClick={()=>handleScoreChange("home", "increase") }>+</button> }
+                            <p className="font-extrabold">{homeScore}</p>
+                            { isMatchHost && <button
+                                className="bg-gray-300 w-5 h-5 rounded text-base p-5 flex items-center justify-center ml-auto"
+                                onClick={()=>handleScoreChange("home", "decrease")}>-</button> }
                         </div>
                     </div>
                     <div className={styles.homeplayers}>
-                        { teams[0].map((player, index) => (
-                            <Player
-                                key={index}
-                                image={player.image}
-                                name={player.name}
-                                onLeave={() => console.log("leave")}
-                                variant="home"
-                            />
-                        ))}
+                        {
+                            homeTeam.map((player, index) =>
+                                <Player
+                                    key={index}
+                                    userName={player.userName}
+                                    image={player.image}
+                                    isLeavable={isLeavable}
+                                    variant="home"
+                                    matchId={match._id!.toString()}
+                                    hostId={match.matchHost}
+                                />
+                            )
+                        }
                     </div>
-                    <button className={styles.pause}> Pause </button>
                 </div>
                 <div className={styles.awayteam}>
                     <h1 className={styles.away}>Away</h1>
@@ -110,23 +216,65 @@ export default function Scoreboard(props: Match) {
                                 priority={true}
                             />
                         </div>
-                        <div className="z-10 bg-white p-5 py-9 w-11/12 m-auto rounded-md">
-                            <h1 className="text-black font-extrabold text-3xl text-center">0</h1>
+                        <div
+                            className={
+                                `z-10 bg-white p-5 py-9 
+                                w-11/12 m-auto rounded-md 
+                                text-black text-3xl text-center
+                                flex flex-row justify-evenly
+                                items-center`
+                            }
+                        >
+                            { isMatchHost && <button
+                                className="bg-gray-300 w-5 h-5 rounded p-5 text-base flex items-center justify-center mr-auto"
+                                onClick={()=>handleScoreChange("away", "increase")}>+</button> }
+                            <p className="font-extrabold">{awayScore}</p>
+                            { isMatchHost && <button
+                                className="bg-gray-300 w-5 h-5 rounded p-5 text-base flex items-center justify-center ml-auto"
+                                onClick={()=>handleScoreChange("away", "decrease")}>-</button> }
                         </div>
                     </div>
                     <div className={styles.awayplayers}>
-                        { teams[1].map((player, index) => (
-                            <Player
-                                key={index}
-                                image={player.image}
-                                name={player.name}
-                                onLeave={() => console.log("leave")}
-                                variant="away"
-                            />
-                        ))}
+                        {
+                            awayTeam.map(player =>
+                                <Player
+                                    key={player._id!.toString()}
+                                    userName={player.userName}
+                                    image={player.image}
+                                    isLeavable={isLeavable}
+                                    matchId={match._id!.toString()}
+                                    variant="away"
+                                    hostId={match.matchHost}
+                                />
+                            )
+                        }
                     </div>
-                    <button className={styles.finish}> Finish </button>
+
                 </div>
+                { isMatchHost &&
+                    <>
+                        <button className={styles.pause}>
+                            Pause
+                        </button>
+                        <button
+                            className={styles.finish}
+                            onClick={()=> setFinished(true)}
+                        >
+                            Finish
+                        </button>
+                        <button
+                            className={
+                                `font-bold px-7 py-2 
+                                text-center text-orange-500 
+                                rounded border-2 
+                                border-orange-500 md:w-1/4
+                                w-full m-auto col-span-2`
+                            }
+                        >
+                            Cancel
+                        </button>
+                    </>
+                }
             </div>
         </div>
     );
@@ -152,13 +300,45 @@ export async function getStaticPaths() {
  */
 export async function getStaticProps(context: GetStaticPropsContext) {
     const { id } = context.params!;
-    await Database.setup();
-    const match = await getMatchById(id as string);
 
-    return {
-        props: {
-            match: JSON.parse(JSON.stringify(match))
-        },
-        revalidate: 10
-    };
+    try {
+        await Database.setup();
+
+        //get match data
+        const match = await getMatchById(id as string);
+
+        //guards against finished or cancelled matches
+        if (match.status === "FINISHED") {
+            return {
+                redirect: {
+                    destination: `/match/${id}/result`,
+                    permanent: false
+                }
+            };
+        }
+
+        if (match.status === "CANCELLED") {
+            return {
+                redirect: {
+                    destination: `/match/${id}/cancel`,
+                    permanent: false
+                }
+            };
+        }
+
+        //get all profiles of players in the match
+        const players = await getUsersByUserName(match.teams[0].members.concat(match.teams[1].members));
+
+        return {
+            props: {
+                match: JSON.parse(JSON.stringify(match)),
+                players: JSON.parse(JSON.stringify(players))
+            },
+            revalidate: 10
+        };
+    } catch {
+        return {
+            notFound: true
+        };
+    }
 }

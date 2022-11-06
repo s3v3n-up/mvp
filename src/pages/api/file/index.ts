@@ -77,13 +77,14 @@ handler
 
             // Catches error and throw the error message and code
         } catch (error: any) {
-            const { code = 500, message = "unknown error occured" } = error;
-            res.status(code).json({
-                status: code,
-                data: {
-                    error,
-                },
-            });
+            const {
+                code = 500,
+                message = "unknown error occured",
+                cause: {
+                    message: reason="an internal error"
+                }
+            } = error;
+            res.status(code).json({ message: `${message} caused by ${reason}` });
         }
     });
 

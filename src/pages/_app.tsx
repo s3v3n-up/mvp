@@ -3,7 +3,7 @@ import type { AppProps } from "next/app";
 import type { Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import Layout from "@/components/layout";
-import ProfileProvider from "@/context/profile";
+import AvatarProvider from "@/context/avatar";
 
 //local import
 import "../styles/globals.sass";
@@ -14,12 +14,12 @@ interface PageProps {
 
 function MyApp({ Component, pageProps }: AppProps<PageProps>) {
     return (
-        <SessionProvider session={pageProps.session} refetchInterval={1}>
-            <ProfileProvider>
+        <SessionProvider session={pageProps.session} refetchOnWindowFocus={false}>
+            <AvatarProvider>
                 <Layout>
                     <Component {...pageProps} />
                 </Layout>
-            </ProfileProvider>
+            </AvatarProvider>
         </SessionProvider>
     );
 }

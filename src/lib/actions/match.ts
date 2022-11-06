@@ -15,7 +15,7 @@ export async function createMatch(match: Match): Promise<Match> {
 
         //return created match
         return createdMatch;
-    } catch(error: any) {
+    } catch (error: any) {
         throw new Error("error creating match", { cause: error });
     }
 }
@@ -32,7 +32,7 @@ export async function getMatches(): Promise<Match[]> {
 
         // return matches
         return matches;
-    } catch(error: any) {
+    } catch (error: any) {
         throw new Error("error getting matches", { cause: error });
     }
 }
@@ -55,7 +55,7 @@ export async function getMatchById(_id: string): Promise<Match> {
 
         //return match that matches the _id
         return match;
-    } catch(error: any) {
+    } catch (error: any) {
 
         //database error
         if (error.code) {
@@ -68,28 +68,47 @@ export async function getMatchById(_id: string): Promise<Match> {
 }
 
 /**
- * Update a team's score in a match
+ * increase the score of a team in a match
  * @param matchId id of match to update
  * @param teamIdx index of team to update
  * @returns {Promise<Match>} promise that resolves to updated match
  */
-export async function IncreaseMatchScoreOfTeam(matchId: string, teamIdx: number) {
+export async function increaseMatchScoreOfTeam(
+    matchId: string,
+    teamIdx: number
+) {
     try {
-        const match = await MatchModel.findById(matchId);
-        if (!match) {
-            throw new Error("match not found");
-        }
-
-        //increase score of team
-        match.teams[teamIdx].score++;
-
-        //save match
-        await match.save();
+        const updatedMatch = await MatchModel.findByIdAndUpdate(matchId, {
+            $inc: {
+                [`teams.${teamIdx}.score`]: 1,
+            },
+        });
 
         //return updated match
-        return match;
-    } catch(error: any) {
+        return updatedMatch;
+    } catch (error: any) {
         throw new Error("error increasing match score", { cause: error });
+    }
+}
+
+/**
+ * decrease a team's score in a match
+ */
+export async function decreaseMatchScoreOfTeam(
+    matchId: string,
+    teamIdx: number
+) {
+    try {
+        const updatedMatch = await MatchModel.findByIdAndUpdate(matchId, {
+            $inc: {
+                [`teams.${teamIdx}.score`]: -1,
+            },
+        });
+
+        //return updated match
+        return updatedMatch;
+    } catch (error: any) {
+        throw new Error("error decreasing match score", { cause: error });
     }
 }
 
@@ -109,7 +128,7 @@ export async function getMatchesBetweenDates(start: Date, end: Date) {
         });
 
         return matches;
-    } catch(error: any) {
+    } catch (error: any) {
         throw new Error("error getting matches between dates", { cause: error });
     }
 }
@@ -122,13 +141,25 @@ export async function getMatchesBetweenDates(start: Date, end: Date) {
  * @returns {Promise<Match>} promise that resolves to updated match
  * @throws {Error} if match is not found
  */
-export async function addMembersToTeam(matchId: string, teamIdx: 0 | 1, userNames: string[]) {
+export async function addMembersToTeam(
+    matchId: string,
+    teamIdx: 0 | 1,
+    userNames: string[]
+) {
     try {
         const match = await MatchModel.findById(matchId);
 
         //if match is not found, throw error
         if (!match) {
             throw new Error("match not found");
+        }
+
+        const maxPlayerPerTeam = match.gameMode.requiredPlayers / 2;
+        if (
+            match.teams[teamIdx].members.length + userNames.length >
+      maxPlayerPerTeam
+        ) {
+            throw new Error("team is full");
         }
 
         //if member not in team yet, add member to team
@@ -140,8 +171,41 @@ export async function addMembersToTeam(matchId: string, teamIdx: 0 | 1, userName
         await match.save();
 
         return match;
-    } catch(error: any) {
+    } catch (error: any) {
         throw new Error("error adding members to team", { cause: error });
+    }
+}
+
+/**
+ * add a new member to a match's team
+ */
+export async function addMemberToTeam(
+    matchId: string,
+    teamIdx: 0 | 1,
+    userName: string
+) {
+    try {
+        const match = await MatchModel.findById(matchId);
+
+        //if match is not found, throw error
+        if (!match) {
+            throw new Error("match not found");
+        }
+
+        const maxPlayerPerTeam = match.gameMode.requiredPlayers / 2;
+        if (match.teams[teamIdx].members.length + 1 > maxPlayerPerTeam) {
+            throw new Error("team is full");
+        }
+
+        //if member not in team yet, add member to team
+        if (!match.teams[teamIdx].members.includes(userName)) {
+            match.teams[teamIdx].members.push(userName);
+        }
+        await match.save();
+
+        return match;
+    } catch (error: any) {
+        throw new Error("error adding member to team", { cause: error });
     }
 }
 
@@ -153,7 +217,11 @@ export async function addMembersToTeam(matchId: string, teamIdx: 0 | 1, userName
  * @returns {Promise<Match>} promise that resolves to updated match
  * @throws {Error} if match is not found
  */
-export async function removeMembersFromTeam(matchId: string, teamIdx: 0 | 1, userNames: string[]) {
+export async function removeMembersFromTeam(
+    matchId: string,
+    teamIdx: 0 | 1,
+    userNames: string[]
+) {
     try {
         const match = await MatchModel.findById(matchId);
 
@@ -162,13 +230,97 @@ export async function removeMembersFromTeam(matchId: string, teamIdx: 0 | 1, use
             throw new Error("match not found");
         }
 
+        if (match.teams[teamIdx].members.length - userNames.length < 0) {
+            return;
+        }
+
         //remove specified members from team
-        match.teams[teamIdx].members = match.teams[teamIdx].members.filter((member) => !userNames.includes(member));
+        match.teams[teamIdx].members = match.teams[teamIdx].members.filter(
+            (member) => !userNames.includes(member)
+        );
         await match.save();
 
         return match;
     } catch (error: any) {
         throw new Error("error removing members from team", { cause: error });
+    }
+}
+
+/**
+ * remove a member from a match's team
+ * @param matchId id of match to update
+ * @param teamIdx index of team to remove member from
+ * @param username username of member to remove from team
+ */
+export async function removeMemberFromTeam(
+    matchId: string,
+    teamIdx: 0 | 1,
+    username: string
+) {
+    try {
+        const match = await MatchModel.findById(matchId);
+
+        //if match is not found, throw error
+        if (!match) {
+            throw new Error("match not found");
+        }
+
+        if (match?.teams[teamIdx].members.length < 0) {
+            return;
+        }
+
+        //remove specified member from team
+        match.teams[teamIdx].members = match.teams[teamIdx].members.filter(
+            (member) => member !== username
+        );
+        await match.save();
+
+        return match;
+    } catch (error: any) {
+        throw new Error("error removing member from team", { cause: error });
+    }
+}
+
+/**
+ * join user to a match
+ */
+export async function joinMatch(matchId: string, userName: string) {
+    try {
+        const match = await MatchModel.findById(matchId);
+
+        //if match is not found, throw error
+        if (!match) {
+            throw new Error("match not found");
+        }
+
+        //if user already joined match, return
+        if (
+            match.teams[0].members.includes(userName) ||
+      match.teams[1].members.includes(userName)
+        ) {
+            return;
+        }
+
+        //get max player per team
+        const maxPlayers = match.gameMode.requiredPlayers;
+
+        if (
+            match.teams[0].members.concat(match.teams[1].members).length >= maxPlayers
+        ) {
+            throw new Error("match is full");
+        }
+
+        //if home team has less members than away team, add user to home team
+        if (match.teams[0].members.length < match.teams[1].members.length) {
+            match.teams[0].members.push(userName);
+        } else {
+            match.teams[1].members.push(userName);
+        }
+        await match.save();
+
+        return match;
+    } catch (error: any) {
+        throw new Error("error joining match", { cause: error });
     }
 }
 
@@ -185,7 +337,7 @@ export async function updateMatch(matchId: string, match: Match) {
         const updatedMatch = await MatchModel.findByIdAndUpdate(matchId, match);
 
         return updatedMatch;
-    } catch(error: any) {
+    } catch (error: any) {
         throw new Error("error updating match", { cause: error });
     }
 }
@@ -209,7 +361,10 @@ export async function updateMatch(matchId: string, match: Match) {
 // ref: https://www.youtube.com/watch?v=Wvy_njVn7x8&list=PLYxzS__5yYQmr3HQQJMPBMbKtMY37sdsv&index=7
 // ref: https://www.youtube.com/watch?v=V4UoZvb-YW8&list=PLYxzS__5yYQmr3HQQJMPBMbKtMY37sdsv&index=9
 // ref: https://stackoverflow.com/questions/21509045/mongodb-group-by-array-inner-elements
-export async function getLeaderboardOfSport(sportName: string, limit: number): Promise<{_id: string, numberOfWins: number}[]> {
+export async function getLeaderboardOfSport(
+    sportName: string,
+    limit: number
+): Promise<{ _id: string; numberOfWins: number }[]> {
     try {
 
         //validate limit
@@ -218,21 +373,26 @@ export async function getLeaderboardOfSport(sportName: string, limit: number): P
         }
 
         //populate the leaderboard
-        const leaderboard = await MatchModel.aggregate([
-            { $match: { "sport": sportName } },
-            { $unwind: "$teams" },
-            { $match: { "teams.status": "WIN" } },
-            { $unwind: "$teams.members" },
-            { $group: {
-                "_id": "$teams.members",
-                "numberOfWins": { $sum: 1 } }
-            },
-            { $sort: { "numberOfWins": -1 } },
-            { $limit: limit },
-        ], { allowDiskUse: true });
+        const leaderboard = await MatchModel.aggregate(
+            [
+                { $match: { sport: sportName } },
+                { $unwind: "$teams" },
+                { $match: { "teams.status": "WIN" } },
+                { $unwind: "$teams.members" },
+                {
+                    $group: {
+                        _id: "$teams.members",
+                        numberOfWins: { $sum: 1 },
+                    },
+                },
+                { $sort: { numberOfWins: -1 } },
+                { $limit: limit },
+            ],
+            { allowDiskUse: true }
+        );
 
         return leaderboard;
-    } catch(error: any) {
+    } catch (error: any) {
         throw new Error("error getting leaderboard", { cause: error });
     }
 }
@@ -245,7 +405,36 @@ export async function getLeaderboardOfSport(sportName: string, limit: number): P
 export async function deleteMatch(matchId: string) {
     try {
         await MatchModel.findByIdAndDelete(matchId);
-    } catch(error: any) {
+    } catch (error: any) {
         throw new Error("error deleting match", { cause: error });
+    }
+}
+
+/**
+ * Checks if the user can create another match
+ * @param {string} matchHost the id of the match host
+ * @param {string} status status of the match
+ * @returns if it exist
+ */
+export async function findUserActiveMatches(matchHost: string) {
+    try {
+
+        // Stores and searches for existing id from a user and if they currently have an active match
+        const exists = await MatchModel.find({
+            $and: [
+                { matchHost: matchHost },
+                { $or: [{ status: "UPCOMING" }, { status: "INPROGRESS" }] },
+            ],
+        });
+
+        // Returns the user
+        return exists;
+
+    // Catches and throws error
+    } catch (error: any) {
+        if (error.message) {
+            throw error;
+        }
+        throw new Error("Error in querying match", error);
     }
 }

@@ -7,7 +7,7 @@ import { Match } from "@/lib/types/Match";
 export interface UserProfile {
 
 	// This is automatically added by mongodb
-	id?: string | ObjectId;
+	_id?: string | ObjectId;
 
 	// This the unique for every user
 	userName: string;

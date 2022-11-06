@@ -1,3 +1,4 @@
+// Third-party imports
 import { ReactNode, ChangeEvent } from "react";
 
 /*
@@ -25,15 +26,19 @@ interface Props {
  */
 export default function SelectOption(props: Props) {
     return (
-        <div>
+        <div className="w-full">
             <div className="flex justify-left my-2">
                 <label className="text-[#f3f2ef]">{props.label}</label>
             </div>
-            <div className="flex">
-                <div className="py-2 pl-2 absolute">{props.children}</div>
+            <div className="bg-[#f1ecec] flex items-center select-none px-3 py-2 rounded-md gap-3">
+                {props.children}
                 <select
                     id="selected"
-                    className="rounded-sm w-full text-center bg-[#f1ecec] h-8 p-5 text-[#31302f]">
+                    name={props.name}
+                    value={props.value}
+                    className=" w-full text-[#31302f]"
+                    onChange={props.onChange}
+                >
                     {props.options.map((option, idx) => (
                         <option key={idx} value={option.value}>
                             {option.name}

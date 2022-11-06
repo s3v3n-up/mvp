@@ -1,11 +1,15 @@
 //third-party import
 import Navbar from "@/components/navbar";
-import React, { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
 
 //local import
 import styles from "@/styles/Components.module.sass";
+
+//dynamic import
+const Skeleton = dynamic(() => import("@mui/material/Skeleton"), { ssr: false });
 
 /**
  * *
@@ -26,7 +30,7 @@ const Layout = ({ children }: Props) => {
 
     return (
         <div className={styles.container}>
-            <div className="fixed top-0 bottom-0 right-0 left-0 -z-50">
+            <div className="fixed top-0 bottom-0 right-0 left-0 -z-50 bg-black">
                 <Image
                     src="/bg.svg"
                     layout="fill"

@@ -1,124 +1,249 @@
 // Styles for layout component
-// .container
-//     width: 100%
-//     min-height: 100vh
-//     display: flex
-//     flex-direction: column
-//     & > *
-//         height: 100%
+.container
+    width: 100%
+    min-height: 100vh
+    display: flex
+    flex-direction: column
+    & > *
+        height: 100%
 
-// // Styles for inputbar component
-// .inputbar input
-//     border-bottom: 1px solid #A4A4A4
-//     background-color: #FFFF
-//     border-radius: 10px
-//     width: 400px
-//     height: 51.11px
-//     font-size: 13px
-//     font-family: 'Inter'
-//     font-style: normal
-//     font-weight: 400
-//     font-size: 18px
-//     line-height: 77px
+// Styles for inputbar component
+.inputbar input
+    border-bottom: 1px solid #A4A4A4
+    background-color: #FFFF
+    border-radius: 10px
+    width: 400px
+    height: 51.11px
+    font-size: 13px
+    font-family: 'Inter'
+    font-style: normal
+    font-weight: 400
+    font-size: 18px
+    line-height: 77px
 
-// // Styles for buttons component
-// .primarybutton button
-//     color: white
-//     text-transform: uppercase
-//     font-family: 'Inter'
-//     font-style: normal
-//     font-weight: 700
-//     font-size: 17px
-//     line-height: 29px
+// Styles for buttons component
+.primarybutton button
+    color: white
+    text-transform: uppercase
+    font-family: 'Inter'
+    font-style: normal
+    font-weight: 700
+    font-size: 17px
+    line-height: 29px
 
-//     background: #fc5c3e
-//     width: 200px
-//     height: 55px
+    background: #fc5c3e
+    width: 200px
+    height: 55px
 
-//     filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.25))
-//     border-radius: 10px
-//     border: none
+    filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.25))
+    border-radius: 10px
+    border: none
 
-//     &:hover
-//         color: gray
-        
-// // Styles for navbar component
-// .nav
-//     width: 100%
-//     display: flex
-//     align-items: center
-//     justify-content: space-between
-//     user-select: none
-//     padding: 0.75rem 0
+    &:hover
+        color: gray
 
-// .bottomNav
-//     width: 100%
-//     display: flex
-//     justify-content: center
-//     align-items: center
-//     height: 3rem
-//     user-select: none
-//     background-color: #172123
+// Styles for navbar component
+.nav
+    width: 100%
+    display: flex
+    align-items: center
+    justify-content: space-between
+    user-select: none
+    padding: 0.5rem 0.75rem 
+    position: sticky
+    top: 0
 
-// .nav p, .nav button
-//     position: flex
-//     color: white
-//     font-family: 'Inter'
-//     font-weight: 600
-//     font-size: 0.875rem
-//     display: inline-block
-//     text-transform: uppercase
-//     padding-right: 20px
-//     padding-top: 14px
-//     user-select: none
+.bottomNav
+    width: 100%
+    display: flex
+    justify-content: space-around
+    align-items: center
+    height: 3rem
+    user-select: none
+    background-color: #172123
 
-//     &:hover
-//         color: #fc5c3e
+.nav li, .nav button
+    color: white
+    font-family: 'Inter'
+    font-weight: 600
+    font-size: 0.75rem
+    text-transform: uppercase
+    display: flex
+    align-items: center
+    &:hover
+        color: #fc5c3e
+        cursor: pointer
 
-// .option
-//     margin: auto
-//     flex: auto
-//     display: flex
-//     justify-content: center
-//     gap: 3rem
+.option
+    margin: auto
+    flex: auto
+    display: flex
+    justify-content: center
+    gap: 5rem
+    @media screen and (max-width: 800px)
+        gap: 1rem
 
-// .auth
-//     display: flex
-//     align-items: center
-//     justify-content: center
-//     margin-left: auto
-//     height: 100%
-//     padding: 0 0.25rem
-//     gap: 2rem
+.auth
+    display: flex
+    align-items: center
+    justify-content: between
+    margin-left: auto
+    height: 100%
+    padding: 0 0.25rem
+    gap: 1.5rem
 
-// .bottomNav p
-//     color: white
-//     font-family: 'Inter'
-//     font-weight: 600
-//     font-size: 0.5rem
-//     text-transform: uppercase
-//     user-select: none
+.bottomNav p
+    color: white
+    font-family: 'Inter'
+    font-weight: 600
+    font-size: 0.5rem
+    text-transform: uppercase
+    user-select: none
 
-//     &:hover
-//         color: #fc5c3e
+    &:hover
+        color: #fc5c3e
 
-// @media screen and (max-width: 700px )
-//     .nav
-//         display: none
-    
-//     .container
-//         main
-//             margin-bottom: 5rem
+@media screen and (max-width: 700px )
+    .nav
+        display: none
 
-//     .bottomNav
-//         position: fixed
-//         bottom: 0
-//         width: 100%
-//         z-index: 100
+    .container
+        main
+            margin-bottom: 5rem
 
-//     .auth
-//         display: none
+    .bottomNav
+        position: fixed
+        bottom: 0
+        width: 100%
+        z-index: 100
 
-// @media screen and (min-width: 700px)
-//     .bottomNav
-//         display: none
+    .auth
+        display: none
+
+@media screen and (min-width: 700px)
+    .bottomNav
+        display: none
+
+//Background for tab component
+.background
+    background-color: transparent
+    width: 35em
+    height: 25em
+    margin: auto
+    border-radius: 10px
+
+//Container for tabs
+.titleContainer
+    margin-top: 10vh
+    display: flex
+    flex-direction: row
+    justify-content: space-around
+    align-items: center
+    font-family: sans-serif
+    font-weight: bold
+    background-color: #fc5c3e
+    padding: 0
+    border-radius: 10px
+    height: 8vh
+
+//Tab contents
+.tabContent
+    height: 55vh
+    width: 70vw
+    display: flexbox
+    flex-direction: column
+    overflow-x: hidden
+    overflow-y: auto
+    background-color: transparent
+
+.tabContent::-webkit-scrollbar
+    opacity: 0
+
+//Selected tab
+.selectedTab
+    color: white
+    background-color: #fc5c3e
+    height: 85%
+    width: 49%
+    text-align: center
+    line-height: 10px
+    elevation: 3
+    box-shadow: none
+    border: 0
+    font-size: 1.3rem
+
+//Unselected tab
+.unselectedTab
+    color: #fc5c3e
+    background-color: #001011
+    height: 93%
+    width: 50%
+    text-align: center
+    line-height: 10px
+    elevation: 3
+    box-shadow: none
+    border: black 1px
+    border-radius: 9px
+    font-size: 1.3rem
+
+// Card base 
+.cardContainer
+    background-color: white
+    width: 35rem
+    height: 10rem
+    border-radius: 10px
+    position: relative
+    font-family: sans-serif
+    margin-top: 2em
+
+// Information
+.cardInfo
+    padding-top: 0.1rem
+
+// Match time info
+.time
+    color: black
+    font-weight: bold
+    margin-left: 1rem
+
+// Match sport type info
+.sportType
+    font-weight: bold
+    color: gray
+    margin-left: 1rem
+
+// Container for location and button
+.miniContainer
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+    background-color: #fc5c3e
+    position: absolute
+    bottom: 0
+    border-radius: 0 0 10px 10px
+    width: 100%
+    height: 30%
+    margin: auto
+
+// location icon
+.location p:before
+    content: ""
+    display: block
+    background: url("/icons/location.png") no-repeat
+    width: 20px
+    height: 20px
+    float: left
+    margin: 0 6px 0 0
+
+// Match location info
+.location
+    color: white
+    margin-left: 1rem
+
+// button for user to leave match or delete
+.cancelButton
+    background-color: #fc5c3e
+    border: solid 1px white
+    border-radius: 7px
+    color: white
+    margin-right: 1rem
