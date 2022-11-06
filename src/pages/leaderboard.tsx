@@ -1,5 +1,5 @@
 //import styling from styles folder
-import styles from "../styles/leaderboard.module.sass";
+import styles from "@/styles/leaderboard.module.sass";
 
 //import next/image
 import Image from "next/image";

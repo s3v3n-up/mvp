@@ -1,5 +1,5 @@
 //import styling for standings component
-import styles from "./leaderboard.module.sass";
+import styles from "@/component/Leaderboard/leaderboard.module.sass";
 
 //interface for the standings
 interface Props {
