@@ -94,6 +94,7 @@ export default function Home({ regMatches, quickMatches }: any) {
                 {/*  Subtitle for regular matches */}
                 <p>Regular Matches</p>
                 {/* Scroll container for regular matches */}
+                {regMatches.length === 0 && <p className="text-2xl text-white text-center"> ⚠️ There is no match found</p>}
                 <ScrollContainer className="flex w-full" horizontal hideScrollbars>
                     {regMatches.map((reg : any, idx: any) => (
 
