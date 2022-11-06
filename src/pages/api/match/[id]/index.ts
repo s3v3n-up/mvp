@@ -47,7 +47,10 @@ export default async function handler(
                 description,
                 matchHost: "",
                 sport: "",
-                gameMode: "",
+                gameMode: {
+                    modeName: "1v1",
+                    requiredPlayers: 2
+                },
                 matchType: "REGULAR",
                 matchEnd: new Date(Date.now()),
                 teams: [

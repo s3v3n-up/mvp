@@ -5,14 +5,20 @@ import { Location, Sports, Props, Modes } from "@/lib/types/General";
 
 // Third party imports
 import { ChangeEvent, FormEvent, useState } from "react";
-import {
-    AddLocationAlt,
-    SportsBasketball,
-    PeopleAlt,
-} from "@mui/icons-material";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import router from "next/router";
+import dynamic from "next/dynamic";
+
+//dynamic imports
+const AddLocationAlt = dynamic(
+    () => import("@mui/icons-material/AddLocationAlt")
+);
+const SportsBasketball = dynamic(
+    () => import("@mui/icons-material/SportsBasketball")
+);
+const PeopleAlt = dynamic(() => import("@mui/icons-material/PeopleAlt"));
+const AlertMessage = dynamic(() => import("@/components/alertMessage"));
 
 /*
  * this component is used in create match page
@@ -30,6 +36,25 @@ export default function QuickMatch({ props }: Props) {
 
     // Stores and Sets the mode
     const [mode, setMode] = useState("1V1");
+
+    /**
+   * This splits the mode string then turns into a number to compute for required players
+   * @returns a number to be used for requiredPlayers field in match creation
+   */
+    function computeReqPlayers(data: string) {
+
+        // Splits mode string into an array of character
+        const modeArray = data.split("V");
+
+        // Gets first character from modeArray and converts it to a number
+        const num1 = parseInt(modeArray[0]);
+
+        // Gets second character from modeArray and converts it to a number
+        const num2 = parseInt(modeArray[1]);
+
+        // Returns computed number for required players
+        return num1 + num2;
+    }
 
     //Form submission state
     const [error, setError] = useState("");
@@ -68,9 +93,10 @@ export default function QuickMatch({ props }: Props) {
                 matchHost: session!.user.id,
                 location: { lat: 22, lng: -122 }, // this is temporary while we haven't finished mapbox
                 sport: sportname,
-                gameMode: mode,
+                gameMode: { modeName: mode, requiredPlayers: computeReqPlayers(mode) },
                 matchStart: new Date(Date.now()),
                 matchType: "QUICK",
+                status: "UPCOMING",
             });
 
             // Checks if no successful post response
@@ -78,8 +104,22 @@ export default function QuickMatch({ props }: Props) {
                 throw new Error("No Response");
             }
             router.push("/");
+
+        // Catches and throws the error
         } catch (err: any) {
-            throw new Error("NETWORK ERROR", err);
+
+            // If  there is a error in the response display it using setError
+            if (err!.response) {
+                setError(err.response.data.message);
+
+            // Else show the error
+            } else {
+                setError(err.message);
+            }
+
+            // Lastly remove the loading
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -114,7 +154,8 @@ export default function QuickMatch({ props }: Props) {
                 </div>
                 {/* Form to be submitted */}
                 <form onSubmit={handleFormSubmit}>
-                    {/* Input box for Location */}
+                    {error && <AlertMessage message={error} type="error" />}
+                    {loading && <AlertMessage message="Loading..." type="loading" />}
                     <Input
                         label="Location"
                         value={"0"}

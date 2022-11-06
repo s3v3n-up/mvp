@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import axios from "axios";
 
 /**
  * player props
@@ -14,8 +15,9 @@ import { useSession } from "next-auth/react";
     image: string;
     userName: string;
     isLeavable: boolean;
-    onLeave: () => void;
     variant: "home" | "away";
+    matchId: string;
+    hostId: string;
 }
 
 /**
@@ -34,8 +36,11 @@ export default function Player(props: PlayerProps) {
             if (session.user.userName === props.userName) {
                 setShowLeave(true);
             }
+            if (session.user.id === props.hostId) {
+                setShowLeave(false);
+            }
         }
-    }, [session, props.userName]);
+    }, [session, props]);
 
     /**
      * component styles for different player variant
@@ -43,19 +48,29 @@ export default function Player(props: PlayerProps) {
     const variantStyle = {
         home: {
             container: "text-orange-500",
-            button: "rounded-md border-2 border-orange-500 px-7 py-0.5 md:text-base text-sm"
+            button: "rounded-md border-2 border-orange-500 py-0.5 lg:text-base text-sm text-center lg:w-4/5 w-full ml-auto"
         },
         away: {
             container: "text-white",
-            button: "rounded-md border-2 border-white px-7 py-0.5 md:text-base text-sm"
+            button: "rounded-md border-2 border-white py-0.5 lg:text-base text-sm text-center lg:w-4/5 w-full ml-auto"
         }
     };
 
+    async function onLeave() {
+        const teamIndex = props.variant === "home" ? 0 : 1;
+        const userName= props.userName;
+        try {
+            await axios.put(`/api/match/${props.matchId}/team`,{ teamIndex, userName, operation: "remove" });
+        } catch(error) {
+            alert("Error leaving match");
+        }
+    }
+
     return (
         <div
-            className={`flex flex-row justify-between items-center w-full h-full sm:text-base text-sm ${variantStyle[props.variant].container}`}
+            className={`grid grid-cols-3 gap-3 w-full h-full sm:text-base text-sm ${variantStyle[props.variant].container}`}
         >
-            <div className="relative rounded-full w-12 h-12">
+            <div className="relative rounded-full lg:w-12 lg:h-12 w-10 h-10">
                 <Image
                     src={props.image}
                     alt="player avatar"
@@ -65,11 +80,9 @@ export default function Player(props: PlayerProps) {
                     className="rounded-full"
                 />
             </div>
-            <div>{props.userName}</div>
-            {props.isLeavable && showLeave ? (
-                <button onClick={props.onLeave} className={variantStyle[props.variant].button}>Leave</button>
-            ): (
-                <div className="px-7 py-0.5"></div>
+            <p className="lg:text-base text-sm flex flex-row items-center">{props.userName}</p>
+            {props.isLeavable && showLeave && (
+                <button onClick={onLeave} className={variantStyle[props.variant].button}>Leave</button>
             )}
         </div>
     );

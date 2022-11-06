@@ -49,8 +49,16 @@ const matchSchema = new Schema<Match>({
 
     // This is the chosen game mode for the chosen sport
     gameMode: {
-        type: String,
-        required: true,
+        modeName: {
+            type: String,
+            required: true,
+            default: "1V1"
+        },
+        requiredPlayers: {
+            type: Number,
+            required: true,
+            default: 2
+        }
     },
 
     // This is the type of the match either REGULAR or QUICK
@@ -71,11 +79,14 @@ const matchSchema = new Schema<Match>({
     matchStart: {
         type: Date,
         required: true,
+        default: Date.now()
     },
 
     // This is the end date/time of the match
     matchEnd: {
         type: Date,
+        required: true,
+        default: Date.now()
     },
 
     // This is the match details, also a place where you can input extra details eg. Discord link, Facebook messenger link etc.

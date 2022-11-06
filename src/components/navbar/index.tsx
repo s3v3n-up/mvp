@@ -5,10 +5,14 @@ import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { useContext } from "react";
+import dynamic from "next/dynamic";
 
 //local import
 import styles from "@/styles/Components.module.sass";
 import { AvatarContext } from "@/context/avatar";
+
+//dynamic import
+const Skeleton = dynamic(() => import("@mui/material/Skeleton"), { ssr: false });
 
 /**
  * *
@@ -16,6 +20,7 @@ import { AvatarContext } from "@/context/avatar";
  */
 export default function Navbar() {
     const avatarContext = useContext(AvatarContext);
+    const [isAvatarLoaded, setIsAvatarLoaded] = useState(false);
 
     //user profile image
     const [avatar, setAvatar] = useState("/img/logo.png");
@@ -66,6 +71,14 @@ export default function Navbar() {
                 </div>
                 <div className={styles.auth}>
                     <div className="relative h-14 w-14 rounded-full">
+                        { isAvatarLoaded &&
+                            <Skeleton
+                                variant="circular"
+                                width="100%"
+                                height="100%"
+                                animation="wave"
+                            />
+                        }
                         <Image
                             src={avatar}
                             alt="avatar"
@@ -73,6 +86,7 @@ export default function Navbar() {
                             objectFit="cover"
                             objectPosition="center center"
                             className="rounded-full"
+                            onLoad={() => setIsAvatarLoaded(true)}
                         />
                     </div>
                     <button onClick={ handleLogout }>Logout</button>

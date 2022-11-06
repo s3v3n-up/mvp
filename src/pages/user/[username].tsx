@@ -1,5 +1,5 @@
 import ViewUserProfile from "@/components/ViewUserProfile";
-import { getUsers, calculateStats } from "@/lib/actions/user";
+import { getUsers, calculateStats, calculateStatsAggregate } from "@/lib/actions/user";
 import { getUserByUserName } from "@/lib/actions/user";
 import { GetStaticPropsContext } from "next";
 import type { UserProfile } from "@/lib/types/User";
@@ -57,20 +57,20 @@ export async function getStaticPaths() {
 }
 
 /**
- * incrementally static generate page every 5 minutes
+ * incrementally static generate page every 10 seconds
  */
 export async function getStaticProps(context: GetStaticPropsContext ) {
     const { username } = context.params as { username: string };
     try {
         const user = await getUserByUserName(username as string);
-        const stats = await calculateStats(username);
+        const stats = await calculateStatsAggregate(user.userName);
 
         return {
             props: {
                 user: JSON.parse(JSON.stringify(user)),
                 stats: JSON.parse(JSON.stringify(stats))
             },
-            revalidate: 300
+            revalidate: 10
         };
     } catch (error: any) {
         if (error.message="user not found") {
