@@ -12,7 +12,7 @@ import styles from "@/styles/Components.module.sass";
 import { AvatarContext } from "@/context/avatar";
 
 //dynamic import
-const Skeleton = dynamic(() => import("@mui/material/Skeleton"), { ssr: false });
+const Skeleton = dynamic(() => import("@mui/material/Skeleton"));
 
 /**
  * *

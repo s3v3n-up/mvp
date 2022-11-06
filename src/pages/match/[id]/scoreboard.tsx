@@ -41,15 +41,17 @@ export default function Scoreboard({ match, players }: Props) {
     const router = useRouter();
     const [isMatchHost, setIsMatchHost] = useState<boolean>(false);
 
+    //guard page against unauthenticated users and check if user is host of the match or in the match
     useEffect(()=> {
         if (status === "loading") return;
         if (status === "unauthenticated") {
             router.push("/login");
-
-            return;
         }
         if (session && session.user) {
             setIsMatchHost(session.user.id === match.matchHost);
+            if (!match.teams[0].members.includes(session.user.userName) || !match.teams[1].members.includes(session.user.userName)) {
+                router.push("/");
+            }
         }
     }, [session, status, router, match]);
 
@@ -77,29 +79,6 @@ export default function Scoreboard({ match, players }: Props) {
 
     //is match over state
     const [isFinished, setFinished] = useState<boolean>(false);
-
-    //handle increase and decrease score, debounce to prevent spamming
-    const handleScoreChange = debounce(async(team: "home" | "away", type: "increase" | "decrease") => {
-        if (type === "increase") {
-            if (team === "home") {
-                setHomeScore(prev => prev + 1);
-                await axios.put(`/api/match/${currMatch._id?.toString()}/score`, { teamIndex: 0, operation: "increase" });
-            } else {
-                setAwayScore(prev => prev + 1);
-                await axios.put(`/api/match/${currMatch._id?.toString()}/score`, { teamIndex: 1, operation: "increase" });
-            }
-        } else {
-            if (team === "home") {
-                if (homeScore <= 0) return;
-                setHomeScore(prev => prev - 1);
-                await axios.put(`/api/match/${currMatch._id?.toString()}/score`, { teamIndex: 0, operation: "decrease" });
-            } else {
-                if (awayScore <= 0) return;
-                setAwayScore(prev => prev - 1);
-                await axios.put(`/api/match/${currMatch._id?.toString()}/score`, { teamIndex: 1, operation: "decrease" });
-            }
-        }
-    }, 500);
 
     //refetch match data every 1 seconds
     const { data, error } = useSWR<{match: Match}>(`/api/match/${match._id?.toString()}`,fetcher, {
@@ -136,6 +115,29 @@ export default function Scoreboard({ match, players }: Props) {
             router.push(`/match/${currMatch._id?.toString()}/cancel`);
         }
     }, [currMatch, router]);
+
+    //handle increase and decrease score, debounce to prevent spamming
+    const handleScoreChange = debounce(async(team: "home" | "away", type: "increase" | "decrease") => {
+        if (type === "increase") {
+            if (team === "home") {
+                setHomeScore(prev => prev + 1);
+                await axios.put(`/api/match/${currMatch._id?.toString()}/score`, { teamIndex: 0, operation: "increase" });
+            } else {
+                setAwayScore(prev => prev + 1);
+                await axios.put(`/api/match/${currMatch._id?.toString()}/score`, { teamIndex: 1, operation: "increase" });
+            }
+        } else {
+            if (team === "home") {
+                if (homeScore <= 0) return;
+                setHomeScore(prev => prev - 1);
+                await axios.put(`/api/match/${currMatch._id?.toString()}/score`, { teamIndex: 0, operation: "decrease" });
+            } else {
+                if (awayScore <= 0) return;
+                setAwayScore(prev => prev - 1);
+                await axios.put(`/api/match/${currMatch._id?.toString()}/score`, { teamIndex: 1, operation: "decrease" });
+            }
+        }
+    }, 500);
 
     return(
         <div className={styles.page}>
@@ -263,9 +265,10 @@ export default function Scoreboard({ match, players }: Props) {
                         <button
                             className={
                                 `font-bold px-7 py-2 
-                        text-center text-orange-500 
-                        rounded border-2 
-                        border-orange-500 md:w-1/4 w-full m-auto col-span-2`
+                                text-center text-orange-500 
+                                rounded border-2 
+                                border-orange-500 md:w-1/4
+                                w-full m-auto col-span-2`
                             }
                         >
                             Cancel
