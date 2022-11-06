@@ -45,14 +45,13 @@ export default function Navbar() {
     }
 
     return (
-        <header>
+        <header className="z-50">
             <nav className={styles.nav}>
                 <div className="relative w-32 h-12">
                     <Image
                         src={"/img/logo.png"}
                         alt="logo"
-                        width={120}
-                        height={100}
+                        layout="fill"
                         objectFit="cover"
                         objectPosition="left"
                     />
@@ -65,7 +64,13 @@ export default function Navbar() {
                         <li>Matches</li>
                     </Link>
                     <Link href={"/"}>
-                        <li>Create Match</li>
+                        <li className={styles.creatematch}>
+                            <p className="relative">Create Match</p>
+                            <ul>
+                                <li>Quick Match</li>
+                                <li>Regular Match</li>
+                            </ul>
+                        </li>
                     </Link>
                     <Link href={"/"}>
                         <li>History</li>
