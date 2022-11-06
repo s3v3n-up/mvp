@@ -1,13 +1,16 @@
+//third party imports
 import Image from "next/image";
-import Input from "@/components/Input";
 import { useState, useEffect, ChangeEvent, useContext } from "react";
-import { AvatarContext } from "@/context/avatar";
 import { useSession } from "next-auth/react";
-import { UserProfile } from "@/lib/types/User";
 import axios from "axios";
 import dynamic from "next/dynamic";
 import debounce from "lodash.debounce";
+
+//local imports
+import Input from "@/components/Input";
+import { AvatarContext } from "@/context/avatar";
 import AlertMessage from "../alertMessage";
+import { UserProfile } from "@/lib/types/User";
 
 //dynamic imports
 const Person = dynamic(() => import("@mui/icons-material/Person"));
