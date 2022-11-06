@@ -32,12 +32,6 @@ export default async function handler(
                 status,
             } = req.body as Match;
 
-            let isRegular: boolean = true;
-
-            if(matchType === "QUICK") {
-                isRegular = false;
-            }
-
             // Yup validation custom rules
             const schema = object({
                 matchHost: string().required(),
@@ -45,12 +39,13 @@ export default async function handler(
                 gameMode: object().required(),
                 matchType: string().required(),
                 location: object().required(),
-                matchStart: date().min(new Date(Date.now() - 60000)).required().when("isRegular", {
-                    is: true,
+                matchStart: date().when("matchType", {
+                    is: (matchType === "REGULAR"),
                     then: date().min(
                         new Date(Date.now() + 3600000),
-                        "You cannot set a date or time less than 1 hour from now.")
-                }).required(),
+                        "You cannot set a date or time less than 1 hour from now.").required(),
+                    otherwise: date().min(new Date(Date.now() - 60000), "You cannot set a date or time less than 1 hour from now.").required()
+                }),
                 matchEnd: date(),
                 description: string(),
                 teams: array(),
