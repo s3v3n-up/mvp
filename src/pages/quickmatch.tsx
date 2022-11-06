@@ -1,5 +1,6 @@
 import QuickMatch from "@/components/QuickMatch";
 import { getAllSports } from "@/lib/actions/sport";
+import Database from "@/lib/resources/database";
 
 /*
 *this is quick match page
@@ -15,10 +16,13 @@ export default function CreateMatchPage({ data }: any) {
 // Access every sport detail and pass as props
 export async function getServerSideProps() {
 
-    // Stores and get all sports in thw database
+    // Database connection
+    await Database.setup();
+
+    // Stores and get all sports in the database
     const data = await getAllSports();
 
-    // Returns the sports as props
+    // Returns the data as props
     return {
         props: {
             data: JSON.parse(JSON.stringify(data))
