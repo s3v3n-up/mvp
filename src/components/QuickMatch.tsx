@@ -1,19 +1,24 @@
-import Image from "next/image";
-import Input from "./Input";
+// Local imports
 import SelectOption from "./SelectOption";
-import { ChangeEvent, FormEvent, useState } from "react";
 import { Location, Sports, Props, Modes } from "@/lib/types/General";
+import Input from "./Input";
+
+// Third-party imports
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import router from "next/router";
 import dynamic from "next/dynamic";
+import { ChangeEvent, FormEvent, useState } from "react";
 
 //dynamic imports
-const AddLocationAlt = dynamic(() => import("@mui/icons-material/AddLocationAlt"));
-const SportsBasketball = dynamic(() => import("@mui/icons-material/SportsBasketball"));
+const AddLocationAlt = dynamic(
+    () => import("@mui/icons-material/AddLocationAlt")
+);
+const SportsBasketball = dynamic(
+    () => import("@mui/icons-material/SportsBasketball")
+);
 const PeopleAlt = dynamic(() => import("@mui/icons-material/PeopleAlt"));
-
-
+const AlertMessage = dynamic(() => import("@/components/alertMessage"));
 
 /*
  * this component is used in create match page
@@ -23,6 +28,26 @@ export default function QuickMatch({ props }: Props) {
     const [location, setLocation] = useState<Location>();
     const [sportname, setSportname] = useState("Basketball");
     const [mode, setMode] = useState("1V1");
+
+    /**
+   * This splits the mode string then turns into a number to compute for required players
+   * @returns a number to be used for requiredPlayers field in match creation
+   */
+
+    function computeReqPlayers(data: string) {
+
+        // Splits mode string into an array of character
+        const modeArray = data.split("V");
+
+        // Gets first character from modeArray and converts it to a number
+        const num1 = parseInt(modeArray[0]);
+
+        // Gets second character from modeArray and converts it to a number
+        const num2 = parseInt(modeArray[1]);
+
+        // Returns computed number for required players
+        return num1 + num2;
+    }
 
     //Form submission state
     const [error, setError] = useState("");
@@ -60,9 +85,10 @@ export default function QuickMatch({ props }: Props) {
                 matchHost: session!.user.id,
                 location: { lat: 22, lng: -122 }, // this is temporary while we haven't finished mapbox
                 sport: sportname,
-                gameMode: mode,
+                gameMode: { modeName: mode, requiredPlayers: computeReqPlayers(mode) },
                 matchStart: new Date(Date.now()),
                 matchType: "QUICK",
+                status: "UPCOMING",
             });
 
             // Checks if no successful post response
@@ -71,13 +97,21 @@ export default function QuickMatch({ props }: Props) {
             }
             router.push("/");
         } catch (err: any) {
-            throw new Error("NETWORK ERROR", err);
+            if (err!.response) {
+                setError(err.response.data.message);
+            } else {
+                setError(err.message);
+            }
+        } finally {
+            setLoading(false);
         }
     }
 
-
     // Array containing all existing sport
-    const allSports: Sports[] = [{ value: "basketball", name:"basketball" }, { value: "soccer", name: "soccer" } ];
+    const allSports: Sports[] = [
+        { value: "basketball", name: "basketball" },
+        { value: "soccer", name: "soccer" },
+    ];
 
     // Array containing all accessed modes per existing sport
     const allModes: Modes[] = [];
@@ -101,11 +135,18 @@ export default function QuickMatch({ props }: Props) {
             <div className="flex flex-col space-y-2 lg:justify-end ">
                 <div>
                     <h1 className="text-[#f3f2ef] text-3xl text-center pt-3">
-                        Create Quick Match
+            Create Quick Match
                     </h1>
                 </div>
                 <form onSubmit={handleFormSubmit}>
-                    <Input label="Location" value={"0"} name="location" onChange={handleLocationChange}>
+                    {error && <AlertMessage message={error} type="error" />}
+                    {loading && <AlertMessage message="Loading..." type="loading" />}
+                    <Input
+                        label="Location"
+                        value={"0"}
+                        name="location"
+                        onChange={handleLocationChange}
+                    >
                         <AddLocationAlt />
                     </Input>
                     <SelectOption
@@ -127,8 +168,11 @@ export default function QuickMatch({ props }: Props) {
                         <PeopleAlt />
                     </SelectOption>
                     <div className="flex justify-center pt-5 cursor-pointer">
-                        <button type="submit" className="rounded-sm w-80 bg-[#fc5c3e] h-10  font-extrabold  text-[#f1ecec]">
-                        CREATE
+                        <button
+                            type="submit"
+                            className="rounded-sm w-80 bg-[#fc5c3e] h-10  font-extrabold  text-[#f1ecec]"
+                        >
+              CREATE
                         </button>
                     </div>
                 </form>
