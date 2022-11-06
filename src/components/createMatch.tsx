@@ -1,92 +1,234 @@
-import Image from "next/image";
+// Third-party imports
+import { useSession } from "next-auth/react";
+import { ChangeEvent, FormEvent, useState } from "react";
+import router from "next/router";
+import axios from "axios";
+import dynamic from "next/dynamic";
+
+// Local imports
 import Input from "./Input";
 import SelectOption from "./SelectOption";
-import { ChangeEvent, useState } from "react";
-import {
-    AddLocationAlt,
-    SportsBasketball,
-    PeopleAlt,
-    AccessTime,
-} from "@mui/icons-material";
+import { Location, SportsOptions, Modes } from "@/lib/types/General";
+import { Sport } from "@/lib/types/Sport";
 
-/*
- * interface for type of match
- */
-interface Data {
-  location: string;
-  sport: string;
-  type: string;
-  date: string;
+//dnamic imports
+const AddLocationAlt = dynamic(
+    () => import("@mui/icons-material/AddLocationAlt")
+);
+const SportsBasketball = dynamic(
+    () => import("@mui/icons-material/SportsBasketball")
+);
+const PeopleAlt = dynamic(() => import("@mui/icons-material/PeopleAlt"));
+const AccessTime = dynamic(() => import("@mui/icons-material/AccessTime"));
+const AlertMessage = dynamic(() => import("@/components/alertMessage"));
+
+interface Props {
+    props: Sport[]
 }
 
 /*
  * this component is used in create match page
  */
-export default function CreateMatch() {
-    const [data, setData] = useState<Data>({
-        location: "",
-        sport: "",
-        type: "",
-        date: "",
-    });
-    const options = [
-        { value: "tennis", name: "tennis" },
-        { value: "badminton", name: "badminton" },
-        { value: "basketball", name: "basketball" },
-    ];
+export default function CreateMatch({ props }: Props) {
 
-    /*
-   *this function is to catch the user input value
+    // Accessing session in front end
+    const { data: session } = useSession();
+
+    // Location useState
+    const [location, setLocation] = useState<Location>();
+
+    // Sports useState
+    const [sportname, setSportname] = useState("Basketball");
+
+    // Mode useState
+    const [mode, setMode] = useState("1V1");
+
+    // const reqPlayers = computeReqPlayers(mode)!;
+
+    // Date useState
+    const [date, setDate] = useState("");
+
+    // Description useState
+    const [description, setDescription] = useState("");
+
+    // Array containing all existing sport
+    const allSports: SportsOptions[] = [];
+
+    // Array containing all accessed modes per existing sport
+    const allModes: Modes[] = [];
+
+    // This function gets all sport names and push them into allSports array to be accessed later
+    props.map((sport: Sport) => {
+        allSports.push({ value: sport.name, name: sport.name });
+    });
+
+    // This functions gets all existing game modes on each existing sports and push them into allModes array to be accessed later
+    props.map((sport: Sport) => {
+        if (sport.name === sportname) {
+            sport.gameModes.map((mode: any) => {
+                allModes.push({ value: mode.modeNames, name: mode.modeNames });
+            });
+        }
+    });
+
+    /**
+   * This splits the mode string then turns into a number to compute for required players
+   * @returns a number to be used for requiredPlayers field in match creation
    */
-    function handleInputChange(
-        e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-    ) {
-        setData({
-            ...data,
-            [e.target.name]: [e.target.value],
+    function computeReqPlayers(data: string) {
+
+        // Splits mode string into an array of character
+        const modeArray = data.split("V");
+
+        // Gets first character from modeArray and converts it to a number
+        const num1 = parseInt(modeArray[0]);
+
+        // Gets second character from modeArray and converts it to a number
+        const num2 = parseInt(modeArray[1]);
+
+        // Returns computed number for required players
+        return num1 + num2;
+    }
+
+    //Form submission state
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    // Function to handle location change event
+    function handleLocationChange(e: ChangeEvent<HTMLInputElement>) {
+        const val = e.target.value;
+
+        setLocation({
+            lat: 0,
+            lng: 0,
         });
+    }
+
+    // Function to handle sport change event
+    function handleSportChange(e: ChangeEvent<HTMLSelectElement>) {
+        const val = e.target.value;
+        setSportname(val);
+    }
+
+    // Function to handle mode change event
+    function handleModeChange(e: ChangeEvent<HTMLSelectElement>) {
+        const val = e.target.value;
+        setMode(val);
+    }
+
+    // Function to handle date change event
+    function handleDateChange(e: ChangeEvent<HTMLInputElement>) {
+        const val = e.target.value;
+        setDate(val);
+    }
+
+    // Function to handle description change event
+    function handleDescriptionChange(e: ChangeEvent<HTMLTextAreaElement>) {
+        const val = e.target.value;
+        setDescription(val);
+    }
+
+    // Function to handle submission of form event
+    async function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        try {
+            setLoading(true);
+
+            // Axios fetch post to access create match api
+            const res = await axios.post("/api/match/create", {
+                matchHost: session!.user.id,
+                location: { lat: 22, lng: -122 }, // this is temporary while we haven't finished mapbox
+                sport: sportname,
+                gameMode: { modeName: mode, requiredPlayers: computeReqPlayers(mode) },
+                matchStart: date,
+                description: description,
+                matchType: "REGULAR",
+                status: "UPCOMING",
+            });
+
+            // Checks if no successful post response
+            if (!res) {
+                throw new Error("No Response");
+            }
+
+            // Redirect to index page
+            router.push("/");
+
+        // Catches and throws the error
+        } catch (err: any) {
+
+            // If  there is a error in the response display it using setError
+            if (err!.response) {
+                setError(err.response.data.message);
+
+            // Else show the error
+            } else {
+                setError(err.message);
+            }
+
+        // Lastly remove the loading
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
         <div className="flex justify-evenly">
-            <div className="flex flex-col space-y-2 lg:justify-end ">
+            <div className="flex flex-col gap-2 lg:justify-end ">
                 <div className="mt-5">
+                    {/* Header for Create Match */}
                     <h1 className="text-[#f3f2ef] text-3xl text-center pt-3">
-                        Create a Match
+            Create a Match
                     </h1>
                 </div>
-                <form action="">
-                    <Input label="Location" value={data.location} name="location" onChange={handleInputChange}>
+                {/* Form to be submitted */}
+                <form onSubmit={handleFormSubmit} className="w-full">
+                    {/* Error and Loading div */}
+                    {error && <AlertMessage message={error} type="error" />}
+                    {loading && <AlertMessage message="Loading..." type="loading" />}
+                    {/* Location Input Box */}
+                    <Input
+                        label="Location"
+                        value={"0"}
+                        name="location"
+                        onChange={handleLocationChange}
+                    >
                         <AddLocationAlt />
                     </Input>
+                    {/* Selection box for Sport */}
                     <SelectOption
                         label="Sport"
-                        options={options}
-                        value={data.type}
-                        onChange={handleInputChange}
+                        options={allSports}
+                        value={sportname}
+                        name="sport"
+                        onChange={handleSportChange}
                     >
                         <SportsBasketball />
                     </SelectOption>
+                    {/* Selection box for Mode */}
                     <SelectOption
                         label="Type of Match"
-                        options={options}
-                        value={data.type}
-                        onChange={handleInputChange}
+                        options={allModes}
+                        value={mode}
+                        name="mode"
+                        onChange={handleModeChange}
                     >
                         <PeopleAlt />
                     </SelectOption>
+                    {/* DateTime Input Box */}
                     <Input
                         label="Date and Time"
-                        value={data.date}
+                        value={date}
                         name="date"
                         type="datetime-local"
-                        onChange={handleInputChange}
+                        onChange={handleDateChange}
                     >
                         <AccessTime />
                     </Input>
+                    {/* Location Textarea*/}
                     <div className="my-2">
                         <label className="text-[#f3f2ef]" htmlFor="description">
-                            Description
+              Description
                         </label>
                     </div>
                     <div>
@@ -94,14 +236,21 @@ export default function CreateMatch() {
                             className="w-full rounded-md bg-[##f1ecec] px-3 py-2"
                             required
                             rows={3}
+                            name="description"
+                            value={description}
+                            onChange={handleDescriptionChange}
                         ></textarea>
                     </div>
+                    <div className="flex justify-center pt-5 cursor-pointer">
+                        {/* Button to submit the form*/}
+                        <button
+                            type="submit"
+                            className="rounded-sm w-80 bg-[#fc5c3e] h-10  font-extrabold  text-[#f1ecec]"
+                        >
+              CREATE
+                        </button>
+                    </div>
                 </form>
-                <div className="flex justify-center pt-5 cursor-pointer">
-                    <button className="rounded-sm w-80 bg-[#fc5c3e] h-10  font-extrabold  text-[#f1ecec]">
-                        CREATE
-                    </button>
-                </div>
             </div>
         </div>
     );

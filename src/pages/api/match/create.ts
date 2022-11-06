@@ -4,8 +4,9 @@ import { object, string, date, array } from "yup";
 
 // Local imports
 import { Match } from "@/lib/types/Match";
-import { createMatch } from "@/lib/actions/match";
+import { createMatch, findUserActiveMatches } from "@/lib/actions/match";
 import Database from "@/lib/resources/database";
+import MatchModel from "@/lib/resources/models/Match";
 
 /**
  * @description = a function that handles api request for creating a match
@@ -28,26 +29,70 @@ export default async function handler(
                 matchEnd,
                 description,
                 teams,
+                status,
             } = req.body as Match;
 
             // Yup validation custom rules
             const schema = object({
                 matchHost: string().required(),
                 sport: string().required(),
-                gameMode: string().required(),
+                gameMode: object().required(),
                 matchType: string().required(),
                 location: object().required(),
-                matchStart: date(),
+                matchStart: date().when("matchType", {
+                    is: (matchType === "REGULAR"),
+                    then: date().min(
+                        new Date(Date.now() + 3600000),
+                        "You cannot set a date or time less than 1 hour from now.").required(),
+                    otherwise: date().min(new Date(Date.now() - 60000), "You cannot set a date or time in the past").required()
+                }),
                 matchEnd: date(),
-                description: string().required(),
-                teams: array().required(),
+                description: string(),
+                teams: array(),
+                status: string().required(),
             });
 
             // Checks if the values from the request body are meeting the validation rules set.
             await schema.validate(req.body);
 
+            // Initialize connection to database
+            await Database.setup();
+
+            // Checks if user is host to allow match creation
+            const matches = await findUserActiveMatches(matchHost);
+
+            // Variable that will store lapsed and active matches
+            let lapsedMatches: Match[] = [];
+            let activeMatches: Match[] = [];
+
+            // Loops through all matches and look for UPCOMING and INPROGRESS matches
+            matches.map(async (match: Match) => {
+                if (Date.now() - match.matchStart.getTime() > 3600000) {
+                    lapsedMatches.push(match);
+                } else {
+                    activeMatches.push(match);
+                }
+            });
+
+            // Checks if there is a lapsed match
+            if (lapsedMatches.length > 0) {
+
+                // Loops through lapsed matches and update the status to CANCELLED
+                lapsedMatches.map(async (match: Match) => {
+                    await MatchModel.updateOne(
+                        { _id: match._id },
+                        { $set: { status: "CANCELLED" } }
+                    );
+                });
+            }
+
+            // Checks if there are active matches and return an error if there is
+            if (activeMatches.length > 0) {
+                throw new Error("You already have an active match");
+            }
+
             // Inserting the values into an object variable
-            const match = {
+            const match: Match = {
                 matchHost,
                 sport,
                 gameMode,
@@ -57,10 +102,8 @@ export default async function handler(
                 matchEnd,
                 description,
                 teams,
+                status,
             };
-
-            // Initialize connection to database
-            await Database.setup();
 
             // Call upon the createMatch action to use the values above and create a match model
             const response = await createMatch(match);

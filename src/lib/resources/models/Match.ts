@@ -24,8 +24,8 @@ const TeamSchema = new Schema({
     status: {
         type: String,
         required: true,
-        default: "UNFINISHED",
-        enum: ["WIN", "LOSE", "DRAW", "UNFINISHED"]
+        default: "UNSET",
+        enum: ["WIN", "LOSE", "DRAW", "UNSET"]
     }
 });
 
@@ -49,8 +49,16 @@ const matchSchema = new Schema<Match>({
 
     // This is the chosen game mode for the chosen sport
     gameMode: {
-        type: String,
-        required: true,
+        modeName: {
+            type: String,
+            required: true,
+            default: "1V1"
+        },
+        requiredPlayers: {
+            type: Number,
+            required: true,
+            default: 2
+        }
     },
 
     // This is the type of the match either REGULAR or QUICK
@@ -77,13 +85,13 @@ const matchSchema = new Schema<Match>({
     // This is the end date/time of the match
     matchEnd: {
         type: Date,
-        required: true
+        required: true,
+        default: Date.now()
     },
 
     // This is the match details, also a place where you can input extra details eg. Discord link, Facebook messenger link etc.
     description: {
-        type: String,
-        required: true,
+        type: String
     },
 
     // These are the details or records for the home team, such as members, score and match result.
@@ -93,12 +101,20 @@ const matchSchema = new Schema<Match>({
         default: [{
             members: [],
             score: 0,
-            status: "UNFINISHED"
+            status: "UNSET"
         }, {
             members: [],
             score: 0,
-            status: "UNFINISHED"
+            status: "UNSET"
         }]
+    },
+
+    // This is the status of the match
+    status: {
+        type: String,
+        enum: ["UPCOMING", "INPROGRESS", "FINISHED", "CANCELLED"],
+        required: true,
+        default: "UPCOMING"
     }
 });
 

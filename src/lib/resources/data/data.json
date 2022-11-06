@@ -1,35 +1,42 @@
-[{
-    "name": "Basketball",
-    "gameModes": [{
-        "modeNames": "1V1",
-        "requiredPlayers": 2
-    }]
-},
-{
-    "name": "Basketball",
-    "gameModes": [{
-        "modeNames": "2V2",
-        "requiredPlayers": 4
-    }]
-},
-{
-    "name": "Tennis",
-    "gameModes": [{
-        "modeNames": "1V1",
-        "requiredPlayers": 2
-    }]
-},
-{
-    "name": "Tennis",
-    "gameModes": [{
-        "modeNames": "2V2",
-        "requiredPlayers": 4
-    }]
-},
-{
-    "name": "Table Tennis",
-    "gameModes": [{
-        "modeNames": "1V1",
-        "requiredPlayers": 2
-    }]
-}]
+[
+	{
+	  "name": "Basketball",
+	  "gameModes": [
+		{
+		  "modeNames": "1V1",
+		  "requiredPlayers": 2
+		},
+		{
+		  "modeNames": "2V2",
+		  "requiredPlayers": 4
+		},
+		{
+		  "modeNames": "3V3",
+		  "requiredPlayers": 6
+		}
+	  ]
+	},
+	{
+	  "name": "Tennis",
+	  "gameModes": [
+		{
+		  "modeNames": "1V1",
+		  "requiredPlayers": 2
+		},
+		{
+		  "modeNames": "2V2",
+		  "requiredPlayers": 4
+		}
+	  ]
+	},
+	{
+	  "name": "Table Tennis",
+	  "gameModes": [
+		{
+		  "modeNames": "1V1",
+		  "requiredPlayers": 2
+		}
+	  ]
+	}
+  ]
+  

@@ -5,10 +5,14 @@ import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { useContext } from "react";
+import dynamic from "next/dynamic";
 
 //local import
 import styles from "@/styles/Components.module.sass";
 import { AvatarContext } from "@/context/avatar";
+
+//dynamic import
+const Skeleton = dynamic(() => import("@mui/material/Skeleton"));
 
 /**
  * *
@@ -16,6 +20,7 @@ import { AvatarContext } from "@/context/avatar";
  */
 export default function Navbar() {
     const avatarContext = useContext(AvatarContext);
+    const [isAvatarLoaded, setIsAvatarLoaded] = useState(false);
 
     //user profile image
     const [avatar, setAvatar] = useState("/img/logo.png");
@@ -32,14 +37,15 @@ export default function Navbar() {
     /**
      * handle user sign out
      */
-    function handleLogout() {
-        signOut();
+    async function handleLogout() {
+        await signOut();
+        avatarContext?.setCurrAvatar(null);
         router.push("/");
     }
 
     return (
-        <>
-            <div className={styles.nav}>
+        <header>
+            <nav className={styles.nav}>
                 <div className="relative w-32 h-12">
                     <Image
                         src={"/img/logo.png"}
@@ -49,22 +55,30 @@ export default function Navbar() {
                         objectPosition="left"
                     />
                 </div>
-                <div className={styles.option}>
+                <ul className={styles.option}>
                     <Link href={"/"}>
-                        <p>Ranking</p>
+                        <li>Ranking</li>
                     </Link>
                     <Link href={"/"}>
-                        <p>Matches</p>
+                        <li>Matches</li>
                     </Link>
                     <Link href={"/"}>
-                        <p>Create Match</p>
+                        <li>Create Match</li>
                     </Link>
                     <Link href={"/"}>
-                        <p>History</p>
+                        <li>History</li>
                     </Link>
-                </div>
-                <div className={styles.auth}>
-                    <div className="relative h-14 w-14 rounded-full">
+                </ul>
+                <ul className={styles.auth}>
+                    <button className="relative h-14 w-14 rounded-full" onClick={()=>router.push("/user/profile")}>
+                        { isAvatarLoaded &&
+                            <Skeleton
+                                variant="circular"
+                                width="100%"
+                                height="100%"
+                                animation="wave"
+                            />
+                        }
                         <Image
                             src={avatar}
                             alt="avatar"
@@ -72,13 +86,14 @@ export default function Navbar() {
                             objectFit="cover"
                             objectPosition="center center"
                             className="rounded-full"
+                            onLoad={() => setIsAvatarLoaded(true)}
                         />
-                    </div>
+                    </button>
                     <button onClick={ handleLogout }>Logout</button>
-                </div>
-            </div>
-            <div className={styles.bottomNav}>
-                <div className={styles.option}>
+                </ul>
+            </nav>
+            <nav className={styles.bottomNav}>
+                <ul className={styles.option}>
                     <Link href={"/"}>
                         <p>Ranking</p>
                     </Link>
@@ -91,8 +106,8 @@ export default function Navbar() {
                     <Link href={"/"}>
                         <p>History</p>
                     </Link>
-                </div>
-            </div>
-        </>
+                </ul>
+            </nav>
+        </header>
     );
 }

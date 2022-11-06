@@ -13,6 +13,7 @@ import GoogleProvider from "next-auth/providers/google";
 import Database from "@/lib/resources/database";
 
 import { getUserByEmail } from "@/lib/actions/user";
+import { url } from "inspector";
 
 /**
  * @description
@@ -87,6 +88,7 @@ export const authOptions: NextAuthOptions = {
                     const profile = await getUserByEmail(token.user.email!);
                     token.user.isFinishedSignup = true;
                     token.user.userName = profile.userName;
+                    token.user.id = profile._id; // Added this to be accessed for matchHost entry
                 }
 
                 return token;
