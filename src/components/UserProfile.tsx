@@ -114,7 +114,7 @@ export default function Profile() {
 
     return (
         <div className="flex justify-evenly pt-10">
-            <div className="flex lg:w-1/4 md:w-2/4 flex-col space-y-3 lg:justify-end">
+            <div className="flex lg:w-1/4 w-4/5 flex-col space-y-3">
                 {isDataLoaded === false && "...Loading"}
                 <div className="relative w-40 h-40 rounded-full m-auto mb-5 bg-white">
                     <Image
@@ -166,6 +166,7 @@ export default function Profile() {
                 >
                     <Email />
                 </Input>
+                <p className="mt-3 text-white">Stat</p>
                 <table className=" border-collapse border border-slate-800 rounded-ml text-center mt-6 ">
                     <thead className=" bg-[#fc5c3e] text-[#f3f2ef] my-5 py-5 mt-6">
                         <tr className="my-5 py-5 mt-6">
