@@ -21,7 +21,7 @@ const names = ["whale", "squid", "turtle", "coral", "starfish", "star"];
  *
  */
 export default function Home() {
-    const { status, data: session } = useSession();
+    const { status } = useSession();
     const router = useRouter();
     useEffect(()=> {
         if (status==="loading") return;
