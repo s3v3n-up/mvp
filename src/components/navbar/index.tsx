@@ -44,8 +44,8 @@ export default function Navbar() {
     }
 
     return (
-        <>
-            <div className={styles.nav}>
+        <header>
+            <nav className={styles.nav}>
                 <div className="relative w-32 h-12">
                     <Image
                         src={"/img/logo.png"}
@@ -55,9 +55,9 @@ export default function Navbar() {
                         objectPosition="left"
                     />
                 </div>
-                <div className={styles.option}>
+                <ul className={styles.option}>
                     <Link href={"/"}>
-                        <p>Ranking</p>
+                        <li>Ranking</li>
                     </Link>
                     <Link href={"/"}>
                         <p>Matches</p>
@@ -68,7 +68,7 @@ export default function Navbar() {
                     <Link href={"/"}>
                         <p>History</p>
                     </Link>
-                </div>
+                </ul>
                 <div className={styles.auth}>
                     <div className="relative h-14 w-14 rounded-full">
                         { isAvatarLoaded &&
@@ -91,9 +91,9 @@ export default function Navbar() {
                     </div>
                     <button onClick={ handleLogout }>Logout</button>
                 </div>
-            </div>
-            <div className={styles.bottomNav}>
-                <div className={styles.option}>
+            </nav>
+            <nav className={styles.bottomNav}>
+                <ul className={styles.option}>
                     <Link href={"/"}>
                         <p>Ranking</p>
                     </Link>
@@ -106,8 +106,8 @@ export default function Navbar() {
                     <Link href={"/"}>
                         <p>History</p>
                     </Link>
-                </div>
-            </div>
-        </>
+                </ul>
+            </nav>
+        </header>
     );
 }
