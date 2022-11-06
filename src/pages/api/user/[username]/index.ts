@@ -43,13 +43,13 @@ export default async function handler(
         } else if (req.method === "PUT") {
 
             // Gets the firstName, lastName, phonenumber and image
-            const { firstName, lastName, phonenumber, image } = req.body;
+            const { firstName, lastName, phoneNumber, image } = req.body;
 
             // Yup validation criteria
             const schema = object({
                 firstName: string().required().min(2).max(64),
                 lastName: string().required().min(2).max(64),
-                phonenumber: string()
+                phoneNumber: string()
                     .required()
                     .matches(PHONE_REGEX, "invalid input for phone number"),
                 image: string().required(),
@@ -64,7 +64,7 @@ export default async function handler(
                 username as string,
                 firstName.charAt(0) + firstName.substring(1).toLowerCase(),
                 lastName.charAt(0) + lastName.substring(1).toLowerCase(),
-                phonenumber,
+                phoneNumber,
                 image
             );
 
