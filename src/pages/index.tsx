@@ -62,8 +62,9 @@ export default function Home({ regMatches, quickMatches }: any) {
                 {/* Subtitle for quick matches */}
                 <p>Quick Matches</p>
                 {/* Scroll container for quick matches */}
+                {quickMatches.length === 0 && <p className="text-2xl text-white text-center"> ⚠️ There is no match found</p>}
                 <ScrollContainer className="flex w-full" horizontal hideScrollbars>
-                    {quickMatches.map((quick: any, idx: any) => (
+                    {quickMatches.length > 0 && quickMatches.map((quick: any, idx: any) => (
 
                         // card container
                         <div className={ Cardstyles.container} key={idx}>

@@ -49,7 +49,7 @@ export default function Scoreboard({ match, players }: Props) {
         }
         if (session && session.user) {
             setIsMatchHost(session.user.id === match.matchHost);
-            if (!match.teams[0].members.includes(session.user.userName) || !match.teams[1].members.includes(session.user.userName)) {
+            if (!match.teams[0].members.includes(session.user.userName) && !match.teams[1].members.includes(session.user.userName)) {
                 router.push("/");
             }
         }
