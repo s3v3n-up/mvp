@@ -4,10 +4,6 @@ export interface Location {
     lat: number;
   }
 
-// Props interface
-export interface Props {
-    props: string[];
-  }
 
 // Modes interface for all sport game modes
 export interface Modes {
@@ -16,7 +12,7 @@ export interface Modes {
   }
 
 // Sports interface for all sports
-export interface Sports {
+export interface SportsOptions {
     value: string;
     name: string;
 }

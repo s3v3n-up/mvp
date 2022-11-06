@@ -1,7 +1,8 @@
 // Local imports
 import Input from "./Input";
 import SelectOption from "./SelectOption";
-import { Location, Sports, Props, Modes } from "@/lib/types/General";
+import { Location, SportsOptions, Modes } from "@/lib/types/General";
+import { Sport } from "@/lib/types/Sport";
 
 // Third party imports
 import { ChangeEvent, FormEvent, useState } from "react";
@@ -19,6 +20,11 @@ const SportsBasketball = dynamic(
 );
 const PeopleAlt = dynamic(() => import("@mui/icons-material/PeopleAlt"));
 const AlertMessage = dynamic(() => import("@/components/alertMessage"));
+
+// Props interface
+export interface Props {
+    props: Sport[];
+  }
 
 /*
  * this component is used in create match page
@@ -124,18 +130,18 @@ export default function QuickMatch({ props }: Props) {
     }
 
     // Array containing all existing sport
-    const allSports: Sports[] = [];
+    const allSports: SportsOptions[] = [];
 
     // Array containing all accessed modes per existing sport
     const allModes: Modes[] = [];
 
     // This function gets all sport names and push them into allSports array to be accessed later
-    props.map((sport: any) => {
+    props.map((sport: Sport) => {
         allSports.push({ value: sport.name, name: sport.name });
     });
 
     // This functions gets all existing game modes on each existing sports and push them into allModes array to be accessed later
-    props.map((sport: any) => {
+    props.map((sport: Sport) => {
         if (sport.name === sportname) {
             sport.gameModes.map((mode: any) => {
                 allModes.push({ value: mode.modeNames, name: mode.modeNames });

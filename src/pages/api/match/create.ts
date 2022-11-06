@@ -45,7 +45,7 @@ export default async function handler(
                 gameMode: object().required(),
                 matchType: string().required(),
                 location: object().required(),
-                matchStart: date().min(new Date(Date.now())).required().when("isRegular", {
+                matchStart: date().min(new Date(Date.now() - 60000)).required().when("isRegular", {
                     is: true,
                     then: date().min(
                         new Date(Date.now() + 3600000),
