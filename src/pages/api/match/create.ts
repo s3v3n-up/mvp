@@ -44,7 +44,7 @@ export default async function handler(
                     then: date().min(
                         new Date(Date.now() + 3600000),
                         "You cannot set a date or time less than 1 hour from now.").required(),
-                    otherwise: date().min(new Date(Date.now() - 60000), "You cannot set a date or time less than 1 hour from now.").required()
+                    otherwise: date().min(new Date(Date.now() - 60000), "You cannot set a date or time in the past").required()
                 }),
                 matchEnd: date(),
                 description: string(),
