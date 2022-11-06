@@ -152,7 +152,7 @@ export default function QuickMatch({ props }: Props) {
     });
 
     return (
-        <div className="flex justify-evenly">
+        <div className="flex justify-evenly mt-10">
             <div className="flex flex-col space-y-2 lg:justify-end ">
                 <div>
                     {/* Header for Quick Match Page */}
