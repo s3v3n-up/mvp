@@ -62,7 +62,7 @@ export default function Home({ regMatches, quickMatches }: any) {
                 {/* Subtitle for quick matches */}
                 <p>Quick Matches</p>
                 {/* Scroll container for quick matches */}
-                {quickMatches.length === 0 && <p className="text-2xl text-white text-center"> ⚠️ There is no match found</p>}
+                {quickMatches.length === 0 && <p className="text-2xl text-white text-center"> ⚠️ There is no regular match found</p>}
                 <ScrollContainer className="flex w-full" horizontal hideScrollbars>
                     {quickMatches.length > 0 && quickMatches.map((quick: any, idx: any) => (
 
@@ -94,7 +94,7 @@ export default function Home({ regMatches, quickMatches }: any) {
                 {/*  Subtitle for regular matches */}
                 <p>Regular Matches</p>
                 {/* Scroll container for regular matches */}
-                {regMatches.length === 0 && <p className="text-2xl text-white text-center"> ⚠️ There is no match found</p>}
+                {regMatches.length === 0 && <p className="text-2xl text-white text-center"> ⚠️ There is no quick match found</p>}
                 <ScrollContainer className="flex w-full" horizontal hideScrollbars>
                     {regMatches.map((reg : any, idx: any) => (
 
