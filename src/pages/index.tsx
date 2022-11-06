@@ -1,6 +1,5 @@
 //third-party import
 import { useState, ChangeEvent, useEffect } from "react";
-import ScrollContainer from "react-indiana-drag-scroll";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -14,6 +13,7 @@ import { getMatches } from "@/lib/actions/match";
 
 //dynamic import
 const Search = dynamic(() => import("@mui/icons-material/Search"), { ssr: false });
+const ScrollContainer = dynamic(() => import("react-indiana-drag-scroll"), { ssr: false });
 
 /**
  * *
@@ -62,8 +62,9 @@ export default function Home({ regMatches, quickMatches }: any) {
                 {/* Subtitle for quick matches */}
                 <p>Quick Matches</p>
                 {/* Scroll container for quick matches */}
+                {quickMatches.length === 0 && <p className="text-2xl text-white text-center"> ⚠️ There is no match found</p>}
                 <ScrollContainer className="flex w-full" horizontal hideScrollbars>
-                    {quickMatches.map((quick: any, idx: any) => (
+                    {quickMatches.length > 0 && quickMatches.map((quick: any, idx: any) => (
 
                         // card container
                         <div className={ Cardstyles.container} key={idx}>

@@ -64,12 +64,8 @@ export default function Navbar() {
                         <li>Matches</li>
                     </Link>
                     <Link href={"/"}>
-                        <li className={styles.creatematch}>
-                            <p className="relative">Create Match</p>
-                            <ul>
-                                <li>Quick Match</li>
-                                <li>Regular Match</li>
-                            </ul>
+                        <li>
+                            Create Match
                         </li>
                     </Link>
                     <Link href={"/"}>
