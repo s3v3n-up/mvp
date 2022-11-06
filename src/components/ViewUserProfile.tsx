@@ -30,7 +30,7 @@ export interface Data {
 export default function ViewUserProfile({ data }: { data: Data }) {
     return (
         <div className="flex justify-evenly">
-            <div className="flex w-1/4 flex-col space-y-3 lg:justify-end mt-10">
+            <div className="flex lg:w-1/4 w-4/5 flex-col space-y-3 lg:justify-end mt-10">
                 <div className="relative w-40 h-40 rounded-full m-auto mb-5">
                     <Image
                         src={data.image}
