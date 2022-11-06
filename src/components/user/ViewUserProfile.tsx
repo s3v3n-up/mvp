@@ -1,6 +1,9 @@
-import Input from "../components/Input";
+//third party imports
 import Image from "next/image";
 import dynamic from "next/dynamic";
+
+//local imports
+import Input from "../Input";
 
 //dynamic imports
 const Person = dynamic(() => import("@mui/icons-material/Person"));
