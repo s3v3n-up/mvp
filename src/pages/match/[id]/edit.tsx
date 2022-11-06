@@ -65,6 +65,17 @@ export default function MatchEdit({ data } : Props){
         setDescription(val);
     }
 
+    //function that handles delete
+    async function handleDelete(id: string){
+
+        //axios fetch post to delete a match
+        await axios.delete(`/api/match/${data._id}`);
+
+        //return to home page
+        return router.push("/");
+
+    }
+
     // Function to handle submission of form event
     async function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -142,7 +153,7 @@ export default function MatchEdit({ data } : Props){
                 </div>
                 <div>
                     {/* button for delete */}
-                    <button type="button" className={styles.delete}>Delete</button>
+                    <button className={styles.delete} onClick={() => handleDelete(data._id as string)}>Delete</button>
                     {/* button for save */}
                     <button type="submit" className={styles.save} >Save</button>
                 </div>

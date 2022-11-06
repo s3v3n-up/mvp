@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 // Local imports
 import Database from "@/lib/resources/database";
-import { getMatchById, updateMatch } from "@/lib/actions/match";
+import { deleteMatch, getMatchById, updateMatch } from "@/lib/actions/match";
 
 export default async function handler(
     req: NextApiRequest,
@@ -64,6 +64,10 @@ export default async function handler(
             res.status(200).json({
                 updatedMatch,
             });
+        }
+        else if(req.method == "DELETE"){
+
+            await deleteMatch(id);
         }
 
         // Catches a specific error when there is no match for the id set
