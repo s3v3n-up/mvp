@@ -109,6 +109,8 @@ export default function QuickMatch({ props }: Props) {
             if (!res) {
                 throw new Error("No Response");
             }
+
+            // Redirect to index page
             router.push("/");
 
         // Catches and throws the error
@@ -160,6 +162,7 @@ export default function QuickMatch({ props }: Props) {
                 </div>
                 {/* Form to be submitted */}
                 <form onSubmit={handleFormSubmit}>
+                    {/* Error and Loading div */}
                     {error && <AlertMessage message={error} type="error" />}
                     {loading && <AlertMessage message="Loading..." type="loading" />}
                     <Input

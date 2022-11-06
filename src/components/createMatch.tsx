@@ -153,13 +153,23 @@ export default function CreateMatch({ props }: Props) {
             if (!res) {
                 throw new Error("No Response");
             }
+
+            // Redirect to index page
             router.push("/");
+
+        // Catches and throws the error
         } catch (err: any) {
+
+            // If  there is a error in the response display it using setError
             if (err!.response) {
                 setError(err.response.data.message);
+
+            // Else show the error
             } else {
                 setError(err.message);
             }
+
+        // Lastly remove the loading
         } finally {
             setLoading(false);
         }
@@ -169,13 +179,17 @@ export default function CreateMatch({ props }: Props) {
         <div className="flex justify-evenly">
             <div className="flex flex-col gap-2 lg:justify-end ">
                 <div className="mt-5">
+                    {/* Header for Create Match */}
                     <h1 className="text-[#f3f2ef] text-3xl text-center pt-3">
             Create a Match
                     </h1>
                 </div>
+                {/* Form to be submitted */}
                 <form onSubmit={handleFormSubmit} className="w-full">
+                    {/* Error and Loading div */}
                     {error && <AlertMessage message={error} type="error" />}
                     {loading && <AlertMessage message="Loading..." type="loading" />}
+                    {/* Location Input Box */}
                     <Input
                         label="Location"
                         value={"0"}
@@ -184,6 +198,7 @@ export default function CreateMatch({ props }: Props) {
                     >
                         <AddLocationAlt />
                     </Input>
+                    {/* Selection box for Sport */}
                     <SelectOption
                         label="Sport"
                         options={allSports}
@@ -193,6 +208,7 @@ export default function CreateMatch({ props }: Props) {
                     >
                         <SportsBasketball />
                     </SelectOption>
+                    {/* Selection box for Mode */}
                     <SelectOption
                         label="Type of Match"
                         options={allModes}
@@ -202,6 +218,7 @@ export default function CreateMatch({ props }: Props) {
                     >
                         <PeopleAlt />
                     </SelectOption>
+                    {/* DateTime Input Box */}
                     <Input
                         label="Date and Time"
                         value={date}
@@ -211,6 +228,7 @@ export default function CreateMatch({ props }: Props) {
                     >
                         <AccessTime />
                     </Input>
+                    {/* Location Textarea*/}
                     <div className="my-2">
                         <label className="text-[#f3f2ef]" htmlFor="description">
               Description
@@ -227,6 +245,7 @@ export default function CreateMatch({ props }: Props) {
                         ></textarea>
                     </div>
                     <div className="flex justify-center pt-5 cursor-pointer">
+                        {/* Button to submit the form*/}
                         <button
                             type="submit"
                             className="rounded-sm w-80 bg-[#fc5c3e] h-10  font-extrabold  text-[#f1ecec]"

@@ -4,7 +4,6 @@ export interface Location {
     lat: number;
   }
 
-
 // Modes interface for all sport game modes
 export interface Modes {
     value: string;
