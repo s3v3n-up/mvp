@@ -60,16 +60,16 @@ export default function Navbar() {
                         <li>Ranking</li>
                     </Link>
                     <Link href={"/"}>
-                        <p>Matches</p>
+                        <li>Matches</li>
                     </Link>
                     <Link href={"/"}>
-                        <p>Create Match</p>
+                        <li>Create Match</li>
                     </Link>
                     <Link href={"/"}>
-                        <p>History</p>
+                        <li>History</li>
                     </Link>
                 </ul>
-                <div className={styles.auth}>
+                <ul className={styles.auth}>
                     <div className="relative h-14 w-14 rounded-full">
                         { isAvatarLoaded &&
                             <Skeleton
@@ -90,7 +90,7 @@ export default function Navbar() {
                         />
                     </div>
                     <button onClick={ handleLogout }>Logout</button>
-                </div>
+                </ul>
             </nav>
             <nav className={styles.bottomNav}>
                 <ul className={styles.option}>
