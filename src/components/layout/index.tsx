@@ -1,5 +1,5 @@
 //third-party import
-import Navbar from "@/components/navbar";
+import Navbar from "@/components/layout/navbar";
 import { ReactNode, useState, useEffect, useContext } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";

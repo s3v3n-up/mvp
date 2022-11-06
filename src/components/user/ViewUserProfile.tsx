@@ -1,4 +1,4 @@
-import Input from "../components/Input";
+import Input from "../Input";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 
