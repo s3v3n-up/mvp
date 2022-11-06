@@ -8,7 +8,7 @@ export default async function gameQueue(req: NextApiRequest, res: NextApiRespons
     const channel = client.channels.get("gameTimer");
     channel.publish("gameTimer", 30);
     res.status(200).json({ message: 30 });
-    
+
 
 
 }
