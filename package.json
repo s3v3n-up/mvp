@@ -9,7 +9,7 @@
     "lint": "next lint",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "test": "echo \"hello\"",
+    "test": "echo \"Applying ESlint\"",
     "eslint:fix": "eslint . --max-warnings=0 --fix",
     "prepare": "husky install",
     "husky:pre-commit": "npm run test && npm run eslint:fix"
