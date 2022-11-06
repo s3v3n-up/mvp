@@ -1,5 +1,6 @@
 import MatchModel from "../resources/models/Match";
 import type { Match } from "@/lib/types/Match";
+import Database from "../resources/database";
 
 /**
  * add a new match to the database
@@ -26,6 +27,7 @@ export async function createMatch(match: Match): Promise<Match> {
  */
 export async function getMatches(): Promise<Match[]> {
     try {
+        await Database.setup();
 
         // get all matches
         const matches = await MatchModel.find({});

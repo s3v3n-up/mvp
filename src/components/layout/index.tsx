@@ -29,7 +29,7 @@ const Layout = ({ children }: Props) => {
     const isAuthPage = router.pathname === "/login" || router.pathname === "/register";
 
     return (
-        <div className={styles.container}>
+        <section className={styles.container}>
             <div className="fixed top-0 bottom-0 right-0 left-0 -z-50 bg-black">
                 <Image
                     src="/bg.svg"
@@ -44,7 +44,7 @@ const Layout = ({ children }: Props) => {
             <main className="flex-auto z-10">
                 { children }
             </main>
-        </div>
+        </section>
     );
 };
 export default Layout;
