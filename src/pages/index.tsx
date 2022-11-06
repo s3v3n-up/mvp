@@ -1,26 +1,26 @@
 //third-party import
 import { useState, ChangeEvent, useEffect } from "react";
 import ScrollContainer from "react-indiana-drag-scroll";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 
 //local import
 import styles from "@/styles/Home.module.sass";
+import Cardstyles from "@/styles/MatchCard.module.sass";
 import Input from "@/components/Input";
+import { getMatches } from "@/lib/actions/match";
 
 //dynamic import
 const Search = dynamic(() => import("@mui/icons-material/Search"), { ssr: false });
-
-//create fake data for card components
-const names = ["whale", "squid", "turtle", "coral", "starfish", "star"];
 
 /**
  * *
  * @description this page displays all the matches created by users from regular matches to quick matches
  *
  */
-export default function Home() {
+export default function Home({ regMatches, quickMatches }: any) {
     const { status } = useSession();
     const router = useRouter();
     useEffect(()=> {
@@ -41,9 +41,12 @@ export default function Home() {
 
     return (
         <div className={styles.matches}>
+            {/* search container */}
             <div className={styles.search}>
+                {/* title for the page */}
                 <h1>Matches</h1>
                 <div className={styles.searchitem}>
+                    {/* search input field */}
                     <Input
                         type="text"
                         placeholder="Enter username or location"
@@ -51,30 +54,102 @@ export default function Home() {
                         onChange={handleSearchChange}
                     />
                     <button>
-                        <Search fontSize="medium"/>
+                        <Search fontSize="medium" />
                     </button>
                 </div>
             </div>
             <div>
+                {/* Subtitle for quick matches */}
                 <p>Quick Matches</p>
+                {/* Scroll container for quick matches */}
                 <ScrollContainer className="flex w-full" horizontal hideScrollbars>
-                    {names.map((name) => (
-                        <div className={styles.cards} key={name}>
-                            {name}
+                    {quickMatches.map((quick: any, idx: any) => (
+
+                        // card container
+                        <div className={ Cardstyles.container} key={idx}>
+                            <div className={ Cardstyles.time}>
+                                <div className={Cardstyles.detail}>
+                                    <p>Now</p>
+                                </div>
+                                <div>
+                                    <button className={Cardstyles.join}>join</button>
+                                </div>
+                            </div>
+
+                            <div className={ Cardstyles.sport}>
+                                <p>{quick.sport}</p>
+                            </div>
+                            <div className={Cardstyles.location}>
+                                <div>
+                                    <LocationOnIcon/>
+                                </div>
+                                <p>location</p>
+                            </div>
                         </div>
                     ))}
                 </ScrollContainer>
             </div>
-            <div className="sm:mt-3 mt-10">
+            <div className="sm:mt-4 mt-10">
+                {/*  Subtitle for regular matches */}
                 <p>Regular Matches</p>
-                <ScrollContainer className="flex w-full" horizontal hideScrollbars nativeMobileScroll>
-                    {names.map((name) => (
-                        <div className={styles.cards} key={name}>
-                            {name}
+                {/* Scroll container for regular matches */}
+                <ScrollContainer className="flex w-full" horizontal hideScrollbars>
+                    {regMatches.map((reg : any, idx: any) => (
+
+                        // card container
+                        <div className={ Cardstyles.container} key={idx}>
+                            <div className={ Cardstyles.time}>
+                                <div className={Cardstyles.detail}>
+                                    {/* custom format for match that includes date, day of the week and time */}
+                                    <p>{new Date(reg.matchStart).toDateString().concat(" " + new Date(reg.matchStart).toLocaleTimeString("en-US"))}</p>
+                                </div>
+                                <div>
+                                    <button className={ Cardstyles.join}>join</button>
+                                </div>
+                            </div>
+
+                            <div className={ Cardstyles.sport}>
+                                <p>{reg.sport}</p>
+                            </div>
+
+                            <div className={Cardstyles.location}>
+                                <div>
+                                    <LocationOnIcon/>
+                                </div>
+                                <p> location</p>
+                            </div>
                         </div>
                     ))}
                 </ScrollContainer>
             </div>
         </div>
     );
+}
+
+// Access sport detail and pass as props
+export async function getServerSideProps() {
+
+    //call getMatches function
+    const data = await getMatches();
+
+    //converts data into object
+    const matches = JSON.parse(JSON.stringify(data));
+
+    //check if the match is quick
+    const quickMatches = matches.filter(
+        (match: any) => match.matchType === "QUICK"
+    );
+
+    //checks if the match is regular
+    const regMatches = matches.filter(
+        (match: any) => match.matchType === "REGULAR"
+    );
+
+    //returns as a props
+    return {
+        props: {
+            quickMatches,
+            regMatches,
+        },
+    };
 }
