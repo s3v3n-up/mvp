@@ -40,7 +40,7 @@ export default async function handler(
                 matchType: string().required(),
                 location: object().required(),
                 matchStart: date().when("matchType", {
-                    is: (matchType === "REGULAR"),
+                    is: ((matchType: any) => matchType==="REGULAR"),
                     then: date().min(
                         new Date(Date.now() + 3600000),
                         "You cannot set a date or time less than 1 hour from now.").required(),
