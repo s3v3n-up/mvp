@@ -50,7 +50,7 @@ export default function Navbar() {
     return (
         <header className="z-50">
             <nav className={styles.nav}>
-                <div className="relative w-32 h-12">
+                <button className="relative w-32 h-12" onClick={()=>router.push("/")}>
                     <Image
                         src={"/img/logo.png"}
                         alt="logo"
@@ -58,7 +58,7 @@ export default function Navbar() {
                         objectFit="cover"
                         objectPosition="left"
                     />
-                </div>
+                </button>
                 <ul className={styles.option}>
                     <NavTab href="/leaderboard" pageName="Leaderboard"/>
                     <NavTab href="/" pageName="Matches"/>

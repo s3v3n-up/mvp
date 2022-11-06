@@ -1,5 +1,5 @@
 //third-party import
-import Navbar from "@/components/navbar";
+import Navbar from "@/components/layout/navbar";
 import { ReactNode, useState, useEffect, useContext } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -55,7 +55,7 @@ const Layout = ({ children }: Props) => {
             </div>
             {!isAuthPage && <Navbar /> }
             <nav className="md:hidden flex flex-row justify-between pr-3 pt-3 items-center">
-                <div className="relative w-32 h-12 mr-auto">
+                <button className="relative w-32 h-12 mr-auto" onClick={()=>router.push("/")}>
                     <Image
                         src={"/img/logo.png"}
                         alt="logo"
@@ -63,7 +63,7 @@ const Layout = ({ children }: Props) => {
                         objectFit="cover"
                         objectPosition="left"
                     />
-                </div>
+                </button>
                 <button className="relative h-14 w-14 rounded-full" onClick={()=>router.push("/user/profile")}>
                     { isAvatarLoaded &&
                             <Skeleton
