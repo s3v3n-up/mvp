@@ -1,21 +1,34 @@
-import Image from "next/image";
+// Local imports
 import Input from "./Input";
 import SelectOption from "./SelectOption";
-import { ChangeEvent, FormEvent, useState } from "react";
-import { AddLocationAlt,SportsBasketball,PeopleAlt } from "@mui/icons-material";
 import { Location, Sports, Props, Modes } from "@/lib/types/General";
+
+// Third party imports
+import { ChangeEvent, FormEvent, useState } from "react";
+import {
+    AddLocationAlt,
+    SportsBasketball,
+    PeopleAlt,
+} from "@mui/icons-material";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import router from "next/router";
-
 
 /*
  * this component is used in create match page
  */
 export default function QuickMatch({ props }: Props) {
+
+    // Gets the session of the user
     const { data: session } = useSession();
+
+    // Stores and Sets the location
     const [location, setLocation] = useState<Location>();
+
+    // Stores and Sets the sportname
     const [sportname, setSportname] = useState("Basketball");
+
+    // Stores and Sets the mode
     const [mode, setMode] = useState("1V1");
 
     //Form submission state
@@ -44,6 +57,7 @@ export default function QuickMatch({ props }: Props) {
         setMode(val);
     }
 
+    // Function that handles form submission
     async function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         try {
@@ -69,7 +83,6 @@ export default function QuickMatch({ props }: Props) {
         }
     }
 
-
     // Array containing all existing sport
     const allSports: Sports[] = [];
 
@@ -94,14 +107,23 @@ export default function QuickMatch({ props }: Props) {
         <div className="flex justify-evenly">
             <div className="flex flex-col space-y-2 lg:justify-end ">
                 <div>
+                    {/* Header for Quick Match Page */}
                     <h1 className="text-[#f3f2ef] text-3xl text-center pt-3">
-                        Create Quick Match
+            Create Quick Match
                     </h1>
                 </div>
+                {/* Form to be submitted */}
                 <form onSubmit={handleFormSubmit}>
-                    <Input label="Location" value={"0"} name="location" onChange={handleLocationChange}>
+                    {/* Input box for Location */}
+                    <Input
+                        label="Location"
+                        value={"0"}
+                        name="location"
+                        onChange={handleLocationChange}
+                    >
                         <AddLocationAlt />
                     </Input>
+                    {/* Selection box for Sport */}
                     <SelectOption
                         label="Sport"
                         options={allSports}
@@ -111,6 +133,7 @@ export default function QuickMatch({ props }: Props) {
                     >
                         <SportsBasketball />
                     </SelectOption>
+                    {/* Selection box for Mode */}
                     <SelectOption
                         label="Type of Match"
                         options={allModes}
@@ -120,9 +143,13 @@ export default function QuickMatch({ props }: Props) {
                     >
                         <PeopleAlt />
                     </SelectOption>
+                    {/* Button to submit the form */}
                     <div className="flex justify-center pt-5 cursor-pointer">
-                        <button type="submit" className="rounded-sm w-80 bg-[#fc5c3e] h-10  font-extrabold  text-[#f1ecec]">
-                        CREATE
+                        <button
+                            type="submit"
+                            className="rounded-sm w-80 bg-[#fc5c3e] h-10  font-extrabold  text-[#f1ecec]"
+                        >
+              CREATE
                         </button>
                     </div>
                 </form>
