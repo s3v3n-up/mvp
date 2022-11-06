@@ -70,7 +70,7 @@ export default function Navbar() {
                     </Link>
                 </ul>
                 <ul className={styles.auth}>
-                    <div className="relative h-14 w-14 rounded-full">
+                    <button className="relative h-14 w-14 rounded-full" onClick={()=>router.push("/user/profile")}>
                         { isAvatarLoaded &&
                             <Skeleton
                                 variant="circular"
@@ -88,7 +88,7 @@ export default function Navbar() {
                             className="rounded-full"
                             onLoad={() => setIsAvatarLoaded(true)}
                         />
-                    </div>
+                    </button>
                     <button onClick={ handleLogout }>Logout</button>
                 </ul>
             </nav>
