@@ -21,7 +21,7 @@ const Search = dynamic(() => import("@mui/icons-material/Search"), { ssr: false 
  *
  */
 export default function Home({ regMatches, quickMatches }: any) {
-    const { status, data: session } = useSession();
+    const { status } = useSession();
     const router = useRouter();
     useEffect(()=> {
         if (status==="loading") return;

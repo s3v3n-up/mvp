@@ -1,6 +1,10 @@
 import { ChangeEvent, useEffect, useRef } from "react";
 import Image from "next/image";
-import { CameraAlt, Close } from "@mui/icons-material";
+import dynamic from "next/dynamic";
+
+//dynamic imports
+const CameraAlt = dynamic(() => import("@mui/icons-material/CameraAlt"));
+const Close = dynamic(() => import("@mui/icons-material/Close"));
 
 /**
  * image picker component props type

@@ -22,8 +22,8 @@ export default function AlertMessage(props: Props) {
     };
 
     return (
-        <div className={`rounded-md p-5 ${classes[props.type]}`}>
-            <p className="font-bold">{props.message}</p>
+        <div className={`w-full rounded-md p-5 ${classes[props.type]}`}>
+            <p className="font-bold w-full">{props.message}</p>
         </div>
     );
 }
