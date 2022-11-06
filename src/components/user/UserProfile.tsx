@@ -19,7 +19,6 @@ const Email = dynamic(() => import("@mui/icons-material/Email"));
 const Phone = dynamic(() => import("@mui/icons-material/Phone"));
 const ImagePicker = dynamic(()=>import("@/components/imagepicker"));
 
-
 /**
  * interface for type of user data
  */
@@ -64,11 +63,10 @@ export default function Profile() {
     //axios to get the userdata and stats from api
     useEffect(() => {
         if (session && session.user && isDataLoaded === false) {
-            Promise.all(
-                [
-                    axios.get(`/api/user/${session.user.userName}`),
-                    axios.get(`/api/user/${session.user.userName}/stats`)
-                ]).then(data => {
+            Promise.all([
+                axios.get(`/api/user/${session.user.userName}`),
+                axios.get(`/api/user/${session.user.userName}/stats`)
+            ]).then(data => {
 
                 //destructure the object to userData and userStats
                 const [{ data:userData },{ data:userStats }] = data as unknown as [{data:UserProfile}, {data:{win:number,lose:number,draw:number}}];
@@ -88,7 +86,7 @@ export default function Profile() {
     }, [isDataLoaded, session]);
 
     //get the user firstname input value, update it in the db through axios put api
-    const fNameHandle = debounce(async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
+    const fNameHandle = debounce(async (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
         const value = event.target.value;
         setFirstName(value);
         await axios.put(`/api/user/${userName}`, {
@@ -100,7 +98,7 @@ export default function Profile() {
     }, 500);
 
     //get the user lastname input value, update it in the db through axios put api
-    const lNameHandle = debounce(async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
+    const lNameHandle = debounce(async (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
         const value = event.target.value;
         setLastName(value);
         await axios.put(`/api/user/${userName}`, {
@@ -112,7 +110,7 @@ export default function Profile() {
     }, 500);
 
     //get the user phone input value, update it in the db through axios put api
-    const phoneHandle = debounce(async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
+    const phoneHandle = debounce(async (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
         const value = event.target.value;
         setPhone(value);
         await axios.put(`/api/user/${userName}`, {
@@ -157,14 +155,18 @@ export default function Profile() {
 
     return (
         <div className="flex justify-evenly pt-10">
-            <div className="flex lg:w-1/4 md:w-2/4 flex-col space-y-3 lg:justify-end">
-                {!isDataLoaded && <AlertMessage type="loading" message="...loading"/>}
-                <ImagePicker
-                    imageUrl={image}
-                    image={updatedImage}
-                    onChange={handleImageChange}
-                    onRemove={handleRemoveImage}
-                />
+            <div className="flex lg:w-1/4 w-4/5 flex-col space-y-3">
+                {isDataLoaded === false && "...Loading"}
+                <div className="relative w-40 h-40 rounded-full m-auto mb-5 bg-white">
+                    <Image
+                        src={image}
+                        layout="fill"
+                        objectFit="cover"
+                        objectPosition="center"
+                        alt="logo"
+                        className="rounded-full"
+                    />
+                </div>
                 <Input
                     label="First Name"
                     value={firstName}
@@ -205,6 +207,7 @@ export default function Profile() {
                 >
                     <Email />
                 </Input>
+                <p className="mt-3 text-white">Stat</p>
                 <table className=" border-collapse border border-slate-800 rounded-ml text-center mt-6 ">
                     <thead className=" bg-[#fc5c3e] text-[#f3f2ef] my-5 py-5 mt-6">
                         <tr className="my-5 py-5 mt-6">
