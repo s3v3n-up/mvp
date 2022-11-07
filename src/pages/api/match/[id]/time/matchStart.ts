@@ -1,12 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next/types";
 import Database from "@/lib/resources/database";
-import {updateMatchQueueStartTime} from "@/lib/actions/match";
-import {Match} from "@/lib/types/Match";
+import { updateMatchQueueStartTime } from "@/lib/actions/match";
+import { Match } from "@/lib/types/Match";
 
 //function to update the start time of a match in the queue
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (req.method === "PUT") {
+
             // Initialize connection to the database
             await Database.setup();
 
@@ -33,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             //update matchQueueStartTime
             await updateMatchQueueStartTime(id as string, !isNaN(Date.parse(matchQueueStartTime)) ? new Date(matchQueueStartTime) : null);
 
-            res.status(200).json({ message: `Match queue start time updated` });
+            res.status(200).json({ message: "Match queue start time updated" });
         }
     } catch (error: any) {
         res.status(error.code || 500).json({ message: error.message || "Internal Server Error", cause: error.cause });

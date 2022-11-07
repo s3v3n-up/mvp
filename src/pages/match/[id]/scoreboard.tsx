@@ -160,9 +160,11 @@ export default function Scoreboard({ match, players }: Props) {
                     });
                     setQueueTimeStart(null);
                     setMatchStartTime(new Date());
-                    clearInterval(interval); 
+                    clearInterval(interval);
                 }
                 console.log("set is full", isFull);
+
+
                 return ()=> clearInterval(interval);
             }
         })();
