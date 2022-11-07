@@ -5,9 +5,25 @@ import { Match } from "@/lib/types/Match";
 import styles from "@/styles/MatchView.module.sass";
 import { GetServerSidePropsContext } from "next";
 
+// https://www.npmjs.com/package/add-to-calendar-button
+// eslint-disable-next-line camelcase
+import { atcb_action } from "add-to-calendar-button";
+import "add-to-calendar-button/assets/css/atcb.css";
+
 // interface for props
 interface Props {
     data: Match
+}
+
+// Interface for the config used in add to calendar
+interface Config {
+    name: string,
+    startDate: string,
+    endDate: string,
+    options: string[],
+    timeZone: string,
+    iCalFileName: string,
+    description: string
 }
 
 /**
@@ -17,6 +33,21 @@ export default function MatchView({ data } : Props){
 
     // Combine team1 and team2
     let allTeams: string[] = data.teams[0].members.concat(data.teams[1].members);
+
+    // Converts the date type(mm/dd/yyyy) to string format ("yyyy-dd-mm")
+    const startTime = new Date(data.matchStart).toLocaleDateString("en-GB").split("/").reverse().join("-");
+    const endTime = new Date(data.matchStart).toLocaleDateString("en-GB").split("/").reverse().join("-");
+
+    // Configuration to be pass in the atcb_action
+    const config: Config = {
+        name: data.sport,
+        startDate: startTime,
+        endDate: endTime ? endTime : startTime,
+        options: ["Apple", "Google", "iCal", "Microsoft365", "Outlook.com", "Yahoo"],
+        timeZone: "America/Los_Angeles",
+        iCalFileName: "Reminder-Event",
+        description: data.description
+    };
 
     return(
         <div className={styles.container}>
@@ -36,7 +67,8 @@ export default function MatchView({ data } : Props){
                 <p>Location</p>
             </div>
             <div>
-                <button className={styles.calendar}>Add to Calendar</button>
+                {/* Add to your local calendar button */}
+                <button className={styles.calendar } onClick={() => atcb_action(config as Config as any)}>Add to Calendar</button>
                 {/* Sub Header for Date and Time */}
                 <h3>Date and Time</h3>
                 {/* Data for match type */}
