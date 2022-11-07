@@ -1,6 +1,6 @@
 // Import our style modules
 import styles from "@/styles/History.module.sass";
-import Compstyles from "@/styles/Components.module.sass";
+//import styles from "@/styles/Components.module.sass";
 
 // Import useState and getMatches function
 import { useState } from "react";
@@ -19,20 +19,20 @@ export default function History({ createdMatches, pastMatches }: any) {
         <>
           {createdMatches.map((created: any, idx: any) => (
             // Cards to hold match information
-            <div className={Compstyles.cardContainer} key={idx}>
-              <div className={Compstyles.cardInfo}>
-                <div className={Compstyles.time}>
+            <div className={styles.cardContainer} key={idx}>
+              <div className={styles.cardInfo}>
+                <div className={styles.time}>
                   <p>{created.startTime}</p>
                 </div>
-                <div className={Compstyles.sportType}>
+                <div className={styles.sportType}>
                   <p>{created.sport}</p>
                 </div>
-                <div className={Compstyles.miniContainer}>
-                  <div className={Compstyles.location}>
+                <div className={styles.miniContainer}>
+                  <div className={styles.location}>
                     <p>{created.location}</p>
                   </div>
-                  <button className={Compstyles.cancelButton}>Leave</button>
-                  <button className={Compstyles.cancelButton}>Delete</button>
+                  <button className={styles.cancelButton}>Leave</button>
+                  <button className={styles.cancelButton}>Delete</button>
                 </div>
               </div>
             </div>
@@ -46,16 +46,16 @@ export default function History({ createdMatches, pastMatches }: any) {
       content: (
         <>
           {pastMatches.map((past: any, idx: any) => (
-            <div className={Compstyles.cardContainer} key={idx}>
-              <div className={Compstyles.cardInfo}>
-                <div className={Compstyles.time}>
+            <div className={styles.cardContainer} key={idx}>
+              <div className={styles.cardInfo}>
+                <div className={styles.time}>
                   <p>{past.startTime}</p>
                 </div>
-                <div className={Compstyles.sportType}>
+                <div className={styles.sportType}>
                   <p>{past.sport}</p>
                 </div>
-                <div className={Compstyles.miniContainer}>
-                  <div className={Compstyles.location}>
+                <div className={styles.miniContainer}>
+                  <div className={styles.location}>
                     <p>{past.location}</p>
                   </div>
                 </div>
@@ -71,8 +71,8 @@ export default function History({ createdMatches, pastMatches }: any) {
   return (
     <div className={styles.baseContainer}>
       <div className={styles.historyContainer}>
-        <div className={Compstyles.background}>
-          <div className={Compstyles.titleContainer}>
+        <div className={styles.background}>
+          <div className={styles.titleContainer}>
             {tabsData.map((tab, idx) => {
               return (
                 //Tabs styling changes depending on it being selected
@@ -80,8 +80,8 @@ export default function History({ createdMatches, pastMatches }: any) {
                   key={idx}
                   className={` ${
                     idx === activeTabIndex
-                      ? Compstyles.selectedTab
-                      : Compstyles.unselectedTab
+                      ? styles.selectedTab
+                      : styles.unselectedTab
                   }`}
                   //Change the active tab on click.
                   onClick={() => setActiveTabIndex(idx)}
@@ -91,7 +91,7 @@ export default function History({ createdMatches, pastMatches }: any) {
               );
             })}
           </div>
-          <div className={Compstyles.tabContent}>
+          <div className={styles.tabContent}>
             <p>{tabsData[activeTabIndex].content}</p>
           </div>
         </div>
