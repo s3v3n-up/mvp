@@ -128,19 +128,45 @@ export default function Scoreboard({ match, players }: Props) {
     //set the match queue timer
     useEffect(()=> {
         (async()=> {
-            if (currMatch.matchQueueStart) {
-                const time = new Date(currMatch.matchQueueStart);
-                const interval = setInterval(()=> {
+            if(isFull && !queueTimeStart && !matchStartTime) {
+                const queueStart = new Date();
+                await axios.put(`/api/match/${match._id?.toString()}/time/matchStart`, {
+                    matchQueueStartTime: queueStart.toString()
+                });
+                setQueueTimeStart(queueStart);
+            }
+            if (queueTimeStart && isFull) {
+                const time = new Date(queueTimeStart);
+                const interval = setInterval(async()=> {
                     const now = new Date();
-                    const diff = Math.floor((now.getTime() - time.getTime()) / 1000);
+                    const diff = 29374 - Math.floor((now.getTime() - time.getTime()) / 1000);
+
+                    //stops the countdownt when it reaches 0 or if someone leaves the lobby
+                    if(diff <= 0) {
+                        await axios.put(`/api/match/${match._id?.toString()}/time/matchStart`, {
+                            matchQueueStartTime: null
+                        });
+                        setQueueTimeStart(null);
+                        setMatchStartTime(new Date());
+                        clearInterval(interval);
+                    }
                     setQueueTimer(diff);
                 }, 1000);
 
-
+                if(!isFull){
+                    setQueueTimeStart(null);
+                    await axios.put(`/api/match/${match._id?.toString()}/time/matchStart`, {
+                        matchQueueStartTime: null
+                    });
+                    setQueueTimeStart(null);
+                    setMatchStartTime(new Date());
+                    clearInterval(interval); 
+                }
+                console.log("set is full", isFull);
                 return ()=> clearInterval(interval);
             }
         })();
-    });
+    }, [isFull, queueTimeStart, matchStartTime, match]);
 
     //guard against if match is finished or cancelled
     useEffect(()=> {
@@ -187,7 +213,7 @@ export default function Scoreboard({ match, players }: Props) {
                 />
             </div>
             <h2 className="text-white text-center mt-5 text-3xl font-bold">
-                {queueTimer && "Match is starting in" }
+                {queueTimer && queueTimer >= 0 && "Match is starting in " + queueTimer }
             </h2>
             <div className={styles.scoreboard}>
                 <div className={styles.hometeam}>

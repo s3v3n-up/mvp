@@ -345,6 +345,37 @@ export async function updateMatch(matchId: string, match: Match) {
 }
 
 /**
+ * update match queue start time
+ * @param matchId id of match to update
+ * @param startTime new start time
+ * @returns {Promise<Match>} promise that resolves to updated match
+ * @throws {Error} if match is not found
+ */
+export async function updateMatchQueueStartTime(matchId: string, startTime: Date | null) {
+    try {
+        const match = await MatchModel.findById(matchId);
+
+        //if match is not found, throw error
+        if (!match) {
+            throw new Error("match not found");
+        }
+
+        match.matchQueueStart = startTime;
+        await match.save();
+
+        return match;
+
+    } catch (error: any) {
+        throw new Error("error updating match queue start time", { cause: error });
+    }
+}
+
+
+ 
+
+
+
+/**
  * get leaderboard of a sport
  * @param {string} sport - sport to get leaderboard for
  * @limit {number} limit - number of users to return
