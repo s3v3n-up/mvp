@@ -23,6 +23,7 @@
     "@next/bundle-analyzer": "^13.0.1",
     "@types/lodash.debounce": "^4.0.7",
     "ably": "^1.2.30",
+    "add-to-calendar-button": "^1.18.5",
     "axios": "^0.27.2",
     "cloudinary": "^1.32.0",
     "lodash.debounce": "^4.0.8",

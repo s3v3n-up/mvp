@@ -1,5 +1,5 @@
 import ViewUserProfile from "@/components/user/ViewUserProfile";
-import { getUsers, calculateStats, calculateStatsAggregate } from "@/lib/actions/user";
+import { getUsers, calculateStatsAggregate } from "@/lib/actions/user";
 import { getUserByUserName } from "@/lib/actions/user";
 import { GetStaticPropsContext } from "next";
 import type { UserProfile } from "@/lib/types/User";

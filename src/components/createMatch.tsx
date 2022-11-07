@@ -1,9 +1,10 @@
 // Third-party imports
 import { useSession } from "next-auth/react";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import router from "next/router";
 import axios from "axios";
 import dynamic from "next/dynamic";
+import styled from "styled-components";
 
 // Local imports
 import Input from "./Input";
@@ -11,7 +12,7 @@ import SelectOption from "./SelectOption";
 import { Location, SportsOptions, Modes } from "@/lib/types/General";
 import { Sport } from "@/lib/types/Sport";
 
-//dnamic imports
+//dynamic imports
 const AddLocationAlt = dynamic(
     () => import("@mui/icons-material/AddLocationAlt")
 );
@@ -23,7 +24,7 @@ const AccessTime = dynamic(() => import("@mui/icons-material/AccessTime"));
 const AlertMessage = dynamic(() => import("@/components/alertMessage"));
 
 interface Props {
-    props: Sport[]
+  props: Sport[];
 }
 
 /*
@@ -37,13 +38,17 @@ export default function CreateMatch({ props }: Props) {
     // Location useState
     const [location, setLocation] = useState<Location>();
 
+    // Address useState
+    const [address, setAddress] = useState("");
+
+    // Address suggestions useState - this is for the autofill
+    const [suggestions, setSuggestions] = useState([]);
+
     // Sports useState
     const [sportname, setSportname] = useState("Basketball");
 
     // Mode useState
     const [mode, setMode] = useState("1V1");
-
-    // const reqPlayers = computeReqPlayers(mode)!;
 
     // Date useState
     const [date, setDate] = useState("");
@@ -95,13 +100,25 @@ export default function CreateMatch({ props }: Props) {
     const [loading, setLoading] = useState(false);
 
     // Function to handle location change event
-    function handleLocationChange(e: ChangeEvent<HTMLInputElement>) {
+    async function handleLocationChange(e: ChangeEvent<HTMLInputElement>) {
         const val = e.target.value;
 
-        setLocation({
-            lat: 0,
-            lng: 0,
-        });
+        // handle change of address value in front end
+        setAddress(val);
+
+        // Code to set location to be saved on database and set suggestions for autofill
+        try {
+            const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${val}.json?&limit=3&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`;
+            await axios.get(endpoint).then(({ data }) => {
+                setLocation({
+                    lat: data.features[0].geometry.coordinates[1],
+                    lng: data.features[0].geometry.coordinates[0],
+                });
+                setSuggestions(data?.features);
+            });
+        } catch (error) {
+            console.log("Error fetching data, ", error);
+        }
     }
 
     // Function to handle sport change event
@@ -137,7 +154,7 @@ export default function CreateMatch({ props }: Props) {
             // Axios fetch post to access create match api
             const res = await axios.post("/api/match/create", {
                 matchHost: session!.user.id,
-                location: { lat: 22, lng: -122 }, // this is temporary while we haven't finished mapbox
+                location: location,
                 sport: sportname,
                 gameMode: { modeName: mode, requiredPlayers: computeReqPlayers(mode) },
                 matchStart: date,
@@ -154,23 +171,40 @@ export default function CreateMatch({ props }: Props) {
             // Redirect to index page
             router.push("/");
 
-        // Catches and throws the error
+            // Catches and throws the error
         } catch (err: any) {
 
             // If  there is a error in the response display it using setError
             if (err!.response) {
                 setError(err.response.data.message);
 
-            // Else show the error
+                // Else show the error
             } else {
                 setError(err.message);
             }
 
-        // Lastly remove the loading
+            // Lastly remove the loading
         } finally {
             setLoading(false);
         }
     }
+
+    // Custom parent wrapper for autofill feature
+    const SuggestionWrapper = styled.div`
+	  display: flex;
+	  flex-direction: column;
+	  background: white;
+	  width: 320px;
+	  padding: 10px 20px;
+	  border-radius: 0px 0px 10px 10px;
+	  gap: 10px 0px;
+	`;
+
+    // Custom child wrapper for autofill feature
+    const Suggestion = styled.p`
+	  cursor: pointer;
+	  max-width: 320px;
+	`;
 
     return (
         <div className="flex justify-evenly">
@@ -189,12 +223,31 @@ export default function CreateMatch({ props }: Props) {
                     {/* Location Input Box */}
                     <Input
                         label="Location"
-                        value={"0"}
+                        value={address}
                         name="location"
                         onChange={handleLocationChange}
                     >
                         <AddLocationAlt />
                     </Input>
+                    {/* Autofill for address */}
+                    {suggestions?.length > 0 && (
+                        <SuggestionWrapper>
+                            {suggestions.map((suggestion: any, index: any) => {
+                                return (
+                                    <Suggestion
+                                        className="w-full text-[#31302f] text-base"
+                                        key={index}
+                                        onClick={() => {
+                                            setAddress(suggestion.place_name);
+                                            setSuggestions([]);
+                                        }}
+                                    >
+                                        {suggestion.place_name}
+                                    </Suggestion>
+                                );
+                            })}
+                        </SuggestionWrapper>
+                    )}
                     {/* Selection box for Sport */}
                     <SelectOption
                         label="Sport"
