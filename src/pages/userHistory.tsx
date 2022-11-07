@@ -1,6 +1,5 @@
-// Import our style modules
+// Import the style module for the userHistory page
 import styles from "@/styles/History.module.sass";
-//import styles from "@/styles/Components.module.sass";
 
 // Import useState and getMatches function
 import { useState } from "react";
@@ -8,29 +7,34 @@ import { getMatches } from "@/lib/actions/match";
 
 // History function for page
 export default function History({ createdMatches, pastMatches }: any) {
-  //constants to indicate whether tab is active or not
+  // Constants to indicate whether tab is active or not
   const [activeTabIndex, setActiveTabIndex] = useState(0);
 
   // Labels and content to populate the selected tab
   const tabsData = [
     {
+      // The title or label of our tab
       label: "Created Matches",
       content: (
         <>
+          {/* Created match cards to hold match information*/}
           {createdMatches.map((created: any, idx: any) => (
-            // Cards to hold match information
             <div className={styles.cardContainer} key={idx}>
               <div className={styles.cardInfo}>
+                {/* The starting time of the match*/}
                 <div className={styles.time}>
                   <p>{created.startTime}</p>
                 </div>
+                {/* The type of sport of the match*/}
                 <div className={styles.sportType}>
                   <p>{created.sport}</p>
                 </div>
                 <div className={styles.miniContainer}>
+                  {/* The type of sport of the match*/}
                   <div className={styles.location}>
                     <p>{created.location}</p>
                   </div>
+                  {/* The delete or leave button corresponding to whether the match was created or joined*/}
                   <button className={styles.cancelButton}>Leave</button>
                   <button className={styles.cancelButton}>Delete</button>
                 </div>
@@ -40,20 +44,25 @@ export default function History({ createdMatches, pastMatches }: any) {
         </>
       ),
     },
+
     // Tab for user's past matches
     {
       label: "History",
       content: (
         <>
+          {/* Past match cards to hold match information*/}
           {pastMatches.map((past: any, idx: any) => (
             <div className={styles.cardContainer} key={idx}>
               <div className={styles.cardInfo}>
+                {/* The starting time of the match*/}
                 <div className={styles.time}>
                   <p>{past.startTime}</p>
                 </div>
+                {/* The type of sport of the match*/}
                 <div className={styles.sportType}>
                   <p>{past.sport}</p>
                 </div>
+                {/* The match's location*/}
                 <div className={styles.miniContainer}>
                   <div className={styles.location}>
                     <p>{past.location}</p>
@@ -67,15 +76,16 @@ export default function History({ createdMatches, pastMatches }: any) {
     },
   ];
 
-  //The rendered content of the page
+  // The rendered content of the page
   return (
     <div className={styles.baseContainer}>
       <div className={styles.historyContainer}>
         <div className={styles.background}>
           <div className={styles.titleContainer}>
+            {/*Each tab has a key, either 1 or 0, depending on the key, the tab is active or not*/}
+            {/*Tabs styling changes depending on it being selected or clicked*/}
             {tabsData.map((tab, idx) => {
               return (
-                //Tabs styling changes depending on it being selected
                 <button
                   key={idx}
                   className={` ${
@@ -83,7 +93,6 @@ export default function History({ createdMatches, pastMatches }: any) {
                       ? styles.selectedTab
                       : styles.unselectedTab
                   }`}
-                  //Change the active tab on click.
                   onClick={() => setActiveTabIndex(idx)}
                 >
                   {tab.label}
@@ -91,6 +100,7 @@ export default function History({ createdMatches, pastMatches }: any) {
               );
             })}
           </div>
+          {/*Here we display the appropriate tab content (or matches) that correspond to the active tab */}
           <div className={styles.tabContent}>
             <p>{tabsData[activeTabIndex].content}</p>
           </div>
@@ -113,7 +123,7 @@ export async function getServerSideProps() {
     (match: any) => match.matchType === "UPCOMING"
   );
 
-  //checks if the match has passed already
+  // Checks if the match has passed already
   const pastMatches = matches.filter(
     (match: any) => match.matchType === "FINISHED"
   );
