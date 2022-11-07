@@ -125,7 +125,7 @@ export default function Scoreboard({ match, players }: Props) {
         })();
     },[data, error, isMatchHost]);
 
-    //set the match queue timer 
+    //set the match queue timer
     useEffect(()=> {
         (async()=> {
             if (currMatch.matchQueueStart) {
@@ -135,6 +135,8 @@ export default function Scoreboard({ match, players }: Props) {
                     const diff = Math.floor((now.getTime() - time.getTime()) / 1000);
                     setQueueTimer(diff);
                 }, 1000);
+
+
                 return ()=> clearInterval(interval);
             }
         })();
@@ -185,7 +187,7 @@ export default function Scoreboard({ match, players }: Props) {
                 />
             </div>
             <h2 className="text-white text-center mt-5 text-3xl font-bold">
-                    {queueTimer && "Match is starting in" }
+                {queueTimer && "Match is starting in" }
             </h2>
             <div className={styles.scoreboard}>
                 <div className={styles.hometeam}>

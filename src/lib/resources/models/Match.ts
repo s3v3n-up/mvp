@@ -112,7 +112,7 @@ const matchSchema = new Schema<Match>({
         required: true,
         default: "UPCOMING"
     },
-    
+
     //This is the match queue start
     matchQueueStart: {
         type: Date,
