@@ -6,11 +6,11 @@ import Tab from "@/components/tab/tab";
 
 // History function for page
 export default function History() {
-    return (
-        <div className={styles.background}>
-            <div className={styles.historyContainer}>
-                <Tab />
-            </div>
-        </div>
-    );
+  return (
+    <div className={styles.background}>
+      <div className={styles.historyContainer}>
+        <Tab />
+      </div>
+    </div>
+  );
 }
