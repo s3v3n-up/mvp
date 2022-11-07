@@ -21,10 +21,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
 
             // Deconstruct values to be from the client side
-            const { matchQueueStartTime } = req.body;
+            const { queueStartTime } = req.body;
 
             //validate matchQueueStartTime
-            if (isNaN(Date.parse(matchQueueStartTime)) && matchQueueStartTime !== null) {
+            if (isNaN(Date.parse(queueStartTime)) && queueStartTime !== null) {
                 throw {
                     code: 400,
                     message: "bad request"
@@ -32,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
 
             //update matchQueueStartTime
-            await updateMatchQueueStartTime(id as string, !isNaN(Date.parse(matchQueueStartTime)) ? new Date(matchQueueStartTime) : null);
+            await updateMatchQueueStartTime(id as string, !isNaN(Date.parse(queueStartTime)) ? new Date(queueStartTime) : null);
 
             res.status(200).json({ message: "Match queue start time updated" });
         }

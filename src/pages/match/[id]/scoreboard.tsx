@@ -73,21 +73,6 @@ export default function Scoreboard({ match, players }: Props) {
         mapPlayerToTeam(players, currMatch.teams)[1]
     );
 
-    //checking if both teams are full of players
-    const [isFull, setIsFull] = useState<boolean>(
-        match.gameMode.requiredPlayers === players.length
-    );
-
-    //set the queue time for the match
-    const [queueTimeStart, setQueueTimeStart] = useState<Date | null>(
-        match.matchQueueStart
-    );
-
-    //set the match start time
-    const [matchStartTime, setMatchStartTime] = useState<Date | null>(
-        match.matchStart
-    );
-
     //set the queue timer
     const [queueTimer, setQueueTimer] = useState<number | null>(null);
 
@@ -116,7 +101,6 @@ export default function Scoreboard({ match, players }: Props) {
                 const mappedTeams = mapPlayerToTeam(players.data, data.match.teams);
                 setHomeTeam(mappedTeams[0]);
                 setAwayTeam(mappedTeams[1]);
-                setIsFull(data.match.gameMode.requiredPlayers === players.data.length);
                 if (!isMatchHost) {
                     setHomeScore(data.match.teams[0].score);
                     setAwayScore(data.match.teams[1].score);
@@ -127,48 +111,39 @@ export default function Scoreboard({ match, players }: Props) {
 
     //set the match queue timer
     useEffect(()=> {
-        (async()=> {
-            if(isFull && !queueTimeStart && !matchStartTime) {
-                const queueStart = new Date();
-                await axios.put(`/api/match/${match._id?.toString()}/time/matchStart`, {
-                    matchQueueStartTime: queueStart.toString()
+        let timer: NodeJS.Timeout | null;
+
+        async function updateTimer() {
+            const { gameMode: { requiredPlayers: maxPlayer } } = currMatch;
+            const currMemberNumbers = currMatch.teams[0].members.length + currMatch.teams[1].members.length;
+            const isMemberFull = currMemberNumbers === maxPlayer;
+
+            if (isMemberFull && !currMatch.matchQueueStart && !currMatch.matchStart) {
+                await axios.put(`/api/match/${currMatch._id?.toString()}/time/queue`, {
+                    queueStartTime: new Date().toString()
                 });
-                setQueueTimeStart(queueStart);
-            }
-            if (queueTimeStart && isFull) {
-                const time = new Date(queueTimeStart);
-                const interval = setInterval(async()=> {
-                    const now = new Date();
-                    const diff = 29374 - Math.floor((now.getTime() - time.getTime()) / 1000);
+            };
 
-                    //stops the countdownt when it reaches 0 or if someone leaves the lobby
-                    if(diff <= 0) {
-                        await axios.put(`/api/match/${match._id?.toString()}/time/matchStart`, {
-                            matchQueueStartTime: null
+            if (currMatch.matchQueueStart) {
+                const queueStart = new Date(currMatch.matchQueueStart).getTime();
+                timer = setInterval(async()=> {
+                    const now = Date.now();
+                    const timeDiff = Math.floor((now - queueStart) / 1000);
+                    setQueueTimer(timeDiff);
+                    if (!isMemberFull) {
+                        clearInterval(timer as NodeJS.Timeout);
+                        setQueueTimer(null);
+                        await axios.put(`/api/match/${currMatch._id?.toString()}/time/queue`, {
+                            queueStartTime: null
                         });
-                        setQueueTimeStart(null);
-                        setMatchStartTime(new Date());
-                        clearInterval(interval);
                     }
-                    setQueueTimer(diff);
                 }, 1000);
-
-                if(!isFull){
-                    setQueueTimeStart(null);
-                    await axios.put(`/api/match/${match._id?.toString()}/time/matchStart`, {
-                        matchQueueStartTime: null
-                    });
-                    setQueueTimeStart(null);
-                    setMatchStartTime(new Date());
-                    clearInterval(interval);
-                }
-                console.log("set is full", isFull);
-
-
-                return ()=> clearInterval(interval);
             }
-        })();
-    }, [isFull, queueTimeStart, matchStartTime, match]);
+        }
+        updateTimer();
+
+        return ()=> clearInterval(timer??0);
+    }, [currMatch]);
 
     //guard against if match is finished or cancelled
     useEffect(()=> {
