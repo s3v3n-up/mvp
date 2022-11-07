@@ -1,6 +1,6 @@
 //third-party imports
 import Image from "next/image";
-import React, { useEffect, MouseEvent, FormEvent } from "react";
+import { useEffect, MouseEvent, FormEvent } from "react";
 import { useSession, getSession } from "next-auth/react";
 import { useState, ChangeEvent } from "react";
 import { useRouter } from "next/router";
@@ -16,7 +16,7 @@ import Button from "@/components/buttons/primaryButton";
 const Person = dynamic(() => import("@mui/icons-material/Person"));
 const Phone = dynamic(() => import("@mui/icons-material/Phone"));
 const Badge = dynamic(() => import("@mui/icons-material/Badge"));
-const AlertMessage = dynamic(() => import("@/components/alertMessage"));
+const AlertMessage = dynamic(() => import("@/components/alertMessage"), { ssr: false });
 const ImagePicker = dynamic(() => import("@/components/imagepicker"));
 
 /**
@@ -103,15 +103,18 @@ export default function Register() {
      * handle image submit
      */
     async function handleImageSubmit() {
-        const data = new FormData();
-        data.append("files", formData.image!);
         try {
+            if (!formData.image) {
+                throw new Error("Please select an image");
+            }
+            const data = new FormData();
+            data.append("files", formData.image!);
             const res = await axios.post("/api/file", data);
             const { data: { data: { url: imageUrl } } } = res;
 
             return imageUrl;
         } catch(error) {
-            throw new Error("error uploading image");
+            throw error;
         }
     }
 
@@ -124,7 +127,6 @@ export default function Register() {
         try {
             setLoading(true);
             const imageUrl = await handleImageSubmit();
-            console.log(formData);
             await axios.post("/api/user/create", {
                 ...formData,
                 email: session!.user.email,

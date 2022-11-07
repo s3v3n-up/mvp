@@ -1,8 +1,11 @@
-import ViewUserProfile from "@/components/ViewUserProfile";
-import { getUsers, calculateStats } from "@/lib/actions/user";
+import ViewUserProfile from "@/components/user/ViewUserProfile";
+import { getUsers, calculateStats, calculateStatsAggregate } from "@/lib/actions/user";
 import { getUserByUserName } from "@/lib/actions/user";
 import { GetStaticPropsContext } from "next";
 import type { UserProfile } from "@/lib/types/User";
+import { useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 /**
  * view user profile page props type
@@ -22,17 +25,27 @@ interface Props {
  * @returns {JSX.Element} view user profile page element
  */
 export default function ViewProfile({ user, stats }: Props) {
+
+    //guard page from unauthenticated user from client side
+    const { status } = useSession();
+    const router = useRouter();
+    useEffect(()=>{
+        if(status === "loading") return;
+        if (status === "unauthenticated") {
+            router.push("/login");
+        }
+    },[status, router]);
+
+    //user data states
     const { firstName, lastName, userName, image, phoneNumber } = user;
-    const fullName = `${firstName} ${lastName}`;
-    const phone = phoneNumber;
 
     return (
         <div>
             <ViewUserProfile data={
                 {
-                    fullName,
+                    fullName: `${firstName} ${lastName}`,
                     userName,
-                    phone,
+                    phone: phoneNumber,
                     image,
                     stats
                 }
@@ -57,20 +70,22 @@ export async function getStaticPaths() {
 }
 
 /**
- * incrementally static generate page every 5 minutes
+ * incrementally static generate page every 10 seconds
  */
 export async function getStaticProps(context: GetStaticPropsContext ) {
     const { username } = context.params as { username: string };
     try {
+
+        //get user data and stats
         const user = await getUserByUserName(username as string);
-        const stats = await calculateStats(username);
+        const stats = await calculateStatsAggregate(user.userName);
 
         return {
             props: {
                 user: JSON.parse(JSON.stringify(user)),
                 stats: JSON.parse(JSON.stringify(stats))
             },
-            revalidate: 300
+            revalidate: 10
         };
     } catch (error: any) {
         if (error.message="user not found") {

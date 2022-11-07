@@ -41,14 +41,17 @@ export default function Scoreboard({ match, players }: Props) {
     const router = useRouter();
     const [isMatchHost, setIsMatchHost] = useState<boolean>(false);
 
+    //guard page against unauthenticated users and check if user is host of the match or in the match
     useEffect(()=> {
+        if (status === "loading") return;
         if (status === "unauthenticated") {
             router.push("/login");
-
-            return;
         }
         if (session && session.user) {
-            setIsMatchHost(session.user.userName === match.matchHost);
+            setIsMatchHost(session.user.id === match.matchHost);
+            if (!match.teams[0].members.includes(session.user.userName) && !match.teams[1].members.includes(session.user.userName)) {
+                router.push("/");
+            }
         }
     }, [session, status, router, match]);
 
@@ -76,29 +79,6 @@ export default function Scoreboard({ match, players }: Props) {
 
     //is match over state
     const [isFinished, setFinished] = useState<boolean>(false);
-
-    //handle increase and decrease score, debounce to prevent spamming
-    const handleScoreChange = debounce(async(team: "home" | "away", type: "increase" | "decrease") => {
-        if (type === "increase") {
-            if (team === "home") {
-                setHomeScore(prev => prev + 1);
-                await axios.put(`/api/match/${currMatch._id?.toString()}/score`, { teamIndex: 0, operation: "increase" });
-            } else {
-                setAwayScore(prev => prev + 1);
-                await axios.put(`/api/match/${currMatch._id?.toString()}/score`, { teamIndex: 1, operation: "increase" });
-            }
-        } else {
-            if (team === "home") {
-                if (homeScore <= 0) return;
-                setHomeScore(prev => prev - 1);
-                await axios.put(`/api/match/${currMatch._id?.toString()}/score`, { teamIndex: 0, operation: "decrease" });
-            } else {
-                if (awayScore <= 0) return;
-                setAwayScore(prev => prev - 1);
-                await axios.put(`/api/match/${currMatch._id?.toString()}/score`, { teamIndex: 1, operation: "decrease" });
-            }
-        }
-    }, 500);
 
     //refetch match data every 1 seconds
     const { data, error } = useSWR<{match: Match}>(`/api/match/${match._id?.toString()}`,fetcher, {
@@ -135,6 +115,29 @@ export default function Scoreboard({ match, players }: Props) {
             router.push(`/match/${currMatch._id?.toString()}/cancel`);
         }
     }, [currMatch, router]);
+
+    //handle increase and decrease score, debounce to prevent spamming
+    const handleScoreChange = debounce(async(team: "home" | "away", type: "increase" | "decrease") => {
+        if (type === "increase") {
+            if (team === "home") {
+                setHomeScore(prev => prev + 1);
+                await axios.put(`/api/match/${currMatch._id?.toString()}/score`, { teamIndex: 0, operation: "increase" });
+            } else {
+                setAwayScore(prev => prev + 1);
+                await axios.put(`/api/match/${currMatch._id?.toString()}/score`, { teamIndex: 1, operation: "increase" });
+            }
+        } else {
+            if (team === "home") {
+                if (homeScore <= 0) return;
+                setHomeScore(prev => prev - 1);
+                await axios.put(`/api/match/${currMatch._id?.toString()}/score`, { teamIndex: 0, operation: "decrease" });
+            } else {
+                if (awayScore <= 0) return;
+                setAwayScore(prev => prev - 1);
+                await axios.put(`/api/match/${currMatch._id?.toString()}/score`, { teamIndex: 1, operation: "decrease" });
+            }
+        }
+    }, 500);
 
     return(
         <div className={styles.page}>
@@ -192,8 +195,9 @@ export default function Scoreboard({ match, players }: Props) {
                                     userName={player.userName}
                                     image={player.image}
                                     isLeavable={isLeavable}
-                                    onLeave={()=> {}}
                                     variant="home"
+                                    matchId={match._id!.toString()}
+                                    hostId={match.matchHost}
                                 />
                             )
                         }
@@ -232,37 +236,45 @@ export default function Scoreboard({ match, players }: Props) {
                     </div>
                     <div className={styles.awayplayers}>
                         {
-                            awayTeam.map((player, index) =>
+                            awayTeam.map(player =>
                                 <Player
-                                    key={index}
+                                    key={player._id!.toString()}
                                     userName={player.userName}
                                     image={player.image}
                                     isLeavable={isLeavable}
-                                    onLeave={()=> {}}
+                                    matchId={match._id!.toString()}
                                     variant="away"
+                                    hostId={match.matchHost}
                                 />
                             )
                         }
                     </div>
 
                 </div>
-                <button className={styles.pause}> Pause </button>
-                <button
-                    className={styles.finish}
-                    onClick={()=> setFinished(true)}
-                >
-                        Finish
-                </button>
-                <button
-                    className={
-                        `font-bold px-7 py-2 
-                        text-center text-orange-500 
-                        rounded border-2 
-                        border-orange-500 md:w-1/4 w-full m-auto col-span-2`
-                    }
-                >
-                    Cancel
-                </button>
+                { isMatchHost &&
+                    <>
+                        <button className={styles.pause}>
+                            Pause
+                        </button>
+                        <button
+                            className={styles.finish}
+                            onClick={()=> setFinished(true)}
+                        >
+                            Finish
+                        </button>
+                        <button
+                            className={
+                                `font-bold px-7 py-2 
+                                text-center text-orange-500 
+                                rounded border-2 
+                                border-orange-500 md:w-1/4
+                                w-full m-auto col-span-2`
+                            }
+                        >
+                            Cancel
+                        </button>
+                    </>
+                }
             </div>
         </div>
     );
@@ -283,43 +295,50 @@ export async function getStaticPaths() {
 }
 
 /**
- * incrementally generate scoreboard page every 10 seconds
+ * incrementally generate scoreboard page every 1 seconds
  * @param context - context of the page
  */
 export async function getStaticProps(context: GetStaticPropsContext) {
     const { id } = context.params!;
-    await Database.setup();
 
-    //get match data
-    const match = await getMatchById(id as string);
+    try {
+        await Database.setup();
 
-    //guards against finished or cancelled matches
-    if (match.status === "FINISHED") {
+        //get match data
+        const match = await getMatchById(id as string);
+
+        //guards against finished or cancelled matches
+        if (match.status === "FINISHED") {
+            return {
+                redirect: {
+                    destination: `/match/${id}/result`,
+                    permanent: false
+                }
+            };
+        }
+
+        if (match.status === "CANCELLED") {
+            return {
+                redirect: {
+                    destination: `/match/${id}/cancel`,
+                    permanent: false
+                }
+            };
+        }
+
+        //get all profiles of players in the match
+        const players = await getUsersByUserName(match.teams[0].members.concat(match.teams[1].members));
+
         return {
-            redirect: {
-                destination: `/match/${id}/result`,
-                permanent: false
-            }
+            props: {
+                match: JSON.parse(JSON.stringify(match)),
+                players: JSON.parse(JSON.stringify(players))
+            },
+            revalidate: 1
+        };
+    } catch {
+        return {
+            notFound: true
         };
     }
-
-    if (match.status === "CANCELLED") {
-        return {
-            redirect: {
-                destination: `/match/${id}/cancel`,
-                permanent: false
-            }
-        };
-    }
-
-    //get all profiles of players in the match
-    const players = await getUsersByUserName(match.teams[0].members.concat(match.teams[1].members));
-
-    return {
-        props: {
-            match: JSON.parse(JSON.stringify(match)),
-            players: JSON.parse(JSON.stringify(players))
-        },
-        revalidate: 10
-    };
 }

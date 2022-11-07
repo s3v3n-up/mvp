@@ -22,12 +22,12 @@ export default function Input(props:Props){
     return (
         <>
             <div className="flex justify-left my-2">
-                <label className="text-[#f3f2ef]" >{props.label}</label>
+                <label className="text-[#f3f2ef] text-base" >{props.label}</label>
             </div>
             <div className="flex items-center bg-[#f1ecec] p-2 gap-3 rounded-md w-full select-none">
                 {props.children}
                 <input
-                    className="w-full text-[#31302f]"
+                    className="w-full text-[#31302f] text-base"
                     type={props.type}
                     value={props.value}
                     onChange={props.onChange}

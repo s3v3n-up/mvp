@@ -8,13 +8,23 @@ import dynamic from "next/dynamic";
 // Local imports
 import Input from "./Input";
 import SelectOption from "./SelectOption";
-import { Location, Sports, Props, Modes } from "@/lib/types/General";
+import { Location, SportsOptions, Modes } from "@/lib/types/General";
+import { Sport } from "@/lib/types/Sport";
 
 //dnamic imports
-const AddLocationAlt = dynamic(() => import("@mui/icons-material/AddLocationAlt"));
-const SportsBasketball = dynamic(() => import("@mui/icons-material/SportsBasketball"));
+const AddLocationAlt = dynamic(
+    () => import("@mui/icons-material/AddLocationAlt")
+);
+const SportsBasketball = dynamic(
+    () => import("@mui/icons-material/SportsBasketball")
+);
 const PeopleAlt = dynamic(() => import("@mui/icons-material/PeopleAlt"));
 const AccessTime = dynamic(() => import("@mui/icons-material/AccessTime"));
+const AlertMessage = dynamic(() => import("@/components/alertMessage"));
+
+interface Props {
+    props: Sport[]
+}
 
 /*
  * this component is used in create match page
@@ -33,6 +43,8 @@ export default function CreateMatch({ props }: Props) {
     // Mode useState
     const [mode, setMode] = useState("1V1");
 
+    // const reqPlayers = computeReqPlayers(mode)!;
+
     // Date useState
     const [date, setDate] = useState("");
 
@@ -40,24 +52,43 @@ export default function CreateMatch({ props }: Props) {
     const [description, setDescription] = useState("");
 
     // Array containing all existing sport
-    const allSports: Sports[] = [{ value: "basketball", name: "basketball" }, { value: "football", name: "football" }, { value: "tennis", name: "tennis" }, { value: "volleyball", name: "volleyball" }];
+    const allSports: SportsOptions[] = [];
 
     // Array containing all accessed modes per existing sport
     const allModes: Modes[] = [];
 
     // This function gets all sport names and push them into allSports array to be accessed later
-    props.map((sport: any) => {
+    props.map((sport: Sport) => {
         allSports.push({ value: sport.name, name: sport.name });
     });
 
     // This functions gets all existing game modes on each existing sports and push them into allModes array to be accessed later
-    props.map((sport: any) => {
+    props.map((sport: Sport) => {
         if (sport.name === sportname) {
             sport.gameModes.map((mode: any) => {
                 allModes.push({ value: mode.modeNames, name: mode.modeNames });
             });
         }
     });
+
+    /**
+   * This splits the mode string then turns into a number to compute for required players
+   * @returns a number to be used for requiredPlayers field in match creation
+   */
+    function computeReqPlayers(data: string) {
+
+        // Splits mode string into an array of character
+        const modeArray = data.split("V");
+
+        // Gets first character from modeArray and converts it to a number
+        const num1 = parseInt(modeArray[0]);
+
+        // Gets second character from modeArray and converts it to a number
+        const num2 = parseInt(modeArray[1]);
+
+        // Returns computed number for required players
+        return num1 + num2;
+    }
 
     //Form submission state
     const [error, setError] = useState("");
@@ -108,19 +139,34 @@ export default function CreateMatch({ props }: Props) {
                 matchHost: session!.user.id,
                 location: { lat: 22, lng: -122 }, // this is temporary while we haven't finished mapbox
                 sport: sportname,
-                gameMode: mode,
+                gameMode: { modeName: mode, requiredPlayers: computeReqPlayers(mode) },
                 matchStart: date,
                 description: description,
                 matchType: "REGULAR",
+                status: "UPCOMING",
             });
 
             // Checks if no successful post response
             if (!res) {
                 throw new Error("No Response");
             }
+
+            // Redirect to index page
             router.push("/");
+
+        // Catches and throws the error
         } catch (err: any) {
-            throw new Error("NETWORK ERROR", err);
+
+            // If  there is a error in the response display it using setError
+            if (err!.response) {
+                setError(err.response.data.message);
+
+            // Else show the error
+            } else {
+                setError(err.message);
+            }
+
+        // Lastly remove the loading
         } finally {
             setLoading(false);
         }
@@ -130,11 +176,17 @@ export default function CreateMatch({ props }: Props) {
         <div className="flex justify-evenly">
             <div className="flex flex-col gap-2 lg:justify-end ">
                 <div className="mt-5">
+                    {/* Header for Create Match */}
                     <h1 className="text-[#f3f2ef] text-3xl text-center pt-3">
-                        Create a Match
+            Create a Match
                     </h1>
                 </div>
+                {/* Form to be submitted */}
                 <form onSubmit={handleFormSubmit} className="w-full">
+                    {/* Error and Loading div */}
+                    {error && <AlertMessage message={error} type="error" />}
+                    {loading && <AlertMessage message="Loading..." type="loading" />}
+                    {/* Location Input Box */}
                     <Input
                         label="Location"
                         value={"0"}
@@ -143,6 +195,7 @@ export default function CreateMatch({ props }: Props) {
                     >
                         <AddLocationAlt />
                     </Input>
+                    {/* Selection box for Sport */}
                     <SelectOption
                         label="Sport"
                         options={allSports}
@@ -152,6 +205,7 @@ export default function CreateMatch({ props }: Props) {
                     >
                         <SportsBasketball />
                     </SelectOption>
+                    {/* Selection box for Mode */}
                     <SelectOption
                         label="Type of Match"
                         options={allModes}
@@ -161,6 +215,7 @@ export default function CreateMatch({ props }: Props) {
                     >
                         <PeopleAlt />
                     </SelectOption>
+                    {/* DateTime Input Box */}
                     <Input
                         label="Date and Time"
                         value={date}
@@ -170,9 +225,10 @@ export default function CreateMatch({ props }: Props) {
                     >
                         <AccessTime />
                     </Input>
+                    {/* Location Textarea*/}
                     <div className="my-2">
                         <label className="text-[#f3f2ef]" htmlFor="description">
-                            Description
+              Description
                         </label>
                     </div>
                     <div>
@@ -186,11 +242,12 @@ export default function CreateMatch({ props }: Props) {
                         ></textarea>
                     </div>
                     <div className="flex justify-center pt-5 cursor-pointer">
+                        {/* Button to submit the form*/}
                         <button
                             type="submit"
                             className="rounded-sm w-80 bg-[#fc5c3e] h-10  font-extrabold  text-[#f1ecec]"
                         >
-                            CREATE
+              CREATE
                         </button>
                     </div>
                 </form>

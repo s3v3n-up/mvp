@@ -28,6 +28,6 @@ export async function uploadFile(path: string) {
 
         // Catches and throw the error
     } catch(error: any) {
-        throw new Error("Error uploading file", error);
+        throw new Error("Error uploading file", { cause: error });
     }
 }

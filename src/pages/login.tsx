@@ -29,6 +29,7 @@ export default function Login() {
     const { data: session, status } = useSession();
     const router = useRouter();
     useEffect(()=> {
+        if (status==="loading") return;
         if (status === "authenticated") {
             if (session.user.isFinishedSignup) {
                 router.push("/");

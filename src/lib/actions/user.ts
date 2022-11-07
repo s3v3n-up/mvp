@@ -214,7 +214,7 @@ export async function findUserByUsername(userName: string): Promise<UserProfile[
 }
 
 /**
- * @description This function will calculate the win/lose/draw of a specific user
+ * @description This function will calculate the win/lose/draw of a specific user v1
  * @param {string} username the username of the user
  * @returns The stats(win/lose/draw) of a user
  */
@@ -276,6 +276,51 @@ export async function calculateStats(userName: string) {
         return stats;
 
     // Catches and throws error
+    } catch (error: any) {
+        throw new Error("Error Cannot Calculate win/lose/draw", error);
+    }
+}
+
+/**
+ * calculate the win/lose/draw of a specific user v2
+ * @param {string} username the username of the user
+ * @return {{win: number, lose: number, draw: number}} stats win/lose/draw of a user
+ */
+export async function calculateStatsAggregate(userName: string): Promise<{win: number, lose: number, draw: number}> {
+    try {
+        await Database.setup();
+
+        //query stats of user from database
+        const query = await MatchModel.aggregate([
+            { $unwind: "$teams" },
+            { $match: { "teams.members": userName } },
+            {
+                $group: {
+                    _id: "$teams.status",
+                    count: { $sum: 1 }
+                }
+            },
+        ], { allowDiskUse: true });
+
+        //Created a stats object to store win/lose/draw of the user
+        const stats = {
+            win: 0,
+            lose: 0,
+            draw: 0
+        };
+
+        //loop through query result and add to stats object
+        query.forEach((result) => {
+            if (result._id === "WIN") {
+                stats.win = result.count;
+            } else if (result._id === "LOSE") {
+                stats.lose = result.count;
+            } else if (result._id === "DRAW") {
+                stats.draw = result.count;
+            }
+        });
+
+        return stats;
     } catch (error: any) {
         throw new Error("Error Cannot Calculate win/lose/draw", error);
     }
