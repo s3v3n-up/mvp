@@ -28,7 +28,6 @@ export default function CreateMatch() {
                         p-30 text-3xl 
                         w-56 h-56 mt-5
                         rounded-lg drop-shadow-lg`
-
                     }
                     onClick={() => router.push("/create/regularmatch")}
                 >
