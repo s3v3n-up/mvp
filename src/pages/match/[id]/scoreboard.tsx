@@ -121,7 +121,6 @@ export default function Scoreboard({ match, players }: Props) {
         let queuingTimer: NodeJS.Timeout | null;
         let gameTimer: NodeJS.Timeout | null;
 
-
         async function updateTimer() {
             const { gameMode: { requiredPlayers: maxPlayer } } = currMatch;
             const currMemberNumbers = currMatch.teams[0].members.length + currMatch.teams[1].members.length;
