@@ -88,40 +88,50 @@ export default function Profile() {
     }, [isDataLoaded, session]);
 
     //get the user firstname input value, update it in the db through axios put api
-    const fNameHandle = debounce(async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
+    const fNameHandle = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
         const value = event.target.value;
+        if (!value) return;
         setFirstName(value);
-        await axios.put(`/api/user/${userName}`, {
-            firstName: event.target.value,
-            lastName,
-            phoneNumber: phone,
-            image
-        });
-    }, 500);
+        debounce(async () => {
+            await axios.put(`/api/user/${userName}`, {
+                firstName: value,
+                lastName,
+                phoneNumber: phone,
+                image
+            });
+        }
+        ,300)();
+    };
 
     //get the user lastname input value, update it in the db through axios put api
-    const lNameHandle = debounce(async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
+    const lNameHandle = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
         const value = event.target.value;
+        if (!value) return;
         setLastName(value);
-        await axios.put(`/api/user/${userName}`, {
-            firstName,
-            lastName: event.target.value,
-            phoneNumber: phone,
-            image
-        });
-    }, 500);
+        debounce(async () => {
+            await axios.put(`/api/user/${userName}`, {
+                firstName,
+                lastName: value,
+                phoneNumber: phone,
+                image
+            });
+        },300)();
+    };
 
     //get the user phone input value, update it in the db through axios put api
-    const phoneHandle = debounce(async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
+    const phoneHandle = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
         const value = event.target.value;
+        if (!value) return;
         setPhone(value);
-        await axios.put(`/api/user/${userName}`, {
-            firstName,
-            lastName,
-            phoneNumber: event.target.value,
-            image
-        });
-    }, 500);
+        debounce(async () => {
+            await axios.put(`/api/user/${userName}`, {
+                firstName,
+                lastName,
+                phoneNumber: value,
+                image
+            });
+        },300)();
+    };
 
     /**
      * handle update image
@@ -142,6 +152,7 @@ export default function Profile() {
                 image: imageUrl
             });
             avatarContext?.setCurrAvatar(imageUrl);
+            setImage(imageUrl);
         } catch {
             setUpdatedImage(null);
             alert("error update image, you file could be too large or try again later");
