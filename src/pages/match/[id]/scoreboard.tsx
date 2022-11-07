@@ -18,6 +18,7 @@ import styles from "@/styles/Scoreboard.module.sass";
 import fetcher from "@/lib/helpers/fetcher";
 import { UserProfile } from "@/lib/types/User";
 import { mapPlayerToTeam } from "@/lib/helpers/scoreboard";
+import MatchEdit from "./edit";
 
 /**
  * scoreboard props type
@@ -79,6 +80,8 @@ export default function Scoreboard({ match, players }: Props) {
     //set the match timer
     const [matchTimer, setMatchTimer] = useState<number | null>(null);
 
+    
+
     //team score states
     const [homeScore, setHomeScore] = useState<number>(0);
     const [awayScore, setAwayScore] = useState<number>(0);
@@ -97,6 +100,7 @@ export default function Scoreboard({ match, players }: Props) {
     //every time match data is updated, update the states
     useEffect(()=> {
         (async()=> {
+            console.log(currMatch.status);
             if (data && !error) {
                 setMatch(data.match);
                 const allPlayers = data.match.teams[0].members.concat(data.match.teams[1].members);
@@ -116,6 +120,7 @@ export default function Scoreboard({ match, players }: Props) {
     useEffect(()=> {
         let queuingTimer: NodeJS.Timeout | null;
         let gameTimer: NodeJS.Timeout | null;
+
 
         async function updateTimer() {
             const { gameMode: { requiredPlayers: maxPlayer } } = currMatch;
@@ -155,11 +160,28 @@ export default function Scoreboard({ match, players }: Props) {
                 const startTimer = new Date(currMatch.matchStart).getTime();
                 clearInterval(queuingTimer as NodeJS.Timeout);
                 setQueueTimer(null);
-                gameTimer = setInterval(async()=> {
-                    const now = Date.now();
-                    const timeDiff = Math.floor((now - startTimer) / 1000);
-                    setMatchTimer(timeDiff);
-                }, 1000);
+                
+                //checks if the match is paused
+                if(currMatch.matchPause){
+                    const pauseTimer = new Date(currMatch.matchPause).getTime();
+                    const timePassed = Math.floor((pauseTimer - startTimer) / 1000);
+                    if(currMatch.status === "INPROGRESS"){
+                        gameTimer = setInterval(async()=> {
+                            const now = Date.now();
+                            const timeDiff = timePassed + Math.floor((now - pauseTimer) / 1000);
+                            setMatchTimer(timeDiff);
+                        }, 1000);   
+                    } else{
+                        setMatchTimer(timePassed);
+                        clearInterval(gameTimer as NodeJS.Timeout);
+                    }
+                } else {
+                    gameTimer = setInterval(async()=> {
+                        const now = Date.now();
+                        const timeDiff = Math.floor((now - startTimer) / 1000);
+                        setMatchTimer(timeDiff);
+                    }, 1000);
+                }
             }
         }
         updateTimer();
@@ -179,6 +201,38 @@ export default function Scoreboard({ match, players }: Props) {
             router.push(`/match/${currMatch._id?.toString()}/cancel`);
         }
     }, [currMatch, router]);
+
+
+    //function for the host to pause the match 
+    const pauseMatch = debounce(async()=> {
+        try{
+            if(currMatch.status === "PAUSED") return;
+            await axios.put(`/api/match/${currMatch._id?.toString()}/time/pause`, {
+                pauseTime: new Date().toString()
+            });
+    
+            await axios.put(`/api/match/${currMatch._id?.toString()}/status`, {
+                status: "PAUSED"
+            });
+    
+        } catch(err: any){
+           alert(err.response.data.message);
+        }
+    }, 500);
+
+    //function for the host to resume the match after pausing
+    const resumeMatch = debounce(async()=> {
+        try{
+            if(currMatch.status === "INPROGRESS") return;
+    
+            await axios.put(`/api/match/${currMatch._id?.toString()}/status`, {
+                status: "INPROGRESS"
+            });
+    
+        } catch(err: any){
+           alert(err.response.data.message);
+        }
+    }, 500);
 
     //handle increase and decrease score, debounce to prevent spamming
     const handleScoreChange = debounce(async(team: "home" | "away", type: "increase" | "decrease") => {
@@ -318,9 +372,16 @@ export default function Scoreboard({ match, players }: Props) {
                 </div>
                 { isMatchHost &&
                     <>
-                        <button className={styles.pause}>
-                            Pause
-                        </button>
+                        {currMatch.status === "INPROGRESS" && 
+                            <button onClick={pauseMatch} className={styles.pause}>
+                                Pause
+                            </button>
+                        }
+                        {currMatch.status === "PAUSED" && 
+                            <button onClick={resumeMatch} className={styles.pause}>
+                                Resume
+                            </button>
+                        }
                         <button
                             className={styles.finish}
                             onClick={()=> setFinished(true)}

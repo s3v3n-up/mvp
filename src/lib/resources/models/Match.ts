@@ -87,7 +87,11 @@ const matchSchema = new Schema<Match>({
         default: null
     },
 
-
+    // This is the pause time
+    matchPause: {
+        type: Date,
+        default: null
+    },
 
     // This is the match details, also a place where you can input extra details eg. Discord link, Facebook messenger link etc.
     description: {

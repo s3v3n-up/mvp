@@ -1,5 +1,5 @@
 import MatchModel from "../resources/models/Match";
-import type { Match } from "@/lib/types/Match";
+import type { Match, Matches } from "@/lib/types/Match";
 import Database from "../resources/database";
 
 /**
@@ -386,13 +386,55 @@ export async function updateMatchStartTime(matchId: string, startTime: Date | nu
         match.matchStart = startTime;
         await match.save();
 
-
         return match;
     } catch (error: any) {
         throw new Error("error updating match start time", { cause: error });
     }
 }
 
+/**
+ * update match pause time
+ * @param matchId id of match to update
+ * @param pauseTime new pause time
+ * @returns {Promise<Match>} promise that resolves to updated match
+ * @throws {Error} if match is not found
+ */
+export async function updateMatchPauseTime(matchId: string, pauseTime: Date | null) {
+    try {
+        const match = await MatchModel.findById(matchId);
+        if (!match) {
+            throw new Error("match not found");
+        }
+        match.matchPause = pauseTime;
+        await match.save();
+
+        return match;
+    } catch (error: any) {
+        throw new Error("error updating match pause time", { cause: error });
+    }
+}
+
+/**
+ * update match status
+ * @param matchId id of match to update
+ * @param status new status
+ * @returns {Promise<Match>} promise that resolves to updated match
+ * @throws {Error} if match is not found
+ */
+export async function updateMatchStatus(matchId: string, status: Matches.MatchStatus) {
+    try {
+        const match = await MatchModel.findById(matchId);
+        if (!match) {
+            throw new Error("match not found");
+        }
+        match.status = status;
+        await match.save();
+
+        return match;
+    } catch (error: any) {
+        throw new Error("error updating match status", { cause: error });
+    }
+}
 
 /**
  * get leaderboard of a sport

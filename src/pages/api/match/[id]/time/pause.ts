@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next/types";
 import Database from "@/lib/resources/database";
-import { updateMatchQueueStartTime } from "@/lib/actions/match";
+import { updateMatchPauseTime } from "@/lib/actions/match";
 
 
-//function to update the start time of a match in the queue
+//function to update the pause time of the match
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (req.method === "PUT") {
@@ -21,20 +21,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
 
             // Deconstruct values to be from the client side
-            const { queueStartTime } = req.body;
+            const { pauseTime } = req.body;
 
-            //validate matchQueueStartTime
-            if (isNaN(Date.parse(queueStartTime)) && queueStartTime !== null) {
+            //validate matchPauseTime
+            if (isNaN(Date.parse(pauseTime)) && pauseTime !== null) {
                 throw {
                     code: 400,
                     message: "bad request"
                 };
             }
 
-            //update matchQueueStartTime
-            await updateMatchQueueStartTime(id as string, !isNaN(Date.parse(queueStartTime)) ? new Date(queueStartTime) : null);
+            //update matchPauseTime
+            await updateMatchPauseTime(id as string, !isNaN(Date.parse(pauseTime)) ? new Date(pauseTime) : null);
 
-            res.status(200).json({ message: "Match queue start time updated" });
+            res.status(200).json({ message: "Match pause time updated" });
         }
     } catch (error: any) {
         res.status(error.code || 500).json({ message: error.message || "Internal Server Error", cause: error.cause });

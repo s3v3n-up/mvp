@@ -67,6 +67,6 @@ export interface Match {
 	matchQueueStart: Date | null;
 
 	//This is the match pause time;
-	matchPauseTime: Date | null;
+	matchPause: Date | null;
 }
 

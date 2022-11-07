@@ -67,7 +67,7 @@ export default async function handler(
 
             // Loops through all matches and look for UPCOMING and INPROGRESS matches
             matches.map(async (match: Match) => {
-                if (Date.now() - match.matchStart.getTime() > 3600000) {
+                if (Date.now() - match.matchStart!.getTime() > 3600000) {
                     lapsedMatches.push(match);
                 } else {
                     activeMatches.push(match);
@@ -103,6 +103,8 @@ export default async function handler(
                 description,
                 teams,
                 status,
+                matchQueueStart: null,
+                matchPause: null
             };
 
             // Call upon the createMatch action to use the values above and create a match model
