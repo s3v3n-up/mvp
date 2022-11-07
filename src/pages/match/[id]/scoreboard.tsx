@@ -73,6 +73,24 @@ export default function Scoreboard({ match, players }: Props) {
         mapPlayerToTeam(players, currMatch.teams)[1]
     );
 
+    //checking if both teams are full of players
+    const [isFull, setIsFull] = useState<boolean>(
+        match.gameMode.requiredPlayers === players.length
+    );
+
+    //set the queue time for the match
+    const [queueTimeStart, setQueueTimeStart] = useState<Date | null>(
+        match.matchQueueStart
+    );
+
+    //set the match start time
+    const [matchStartTime, setMatchStartTime] = useState<Date | null>(
+        match.matchStart
+    );
+
+    //set the queue timer
+    const [queueTimer, setQueueTimer] = useState<number | null>(null);
+
     //team score states
     const [homeScore, setHomeScore] = useState<number>(0);
     const [awayScore, setAwayScore] = useState<number>(0);
@@ -98,6 +116,7 @@ export default function Scoreboard({ match, players }: Props) {
                 const mappedTeams = mapPlayerToTeam(players.data, data.match.teams);
                 setHomeTeam(mappedTeams[0]);
                 setAwayTeam(mappedTeams[1]);
+                setIsFull(data.match.gameMode.requiredPlayers === players.data.length);
                 if (!isMatchHost) {
                     setHomeScore(data.match.teams[0].score);
                     setAwayScore(data.match.teams[1].score);
@@ -105,6 +124,21 @@ export default function Scoreboard({ match, players }: Props) {
             }
         })();
     },[data, error, isMatchHost]);
+
+    //set the match queue timer 
+    useEffect(()=> {
+        (async()=> {
+            if (currMatch.matchQueueStart) {
+                const time = new Date(currMatch.matchQueueStart);
+                const interval = setInterval(()=> {
+                    const now = new Date();
+                    const diff = Math.floor((now.getTime() - time.getTime()) / 1000);
+                    setQueueTimer(diff);
+                }, 1000);
+                return ()=> clearInterval(interval);
+            }
+        })();
+    });
 
     //guard against if match is finished or cancelled
     useEffect(()=> {
@@ -151,7 +185,7 @@ export default function Scoreboard({ match, players }: Props) {
                 />
             </div>
             <h2 className="text-white text-center mt-5 text-3xl font-bold">
-                    00:00
+                    {queueTimer && "Match is starting in" }
             </h2>
             <div className={styles.scoreboard}>
                 <div className={styles.hometeam}>
