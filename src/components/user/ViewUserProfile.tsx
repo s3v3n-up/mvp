@@ -1,6 +1,9 @@
-import Input from "../components/Input";
+//third party imports
 import Image from "next/image";
 import dynamic from "next/dynamic";
+
+//local imports
+import Input from "../Input";
 
 //dynamic imports
 const Person = dynamic(() => import("@mui/icons-material/Person"));
@@ -52,8 +55,8 @@ export default function ViewUserProfile({ data }: { data: Data }) {
                 <Input label="Phone" value={data.phone} name="phone" readonly>
                     <Phone />
                 </Input>
-                <p className="text-white mt-5">Stats</p>
-                <table className=" border-collapse border border-slate-800 rounded-ml text-center mt-6 ">
+                <p className="text-white mt-5 text-base">Stats</p>
+                <table className=" text-base border-collapse border border-slate-800 rounded-ml text-center mt-6 ">
                     <thead className=" bg-[#fc5c3e] text-[#f3f2ef] my-5 py-5 mt-6">
                         <tr className="my-5 py-5 mt-6">
                             <th>Win</th>

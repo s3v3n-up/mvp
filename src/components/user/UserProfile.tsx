@@ -1,17 +1,23 @@
+//third party imports
 import Image from "next/image";
-import Input from "../components/Input";
 import { useState, useEffect, ChangeEvent, useContext } from "react";
 import { useSession } from "next-auth/react";
-import { UserProfile } from "@/lib/types/User";
 import axios from "axios";
 import dynamic from "next/dynamic";
+import debounce from "lodash.debounce";
+
+//local imports
+import Input from "@/components/Input";
+import { AvatarContext } from "@/context/avatar";
+import AlertMessage from "../alertMessage";
+import { UserProfile } from "@/lib/types/User";
 
 //dynamic imports
 const Person = dynamic(() => import("@mui/icons-material/Person"));
 const FolderSharedOutlined = dynamic(() => import("@mui/icons-material/FolderSharedOutlined"));
 const Email = dynamic(() => import("@mui/icons-material/Email"));
 const Phone = dynamic(() => import("@mui/icons-material/Phone"));
-
+const ImagePicker = dynamic(()=>import("@/components/imagepicker"));
 
 /**
  * interface for type of user data
@@ -38,6 +44,9 @@ export default function Profile() {
     //get the session
     const { data: session } = useSession();
 
+    //get the user data
+    const avatarContext = useContext(AvatarContext);
+
     //set the initial state and setState using useState
     const [firstName,setFirstName] = useState("");
     const [lastName,setLastName] = useState("");
@@ -47,17 +56,17 @@ export default function Profile() {
 
     //set initial image as logo if user didn't upload their avatar
     const [image,setImage] = useState("/img/logo.png");
+    const [updatedImage, setUpdatedImage] = useState<File | null>(null);
     const [stats, setStats] = useState({ win:0, lose:0, draw:0 });
     const [isDataLoaded, setIsDataLoaded] = useState(false);
 
     //axios to get the userdata and stats from api
     useEffect(() => {
         if (session && session.user && isDataLoaded === false) {
-            Promise.all(
-                [
-                    axios.get(`/api/user/${session.user.userName}`),
-                    axios.get(`/api/user/${session.user.userName}/stats`)
-                ]).then(data => {
+            Promise.all([
+                axios.get(`/api/user/${session.user.userName}`),
+                axios.get(`/api/user/${session.user.userName}/stats`)
+            ]).then(data => {
 
                 //destructure the object to userData and userStats
                 const [{ data:userData },{ data:userStats }] = data as unknown as [{data:UserProfile}, {data:{win:number,lose:number,draw:number}}];
@@ -79,53 +88,92 @@ export default function Profile() {
     //get the user firstname input value, update it in the db through axios put api
     const fNameHandle = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
         const value = event.target.value;
+        if (!value) return;
         setFirstName(value);
-        await axios.put(`/api/user/${userName}`, {
-            firstName: event.target.value,
-            lastName,
-            phoneNumber: phone,
-            image
-        });
+        debounce(async () => {
+            await axios.put(`/api/user/${userName}`, {
+                firstName: value,
+                lastName,
+                phoneNumber: phone,
+                image
+            });
+        }
+        ,300)();
     };
 
     //get the user lastname input value, update it in the db through axios put api
     const lNameHandle = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
         const value = event.target.value;
+        if (!value) return;
         setLastName(value);
-        await axios.put(`/api/user/${userName}`, {
-            firstName,
-            lastName: event.target.value,
-            phoneNumber: phone,
-            image
-        });
+        debounce(async () => {
+            await axios.put(`/api/user/${userName}`, {
+                firstName,
+                lastName: value,
+                phoneNumber: phone,
+                image
+            });
+        },300)();
     };
 
     //get the user phone input value, update it in the db through axios put api
     const phoneHandle = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
         const value = event.target.value;
+        if (!value) return;
         setPhone(value);
-        await axios.put(`/api/user/${userName}`, {
-            firstName,
-            lastName,
-            phoneNumber: event.target.value,
-            image
-        });
+        debounce(async () => {
+            await axios.put(`/api/user/${userName}`, {
+                firstName,
+                lastName,
+                phoneNumber: value,
+                image
+            });
+        },300)();
     };
+
+    /**
+     * handle update image
+     */
+    const handleImageChange = debounce(async(e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files![0];
+        setUpdatedImage(file);
+        if (!file) return;
+        const data = new FormData();
+        data.append("files", file);
+        try {
+            const res = await axios.post("/api/file", data);
+            const { data: { data: { url: imageUrl } } } = res;
+            await axios.put(`/api/user/${userName}`, {
+                firstName,
+                lastName,
+                phoneNumber: phone,
+                image: imageUrl
+            });
+            avatarContext?.setCurrAvatar(imageUrl);
+            setImage(imageUrl);
+        } catch {
+            setUpdatedImage(null);
+            alert("error update image, you file could be too large or try again later");
+        }
+    }, 500);
+
+    /**
+     * handle remove updated image of image picker
+     */
+    const handleRemoveImage = debounce(async()=>{
+        setUpdatedImage(null);
+    }, 500);
 
     return (
         <div className="flex justify-evenly pt-10">
-            <div className="flex lg:w-1/4 md:w-2/4 flex-col space-y-3 lg:justify-end">
+            <div className="flex lg:w-1/4 w-4/5 flex-col space-y-3">
                 {isDataLoaded === false && "...Loading"}
-                <div className="relative w-40 h-40 rounded-full m-auto mb-5 bg-white">
-                    <Image
-                        src={image}
-                        layout="fill"
-                        objectFit="cover"
-                        objectPosition="center"
-                        alt="logo"
-                        className="rounded-full"
-                    />
-                </div>
+                <ImagePicker
+                    imageUrl={image}
+                    image={updatedImage}
+                    onChange={handleImageChange}
+                    onRemove={handleRemoveImage}
+                />
                 <Input
                     label="First Name"
                     value={firstName}
@@ -166,7 +214,8 @@ export default function Profile() {
                 >
                     <Email />
                 </Input>
-                <table className=" border-collapse border border-slate-800 rounded-ml text-center mt-6 ">
+                <p className="mt-3 text-white text-base">Stat</p>
+                <table className="text-base border-collapse border border-slate-800 rounded-ml text-center mt-6 ">
                     <thead className=" bg-[#fc5c3e] text-[#f3f2ef] my-5 py-5 mt-6">
                         <tr className="my-5 py-5 mt-6">
                             <th>Win</th>

@@ -1,6 +1,5 @@
 //third-party import
 import { useState, ChangeEvent, useEffect } from "react";
-import ScrollContainer from "react-indiana-drag-scroll";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -14,6 +13,7 @@ import { getMatches } from "@/lib/actions/match";
 
 //dynamic import
 const Search = dynamic(() => import("@mui/icons-material/Search"), { ssr: false });
+const ScrollContainer = dynamic(() => import("react-indiana-drag-scroll"), { ssr: false });
 
 /**
  * *
@@ -39,6 +39,14 @@ export default function Home({ regMatches, quickMatches }: any) {
         setSearch(e.target.value);
     }
 
+    /**
+     * handle clicked for cards
+     */
+    function cardClicked(id: string ){
+
+        return router.push(`/match/${id}/view`);
+    }
+
     return (
         <div className={styles.matches}>
             {/* search container */}
@@ -62,8 +70,9 @@ export default function Home({ regMatches, quickMatches }: any) {
                 {/* Subtitle for quick matches */}
                 <p>Quick Matches</p>
                 {/* Scroll container for quick matches */}
+                {quickMatches.length === 0 && <p className="text-2xl text-white text-center"> ⚠️ There is no quick match found</p>}
                 <ScrollContainer className="flex w-full" horizontal hideScrollbars>
-                    {quickMatches.map((quick: any, idx: any) => (
+                    {quickMatches.length > 0 && quickMatches.map((quick: any, idx: any) => (
 
                         // card container
                         <div className={ Cardstyles.container} key={idx}>
@@ -93,11 +102,12 @@ export default function Home({ regMatches, quickMatches }: any) {
                 {/*  Subtitle for regular matches */}
                 <p>Regular Matches</p>
                 {/* Scroll container for regular matches */}
+                {regMatches.length === 0 && <p className="text-2xl text-white text-center"> ⚠️ There is no regular match found</p>}
                 <ScrollContainer className="flex w-full" horizontal hideScrollbars>
                     {regMatches.map((reg : any, idx: any) => (
 
                         // card container
-                        <div className={ Cardstyles.container} key={idx}>
+                        <div className={ Cardstyles.container} key={idx} onClick={() => cardClicked(reg._id as string)}>
                             <div className={ Cardstyles.time}>
                                 <div className={Cardstyles.detail}>
                                     {/* custom format for match that includes date, day of the week and time */}
