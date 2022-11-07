@@ -3,7 +3,7 @@ import Database from "@/lib/resources/database";
 import { updateMatchStartTime } from "@/lib/actions/match";
 import { Match } from "@/lib/types/Match";
 
-//function to update the start time of the match 
+//function to update the start time of the match
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (req.method === "PUT") {

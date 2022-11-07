@@ -150,7 +150,7 @@ export default function Scoreboard({ match, players }: Props) {
                 }, 1000);
             }
 
-            //stops the queue 
+            //stops the queue
             if(currMatch.matchStart) {
                 const startTimer = new Date(currMatch.matchStart).getTime();
                 clearInterval(queuingTimer as NodeJS.Timeout);
@@ -164,9 +164,9 @@ export default function Scoreboard({ match, players }: Props) {
         }
         updateTimer();
 
-        return ()=>{ 
+        return ()=>{
             clearInterval(gameTimer??0);
-            clearInterval(queuingTimer??0)
+            clearInterval(queuingTimer??0);
         };
     }, [currMatch]);
 

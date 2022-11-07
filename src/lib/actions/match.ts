@@ -385,6 +385,8 @@ export async function updateMatchStartTime(matchId: string, startTime: Date | nu
         }
         match.matchStart = startTime;
         await match.save();
+
+
         return match;
     } catch (error: any) {
         throw new Error("error updating match start time", { cause: error });
