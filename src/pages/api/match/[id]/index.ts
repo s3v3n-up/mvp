@@ -34,27 +34,27 @@ export default async function handler(
                 match,
             });
 
-            // If the HTTP method is POST
+            // If the HTTP method is PUT
         } else if (req.method === "PUT") {
 
             // Deconstruct values to be from the client side
-            const { location, matchStart, description } = req.body;
+            const { location, matchStart, description, sport, matchHost, gameMode, matchType, matchEnd, teams, status }= req.body;
 
             // Call upon the updateMatch action and update the existing match model based on the id
             const updatedMatch = await updateMatch(id as string, {
-                location,
-                matchStart,
-                description,
-                matchHost: "",
-                sport: "",
-                gameMode: {
+                location: location ? location : {lat: 0, lng: 0 },
+                matchStart: matchStart ? matchStart : new Date(Date.now()),
+                description: description ? description : "",
+                matchHost: matchHost ? matchHost : "" ,
+                sport: sport ? sport : "",
+                gameMode: gameMode ? gameMode : {
                     modeName: "1v1",
                     requiredPlayers: 2
                 },
                 matchType: "REGULAR",
-                matchEnd: new Date(Date.now()),
-                teams: [
-                    { members: [""], score: 0, status: "UNSET" },
+                matchEnd: matchEnd ? matchEnd : new Date(Date.now()),
+                teams: teams ? teams : [
+                    { members: [matchHost], score: 0, status: "UNSET" },
                     { members: [""], score: 0, status: "UNSET" },
                 ],
                 status: "UPCOMING",

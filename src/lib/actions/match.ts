@@ -336,7 +336,7 @@ export async function updateMatch(matchId: string, match: Match) {
     try {
 
         //ref: https://www.geeksforgeeks.org/mongoose-findbyidandupdate-function/
-        const updatedMatch = await MatchModel.findByIdAndUpdate(matchId, match);
+        const updatedMatch = await MatchModel.findByIdAndUpdate(matchId, match, { new: true });
 
         return updatedMatch;
     } catch (error: any) {

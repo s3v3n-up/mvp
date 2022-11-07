@@ -59,6 +59,7 @@ export default function MatchView({ data } : Props){
             </div>
             <div>
                 {/* Sub Header for Joined Players */}
+                <button className={styles.directions}>Join</button>
                 <h3>Joined Players</h3>
                 <div>
                     {/* Displays all joined players */}

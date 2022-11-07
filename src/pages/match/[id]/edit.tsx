@@ -73,7 +73,6 @@ export default function MatchEdit({ data } : Props){
 
         //return to home page
         return router.push("/");
-
     }
 
     // Function to handle submission of form event
@@ -84,6 +83,9 @@ export default function MatchEdit({ data } : Props){
 
             // Axios fetch post to access create match api
             const res = await axios.put(`/api/match/${data._id}`, {
+                teams: data.teams,
+                matchHost: data.matchHost,
+                sport: data.sport,
                 location: { lat: 22, lng: -122 },
                 matchStart: date,
                 description: description
@@ -167,8 +169,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
         // Gets the id parameter in the dynamic url
         const { id } = context.params!;
-
-        console.log("ID", id);
 
         // Database connection
         await Database.setup();
