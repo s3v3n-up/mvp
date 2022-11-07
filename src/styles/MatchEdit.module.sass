@@ -1,19 +1,27 @@
 //styles for card container
 .container
+    display: flex
+    flex-direction: column
     background: white
     overflow: hidden
     height: auto
     width: 739px
     margin: 50px auto
     border-radius: 10px
-    padding-bottom: 50px
-    align-items: center
     user-select: none
+    padding-bottom: 60px
     font-family: 'Inter'
     font-style: normal
+
+    div
+        display: flex
+        justify-content: space-between
+        margin: 0px 17px 0 17px
+
     h1
         display: flex
         justify-content: center
+        margin-bottom: 50px
         font-family: 'Inter'
         font-style: normal
         font-weight: 700
@@ -26,6 +34,7 @@
         font-weight: 700
         font-size: 24px
         margin-left: 17px
+        margin-bottom: 40px
         color: #FC5C3E
     p
         font-family: 'Inter'
@@ -36,71 +45,69 @@
         color: #A4A4A4
         margin-left: 17px
 
-//styles for player cards of joined players 
-.players
-    margin: 10px 10px 10px 17px
-    padding: 17px 10px 17px 10px
-    float: left
-    width: 700px
-    height: 73px
-    border: 1px solid #FC5C3E
+//styles for location input container
+.address
+    font-size: 17px
+    padding: 10px
+    width: 376px
+    height: 45px
+    background: #FFFFFF
+    border: 1px solid #000000
     border-radius: 10px
-    font-family: 'Inter'
-    font-style: normal
-    font-weight: 700
-    font-size: 16px
-    line-height: 30px
-    text-transform: uppercase
-    div
-        float: right
-    button
-        width: 149.68px
-        height: 32px
-        border: 1px solid #FC5C3E
-        border-radius: 10px
-        color: #FC5C3E
 
 //styles for date and time container
-.calendar
+.date
     font-size: 17px
-    float: right
-    margin-right: 17px
-    background: #FC5C3E
-    color: #f6f6f6
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)
+    padding: 10px
+    width: 376px
+    height: 45px
+    background: #FFFFFF
+    border: 1px solid #000000
     border-radius: 10px
-    width: 195px
-    height: 35px
 
-//styles for location container
-.directions
-    font-size: 17px
-    float: right
-    margin-right: 17px
-    background: #FC5C3E
-    color: #f6f6f6
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)
+//styles for description
+.description
+    display: flex
+    width: 375px
+    height: 138px
+    background: #FFFFFF
+    border: 1px solid #000000
     border-radius: 10px
-    width: 195px
-    height: 35px
-    
-//styles for edit button
-.edit
-    font-size: 17px
-    float: right
+
+//styles for save button
+.save
+    font-size: 24px
     margin: 17px
     background: #FC5C3E
     color: #f6f6f6
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)
     border-radius: 10px
-    width: 100px
-    height: 35px
+    width: 329px
+    height: 55.21px
 
-//using media query for  mobile view
+//styles for delete button
+.delete
+    font-size: 24px
+    margin: 17px
+    background: #FC5C3E
+    color: #f6f6f6
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)
+    border-radius: 10px
+    width: 329px
+    height: 55.21px
+
+//using media query for mobile view
 @media screen and (max-width: 900px)
     .container
-        width: 400px
+        width: 500px
         height: auto
 
-    .players
-        width: 365px
+    .address
+        width: 290px
+
+    .date
+        font-size: 17px
+
+    .description
+        font-size: 17px
+        width: 290px

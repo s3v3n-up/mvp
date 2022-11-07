@@ -19,7 +19,6 @@ const Email = dynamic(() => import("@mui/icons-material/Email"));
 const Phone = dynamic(() => import("@mui/icons-material/Phone"));
 const ImagePicker = dynamic(()=>import("@/components/imagepicker"));
 
-
 /**
  * interface for type of user data
  */
@@ -64,11 +63,10 @@ export default function Profile() {
     //axios to get the userdata and stats from api
     useEffect(() => {
         if (session && session.user && isDataLoaded === false) {
-            Promise.all(
-                [
-                    axios.get(`/api/user/${session.user.userName}`),
-                    axios.get(`/api/user/${session.user.userName}/stats`)
-                ]).then(data => {
+            Promise.all([
+                axios.get(`/api/user/${session.user.userName}`),
+                axios.get(`/api/user/${session.user.userName}/stats`)
+            ]).then(data => {
 
                 //destructure the object to userData and userStats
                 const [{ data:userData },{ data:userStats }] = data as unknown as [{data:UserProfile}, {data:{win:number,lose:number,draw:number}}];
@@ -168,8 +166,8 @@ export default function Profile() {
 
     return (
         <div className="flex justify-evenly pt-10">
-            <div className="flex lg:w-1/4 md:w-2/4 flex-col space-y-3 lg:justify-end">
-                {!isDataLoaded && <AlertMessage type="loading" message="...loading"/>}
+            <div className="flex lg:w-1/4 w-4/5 flex-col space-y-3">
+                {isDataLoaded === false && "...Loading"}
                 <ImagePicker
                     imageUrl={image}
                     image={updatedImage}
@@ -216,7 +214,8 @@ export default function Profile() {
                 >
                     <Email />
                 </Input>
-                <table className=" border-collapse border border-slate-800 rounded-ml text-center mt-6 ">
+                <p className="mt-3 text-white text-base">Stat</p>
+                <table className="text-base border-collapse border border-slate-800 rounded-ml text-center mt-6 ">
                     <thead className=" bg-[#fc5c3e] text-[#f3f2ef] my-5 py-5 mt-6">
                         <tr className="my-5 py-5 mt-6">
                             <th>Win</th>

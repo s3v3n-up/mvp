@@ -1,9 +1,12 @@
-// Imports style for the match view
+//third-party import
 import { getMatchById } from "@/lib/actions/match";
 import Database from "@/lib/resources/database";
 import { Match } from "@/lib/types/Match";
-import styles from "@/styles/MatchView.module.sass";
 import { GetServerSidePropsContext } from "next";
+import router from "next/router";
+
+//local-import
+import styles from "@/styles/MatchView.module.sass";
 
 // interface for props
 interface Props {
@@ -18,9 +21,15 @@ export default function MatchView({ data } : Props){
     // Combine team1 and team2
     let allTeams: string[] = data.teams[0].members.concat(data.teams[1].members);
 
+    function editClicked(id: string ){
+
+        return router.push(`/match/${id}/edit`);
+    }
+
     return(
         <div className={styles.container}>
             {/* Header for Sport */}
+            <button className={styles.edit} onClick={() => editClicked(data._id as string)} >Edit</button>
             <h1>{data.sport}</h1>
             <div>
                 {/* Sub Header for Match Type */}
@@ -50,6 +59,7 @@ export default function MatchView({ data } : Props){
             </div>
             <div>
                 {/* Sub Header for Joined Players */}
+                <button className={styles.directions}>Join</button>
                 <h3>Joined Players</h3>
                 <div>
                     {/* Displays all joined players */}
@@ -69,29 +79,38 @@ export default function MatchView({ data } : Props){
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
+    try{
 
-    // Gets the id parameter in the dynamic url
-    const { id } = context.params!;
+        // Gets the id parameter in the dynamic url
+        const { id } = context.params!;
 
-    // Database connection
-    await Database.setup();
+        // Database connection
+        await Database.setup();
 
-    // Get the specific match that you want to view
-    const match = await getMatchById(id as string);
+        // Get the specific match that you want to view
+        const match = await getMatchById(id as string);
 
-    // Redirect them to index if the match type is not REGULAR
-    if(match.matchType === "QUICK") {
+        // Redirect them to index if the match type is not REGULAR
+        if(match.matchType === "QUICK" || !match) {
+            return {
+                redirect: {
+                    destination: "/"
+                }
+            };
+        }
+
+        // Returns the data as props
         return {
+            props: {
+                data: JSON.parse(JSON.stringify(match))
+            }
+        };
+    }
+    catch(error: any){
+        return{
             redirect: {
                 destination: "/"
             }
         };
     }
-
-    // Returns the data as props
-    return {
-        props: {
-            data: JSON.parse(JSON.stringify(match))
-        }
-    };
 }

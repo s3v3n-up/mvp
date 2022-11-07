@@ -36,5 +36,5 @@ export async function middleware(req: NextRequest) {
  * @config This is where you specify the routes, it should be an absolute path
  */
 export const config = {
-    matcher: ["/", "/api/match/create", "/create", "/api/sport/all", "/user/profile", "/user/:path*"]
+    matcher: ["/", "/api/match/create", "/create", "/api/sport/all", "/user/:path*"]
 };
