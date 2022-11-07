@@ -370,9 +370,26 @@ export async function updateMatchQueueStartTime(matchId: string, startTime: Date
     }
 }
 
-
-
-
+/**
+ * update match start time
+ * @param matchId id of match to update
+ * @param startTime new start time
+ * @returns {Promise<Match>} promise that resolves to updated match
+ * @throws {Error} if match is not found
+ */
+export async function updateMatchStartTime(matchId: string, startTime: Date | null) {
+    try {
+        const match = await MatchModel.findById(matchId);
+        if (!match) {
+            throw new Error("match not found");
+        }
+        match.matchStart = startTime;
+        await match.save();
+        return match;
+    } catch (error: any) {
+        throw new Error("error updating match start time", { cause: error });
+    }
+}
 
 
 /**

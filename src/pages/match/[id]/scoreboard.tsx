@@ -76,6 +76,9 @@ export default function Scoreboard({ match, players }: Props) {
     //set the queue timer
     const [queueTimer, setQueueTimer] = useState<number | null>(null);
 
+    //set the match timer
+    const [matchTimer, setMatchTimer] = useState<number | null>(null);
+
     //team score states
     const [homeScore, setHomeScore] = useState<number>(0);
     const [awayScore, setAwayScore] = useState<number>(0);
@@ -111,7 +114,8 @@ export default function Scoreboard({ match, players }: Props) {
 
     //set the match queue timer
     useEffect(()=> {
-        let timer: NodeJS.Timeout | null;
+        let queuingTimer: NodeJS.Timeout | null;
+        let gameTimer: NodeJS.Timeout | null;
 
         async function updateTimer() {
             const { gameMode: { requiredPlayers: maxPlayer } } = currMatch;
@@ -126,23 +130,44 @@ export default function Scoreboard({ match, players }: Props) {
 
             if (currMatch.matchQueueStart) {
                 const queueStart = new Date(currMatch.matchQueueStart).getTime();
-                timer = setInterval(async()=> {
+                queuingTimer = setInterval(async()=> {
                     const now = Date.now();
-                    const timeDiff = Math.floor((now - queueStart) / 1000);
+                    const timeDiff = 31 - Math.floor((now - queueStart) / 1000);
                     setQueueTimer(timeDiff);
-                    if (!isMemberFull) {
-                        clearInterval(timer as NodeJS.Timeout);
+                    if (timeDiff <= 0 || !isMemberFull) {
+                        clearInterval(queuingTimer as NodeJS.Timeout);
                         setQueueTimer(null);
                         await axios.put(`/api/match/${currMatch._id?.toString()}/time/queue`, {
                             queueStartTime: null
                         });
+
+                        if(timeDiff <= 0){
+                            await axios.put(`/api/match/${currMatch._id?.toString()}/time/start`, {
+                                startTime: new Date().toString()
+                            });
+                        }
                     }
+                }, 1000);
+            }
+
+            //stops the queue 
+            if(currMatch.matchStart) {
+                const startTimer = new Date(currMatch.matchStart).getTime();
+                clearInterval(queuingTimer as NodeJS.Timeout);
+                setQueueTimer(null);
+                gameTimer = setInterval(async()=> {
+                    const now = Date.now();
+                    const timeDiff = Math.floor((now - startTimer) / 1000);
+                    setMatchTimer(timeDiff);
                 }, 1000);
             }
         }
         updateTimer();
 
-        return ()=> clearInterval(timer??0);
+        return ()=>{ 
+            clearInterval(gameTimer??0);
+            clearInterval(queuingTimer??0)
+        };
     }, [currMatch]);
 
     //guard against if match is finished or cancelled
@@ -191,6 +216,7 @@ export default function Scoreboard({ match, players }: Props) {
             </div>
             <h2 className="text-white text-center mt-5 text-3xl font-bold">
                 {queueTimer && queueTimer >= 0 && "Match is starting in " + queueTimer }
+                {matchTimer && "Match is in progress: " + matchTimer }
             </h2>
             <div className={styles.scoreboard}>
                 <div className={styles.hometeam}>
