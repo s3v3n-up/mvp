@@ -42,7 +42,7 @@ export default async function handler(
 
             // Call upon the updateMatch action and update the existing match model based on the id
             const updatedMatch = await updateMatch(id as string, {
-                location: location ? location : {lat: 0, lng: 0 },
+                location: location ? location : { lat: 0, lng: 0 },
                 matchStart: matchStart ? matchStart : new Date(Date.now()),
                 description: description ? description : "",
                 matchHost: matchHost ? matchHost : "" ,

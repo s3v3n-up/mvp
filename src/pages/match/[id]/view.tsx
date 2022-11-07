@@ -42,6 +42,7 @@ export default function MatchView({ data } : Props){
     const endTime = new Date(data.matchStart).toLocaleDateString("en-GB").split("/").reverse().join("-");
 
     // Configuration to be pass in the atcb_action
+    // https://www.npmjs.com/package/add-to-calendar-button
     const config: Config = {
         name: data.sport,
         startDate: startTime,
@@ -77,6 +78,7 @@ export default function MatchView({ data } : Props){
                 <p>Location</p>
             </div>
             <div>
+                {/* https://www.npmjs.com/package/add-to-calendar-button */}
                 {/* Add to your local calendar button */}
                 <button className={styles.calendar } onClick={() => atcb_action(config as Config as any)}>Add to Calendar</button>
                 {/* Sub Header for Date and Time */}
