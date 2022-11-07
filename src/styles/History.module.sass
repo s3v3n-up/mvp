@@ -1,27 +1,35 @@
-// userHistory page background
-.background
-    min-height: 100vh
-    min-width: 100vw
+.baseContainer
     display: flex
+    align-items: center
+    width: 100vw
+    background-color: transparent
     justify-content: center
 
-// container to hold card components
-.cardBox
-    background-color: white
-
-// main container
+    // main container
 .historyContainer
-    height: 50vh
-    width: 65vw
+    display: flex
+    justify-content: center
+    height: 70vh
+    width: 45em
+    background-color: transparent
 
     // This uses media query where when its max-width is below 1000 it changes styles to be responsive 
-@media screen and (max-width: 1000px)
+@media screen and (max-width: 800px)
 
-.historyContainer
-    flex-direction: column
+    .baseContainer
+        display: flex
+        align-items: center
+        width: 100vw
+        height: 35rem
+        background-color: transparent
+        justify-content: center
+        overflow: hidden
 
-    // This uses media query where when its max-width is below 1000 it changes styles to be responsive 
-@media screen and (max-width: 1000px)
-
-.container
-    flex-direction: column
+    .historyContainer
+        display: flex
+        justify-content: center
+        min-width: 40rem
+        min-height: 30rem
+        background-color: transparent
+        overflow: hidden
+        margin-top: 1rem
