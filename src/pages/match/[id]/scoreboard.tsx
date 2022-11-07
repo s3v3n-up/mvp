@@ -80,7 +80,7 @@ export default function Scoreboard({ match, players }: Props) {
     //set the match timer
     const [matchTimer, setMatchTimer] = useState<number | null>(null);
 
-    
+
 
     //team score states
     const [homeScore, setHomeScore] = useState<number>(0);
@@ -114,7 +114,7 @@ export default function Scoreboard({ match, players }: Props) {
                 }
             }
         })();
-    },[data, error, isMatchHost]);
+    },[data, error, isMatchHost, currMatch]);
 
     //set the match queue timer
     useEffect(()=> {
@@ -160,7 +160,7 @@ export default function Scoreboard({ match, players }: Props) {
                 const startTimer = new Date(currMatch.matchStart).getTime();
                 clearInterval(queuingTimer as NodeJS.Timeout);
                 setQueueTimer(null);
-                
+
                 //checks if the match is paused
                 if(currMatch.matchPause){
                     const pauseTimer = new Date(currMatch.matchPause).getTime();
@@ -170,7 +170,7 @@ export default function Scoreboard({ match, players }: Props) {
                             const now = Date.now();
                             const timeDiff = timePassed + Math.floor((now - pauseTimer) / 1000);
                             setMatchTimer(timeDiff);
-                        }, 1000);   
+                        }, 1000);
                     } else{
                         setMatchTimer(timePassed);
                         clearInterval(gameTimer as NodeJS.Timeout);
@@ -203,20 +203,20 @@ export default function Scoreboard({ match, players }: Props) {
     }, [currMatch, router]);
 
 
-    //function for the host to pause the match 
+    //function for the host to pause the match
     const pauseMatch = debounce(async()=> {
         try{
             if(currMatch.status === "PAUSED") return;
             await axios.put(`/api/match/${currMatch._id?.toString()}/time/pause`, {
                 pauseTime: new Date().toString()
             });
-    
+
             await axios.put(`/api/match/${currMatch._id?.toString()}/status`, {
                 status: "PAUSED"
             });
-    
+
         } catch(err: any){
-           alert(err.response.data.message);
+            alert(err.response.data.message);
         }
     }, 500);
 
@@ -224,13 +224,13 @@ export default function Scoreboard({ match, players }: Props) {
     const resumeMatch = debounce(async()=> {
         try{
             if(currMatch.status === "INPROGRESS") return;
-    
+
             await axios.put(`/api/match/${currMatch._id?.toString()}/status`, {
                 status: "INPROGRESS"
             });
-    
+
         } catch(err: any){
-           alert(err.response.data.message);
+            alert(err.response.data.message);
         }
     }, 500);
 
@@ -372,12 +372,12 @@ export default function Scoreboard({ match, players }: Props) {
                 </div>
                 { isMatchHost &&
                     <>
-                        {currMatch.status === "INPROGRESS" && 
+                        {currMatch.status === "INPROGRESS" &&
                             <button onClick={pauseMatch} className={styles.pause}>
                                 Pause
                             </button>
                         }
-                        {currMatch.status === "PAUSED" && 
+                        {currMatch.status === "PAUSED" &&
                             <button onClick={resumeMatch} className={styles.pause}>
                                 Resume
                             </button>
