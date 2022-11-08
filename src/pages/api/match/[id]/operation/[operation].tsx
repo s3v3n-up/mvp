@@ -166,10 +166,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 matchEnd: new Date()
             });
 
+            //update the team status
             updatedMatch!.teams[0].status = homeScore > awayScore ? "WIN" : homeScore < awayScore ? "LOSE" : "DRAW";
             updatedMatch!.teams[1].status = awayScore > homeScore ? "WIN" : awayScore < homeScore ? "LOSE" : "DRAW";
-
-           updatedMatch!.save();
+            updatedMatch!.save();
         }
 
         res.status(200).json({ message: "operation success" });
