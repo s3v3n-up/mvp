@@ -296,7 +296,7 @@ export async function joinMatch(matchId: string, userName: string) {
         //if user already joined match, return
         if (
             match.teams[0].members.includes(userName) ||
-      match.teams[1].members.includes(userName)
+            match.teams[1].members.includes(userName)
         ) {
             return;
         }
