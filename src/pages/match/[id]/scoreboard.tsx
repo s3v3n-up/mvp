@@ -308,7 +308,7 @@ export default function Scoreboard({ match, players }: Props) {
                     objectPosition="center"
                 />
             </div>
-            <h2 className="text-white text-center mt-5 text-3xl font-bold">
+            <h2 className="text-white text-center mt-5 text-3xl font-bold mb-3">
                 { currMatch.matchQueueStart && queueTimer && "Match is starting in " + queueTimer }
                 { matchTimer && "Match is in progress " + new Date(matchTimer * 1000).toISOString().slice(11, 19) }
             </h2>
@@ -422,7 +422,7 @@ export default function Scoreboard({ match, players }: Props) {
                                 Resume
                             </button>
                         }
-                        { currMatch.status === "INPROGRESS" || currMatch.status === "PAUSED" &&
+                        { (currMatch.status === "INPROGRESS" || currMatch.status === "PAUSED") &&
                             <button
                                 className={`${styles.finish} text-base p-5`}
                                 onClick={endMatch}
