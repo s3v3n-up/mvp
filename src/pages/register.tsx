@@ -6,6 +6,7 @@ import { useState, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import dynamic from "next/dynamic";
+import Head from "next/head";
 
 //local imports
 import styles from "@/styles/Register.module.sass";
@@ -16,7 +17,9 @@ import Button from "@/components/buttons/primaryButton";
 const Person = dynamic(() => import("@mui/icons-material/Person"));
 const Phone = dynamic(() => import("@mui/icons-material/Phone"));
 const Badge = dynamic(() => import("@mui/icons-material/Badge"));
-const AlertMessage = dynamic(() => import("@/components/alertMessage"), { ssr: false });
+const AlertMessage = dynamic(() => import("@/components/alertMessage"), {
+    ssr: false,
+});
 const ImagePicker = dynamic(() => import("@/components/imagepicker"));
 
 /**
@@ -28,11 +31,11 @@ const ImagePicker = dynamic(() => import("@/components/imagepicker"));
  * @property {File | null} image
  */
 interface RegisterData {
-    firstName: string;
-    lastName: string;
-    userName: string;
-    phoneNumber: string;
-    image: File | null;
+  firstName: string;
+  lastName: string;
+  userName: string;
+  phoneNumber: string;
+  image: File | null;
 }
 
 /**
@@ -45,8 +48,8 @@ export default function Register() {
     //guard page against logged and unauthenticated in users
     const { data: session } = useSession();
     const router = useRouter();
-    useEffect(()=> {
-        if(session && session.user.isFinishedSignup) {
+    useEffect(() => {
+        if (session && session.user.isFinishedSignup) {
             router.push("/");
         }
 
@@ -61,7 +64,7 @@ export default function Register() {
         lastName: "",
         userName: "",
         phoneNumber: "",
-        image: null
+        image: null,
     });
 
     //form submission state
@@ -69,8 +72,8 @@ export default function Register() {
     const [loading, setLoading] = useState(false);
 
     /**
-     * handle form input change
-     */
+   * handle form input change
+   */
     function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
         setFormData({
             ...formData,
@@ -79,8 +82,8 @@ export default function Register() {
     }
 
     /**
-     * handle image change
-     */
+   * handle image change
+   */
     function handleImageChange(e: ChangeEvent<HTMLInputElement>) {
         setFormData({
             ...formData,
@@ -89,19 +92,19 @@ export default function Register() {
     }
 
     /**
-     * handle remove image
-     */
+   * handle remove image
+   */
     function handleRemoveSelectedImage(e: MouseEvent<HTMLButtonElement>) {
         e.stopPropagation();
         setFormData({
             ...formData,
-            image: null
+            image: null,
         });
     }
 
     /**
-     * handle image submit
-     */
+   * handle image submit
+   */
     async function handleImageSubmit() {
         try {
             if (!formData.image) {
@@ -110,17 +113,21 @@ export default function Register() {
             const data = new FormData();
             data.append("files", formData.image!);
             const res = await axios.post("/api/file", data);
-            const { data: { data: { url: imageUrl } } } = res;
+            const {
+                data: {
+                    data: { url: imageUrl },
+                },
+            } = res;
 
             return imageUrl;
-        } catch(error) {
+        } catch (error) {
             throw error;
         }
     }
 
     /**
-     * handle form submission
-     */
+   * handle form submission
+   */
     async function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setError("");
@@ -131,11 +138,11 @@ export default function Register() {
                 ...formData,
                 email: session!.user.email,
                 image: imageUrl,
-                matches: []
+                matches: [],
             });
             await getSession();
             router.push("/");
-        } catch(err: any) {
+        } catch (err: any) {
             if (err!.response) {
                 setError(err.response.data.message);
             } else {
@@ -147,82 +154,89 @@ export default function Register() {
     }
 
     return (
-        <div className={styles.container}>
-            {/* container for about */}
-            <div className={styles.box}>
-                <div className={styles.about}>
-                    <h2>Are YOU the MVP?</h2>
-                    <p>
-                       Create your matches <br/>
-                       Schedule your face-off<br/>
-                       Put your skills to the test.
-                    </p>
-                    <h2>Can you be #1?</h2>
+        <>
+            <Head>
+                <meta charSet="utf-8" />
+                <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+                <title>MVP | Register</title>
+                <meta name="description" content="Register page" />
+                <link rel="icon" href="/favicon.ico"></link>
+            </Head>
+            <div className={styles.container}>
+                <div className={styles.box}>
+                    <div className={styles.about}>
+                        <h2>Are YOU the MVP?</h2>
+                        <p>
+              Create your matches <br />
+              Schedule your face-off
+                            <br />
+              Put your skills to the test.
+                        </p>
+                        <h2>Can you be #1?</h2>
+                    </div>
                 </div>
-            </div>
-            {/* displays logo */}
-            <div className="flex flex-col items-center flex-auto">
-                <div className={styles.imgwrapper}>
-                    <Image src={"/img/logo.png"} alt={"logo"} width={263} height={184} priority/>
-                </div>
-                {/* inputs for register */}
-                <div className={styles.input}>
-                    <form className={styles.info} onSubmit={handleFormSubmit}>
-                        {/* input field for file upload */}
-                        <ImagePicker
-                            onChange={handleImageChange}
-                            onRemove={handleRemoveSelectedImage}
-                            image={formData.image}
+                <div className="flex flex-col items-center flex-auto">
+                    <div className={styles.imgwrapper}>
+                        <Image
+                            src={"/img/logo.png"}
+                            alt={"logo"}
+                            width={263}
+                            height={184}
+                            priority
                         />
-                        { error && <AlertMessage message={error} type="error"/> }
-                        { loading && <AlertMessage message="Loading..." type="loading"/> }
-                        {/* input field for first name */}
-                        <Input
-                            type="text"
-                            placeholder="Enter your first name"
-                            name="firstName"
-                            value={formData.firstName}
-                            onChange={handleInputChange}
-                        >
-                            <Person fontSize="medium"/>
-                        </Input>
-                        {/* input field for last name */}
-                        <Input
-                            type="text"
-                            placeholder="Enter your last name"
-                            name="lastName"
-                            value={formData.lastName}
-                            onChange={handleInputChange}
-                        >
-                            <Person fontSize="medium"/>
-                        </Input>
-                        {/* input field for username */}
-                        <Input
-                            type="text"
-                            placeholder="Enter your username"
-                            name="userName"
-                            value={formData.userName}
-                            onChange={handleInputChange}
-                        >
-                            <Badge fontSize="medium"/>
-                        </Input>
-                        {/* input field for phone number */}
-                        <Input
-                            type="tel"
-                            placeholder="Enter your phone number"
-                            name="phoneNumber"
-                            value={formData.phoneNumber}
-                            onChange={handleInputChange}
-                        >
-                            <Phone fontSize="medium"/>
-                        </Input>
-                        {/* button for signup */}
-                        <Button type="submit" className={styles.signup}>
-                            Sign up
-                        </Button>
-                    </form>
+                    </div>
+                    <div className={styles.input}>
+                        <form className={styles.info} onSubmit={handleFormSubmit}>
+                            <ImagePicker
+                                onChange={handleImageChange}
+                                onRemove={handleRemoveSelectedImage}
+                                image={formData.image}
+                            />
+                            {error && <AlertMessage message={error} type="error" />}
+                            {loading && <AlertMessage message="Loading..." type="loading" />}
+                            <Input
+                                type="text"
+                                placeholder="Enter your first name"
+                                name="firstName"
+                                value={formData.firstName}
+                                onChange={handleInputChange}
+                            >
+                                <Person fontSize="medium" />
+                            </Input>
+                            <Input
+                                type="text"
+                                placeholder="Enter your last name"
+                                name="lastName"
+                                value={formData.lastName}
+                                onChange={handleInputChange}
+                            >
+                                <Person fontSize="medium" />
+                            </Input>
+                            <Input
+                                type="text"
+                                placeholder="Enter your username"
+                                name="userName"
+                                value={formData.userName}
+                                onChange={handleInputChange}
+                            >
+                                <Badge fontSize="medium" />
+                            </Input>
+                            <Input
+                                type="tel"
+                                placeholder="Enter your phone number"
+                                name="phoneNumber"
+                                value={formData.phoneNumber}
+                                onChange={handleInputChange}
+                            >
+                                <Phone fontSize="medium" />
+                            </Input>
+                            <Button type="submit" className={styles.signup}>
+                Sign up
+                            </Button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
