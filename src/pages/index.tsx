@@ -140,37 +140,37 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                     </div>
                 </div>
             </div>
-        <div className={styles.matches}>
-            {/* search container */}
-            <div className={styles.search}>
-                {/* title for the page */}
-                <h1 className="px-2 py-3">Matches</h1>
-                <div className={styles.searchitem}>
-                    {/* search input field */}
-                    <Input
-                        type="text"
-                        placeholder="Enter username or location"
-                        value={search}
-                        onChange={handleSearchChange}
-                    />
-                    <button>
-                        <Search fontSize="medium" />
-                    </button>
+            <div className={styles.matches}>
+                {/* search container */}
+                <div className={styles.search}>
+                    {/* title for the page */}
+                    <h1 className="px-2 py-3">Matches</h1>
+                    <div className={styles.searchitem}>
+                        {/* search input field */}
+                        <Input
+                            type="text"
+                            placeholder="Enter username or location"
+                            value={search}
+                            onChange={handleSearchChange}
+                        />
+                        <button>
+                            <Search fontSize="medium" />
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <div>
-                {/* Subtitle for quick matches */}
-                <p>Quick Matches</p>
-                {/* Scroll container for quick matches */}
-                {quickMatches.length === 0 && (
-                    <p className="text-2xl text-white text-center">
-                        {" "}
+                <div>
+                    {/* Subtitle for quick matches */}
+                    <p>Quick Matches</p>
+                    {/* Scroll container for quick matches */}
+                    {quickMatches.length === 0 && (
+                        <p className="text-2xl text-white text-center">
+                            {" "}
             ⚠️ There is no quick match found
-                    </p>
-                )}
-                <ScrollContainer className="flex w-full" horizontal hideScrollbars>
-                    {/* //add comments */}
-                    {quickMatches.length > 0 &&
+                        </p>
+                    )}
+                    <ScrollContainer className="flex w-full" horizontal hideScrollbars>
+                        {/* //add comments */}
+                        {quickMatches.length > 0 &&
                         quickMatches
                             .filter(
                                 (quick: any) =>
@@ -209,21 +209,21 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                                     </div>
                                 </div>
                             ))}
-                </ScrollContainer>
-            </div>
-            <div className="sm:mt-4 mt-10">
-                {/*  Subtitle for regular matches */}
-                <p>Regular Matches</p>
-                {/* Scroll container for regular matches */}
-                {regMatches.length === 0 && (
-                    <p className="text-2xl text-white text-center">
-                        {" "}
+                    </ScrollContainer>
+                </div>
+                <div className="sm:mt-4 mt-10">
+                    {/*  Subtitle for regular matches */}
+                    <p>Regular Matches</p>
+                    {/* Scroll container for regular matches */}
+                    {regMatches.length === 0 && (
+                        <p className="text-2xl text-white text-center">
+                            {" "}
             ⚠️ There is no regular match found
-                    </p>
-                )}
-                <ScrollContainer className="flex w-full" horizontal hideScrollbars>
-                    {/*filters through regular matches including lower case letters in text input*/}
-                    {regMatches.length > 0 &&
+                        </p>
+                    )}
+                    <ScrollContainer className="flex w-full" horizontal hideScrollbars>
+                        {/*filters through regular matches including lower case letters in text input*/}
+                        {regMatches.length > 0 &&
             regMatches
                 .filter(
                     (reg: any) =>
@@ -267,16 +267,16 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                             <p>{reg.location.address.pointOfInterest}</p>
                             <p>{Math.ceil(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: reg.location.lat as number, longitude: reg.location.lng as number }) / 1000)}km away</p>
                             <Image
-                                onClick={(e) => {imageClick(reg.matchHost)}}
+                                onClick={(e) => {imageClick(reg.matchHost);}}
                                 src={hostAvatar(reg.matchHost)}
                                 alt="avatar"
                                 className={Cardstyles.avatar}
                                 width={45}
                                 height={45}
                             />
-                          </div>
-                      </div>
-                  ))}
+                        </div>
+                    </div>
+                ))}
                     </ScrollContainer>
                 </div>
             </div>
