@@ -20,7 +20,7 @@ export async function middleware(req: NextRequest) {
     // If there is no token meaning no session, redirect to login page
     if (!token) {
         if (req.nextUrl.pathname !== "/login") {
-            return NextResponse.rewrite(new URL("/login", req.url));
+            return NextResponse.redirect(new URL("/login", req.url));
         }
 
         return;
@@ -28,7 +28,7 @@ export async function middleware(req: NextRequest) {
 
     // If user is not finished signing up then redirect to register page
     if (!token.user.isFinishedSignup) {
-        return NextResponse.rewrite(new URL("/register", req.url));
+        return NextResponse.redirect(new URL("/register", req.url));
     }
 }
 
@@ -36,5 +36,5 @@ export async function middleware(req: NextRequest) {
  * @config This is where you specify the routes, it should be an absolute path
  */
 export const config = {
-    matcher: ["/", "/login", "/api/match/:path*", "/match/:path*", "/api/sport/:path*", "/user/:path*", "/leaderboard/:path*", "/create/:path*"]
+    matcher: ["/", "/login", "register", "/api/match/:path*", "/match/:path*", "/api/sport/:path*", "/user/:path*", "/leaderboard/:path*", "/create/:path*"]
 };
