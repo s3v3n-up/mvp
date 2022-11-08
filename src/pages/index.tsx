@@ -16,6 +16,7 @@ import { getMatches } from "@/lib/actions/match";
 import { getUsers } from "@/lib/actions/user";
 import { Location } from "@/lib/types/General";
 import axios from "axios";
+import Database from "@/lib/resources/database";
 
 //dynamic import
 const Search = dynamic(() => import("@mui/icons-material/Search"), {
@@ -153,8 +154,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                     <p>Quick Matches</p>
                     {quickMatches.length === 0 && (
                         <p className="text-2xl text-white text-center">
-                            {" "}
-            ⚠️ There is no quick match found
+                            ⚠️ There is no quick match found
                         </p>
                     )}
                     {/* horizontal sroll for created matches */}
@@ -165,7 +165,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                             .filter(
                                 (quick: any) =>
                                     quick.sport.toLowerCase().includes(search.toLowerCase()) ||
-                  lookUser(quick.matchHost).includes(search.toLowerCase())
+                                    lookUser(quick.matchHost).includes(search.toLowerCase())
                             )
                             .map((quick: any, idx: any) => (
 
@@ -282,6 +282,9 @@ export default function Home({ regMatches, quickMatches, users }: any) {
 
 // Access sport detail and pass as props
 export async function getServerSideProps() {
+
+    //setup database connection
+    await Database.setup();
 
     //call getMatches function
     const data = await getMatches();
