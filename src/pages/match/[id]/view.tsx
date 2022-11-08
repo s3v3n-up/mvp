@@ -47,16 +47,16 @@ export default function MatchView({ data }: Props) {
     const [address, setAddress] = useState();
 
     // useEffect to set address for it to display as a string since we are storing location as longitude and latitude in the database
-    useEffect(() => {
-        axios
-            .get(
-                `https://api.mapbox.com/geocoding/v5/mapbox.places/${data.location.lng},${data.location.lat}.json?types=address&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`
-            )
-            .then(({ data }) => {
-                setAddress(data.features[0].place_name);
-            });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    // useEffect(() => {
+    //     axios
+    //         .get(
+    //             `https://api.mapbox.com/geocoding/v5/mapbox.places/${data.location.lng},${data.location.lat}.json?types=address&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`
+    //         )
+    //         .then(({ data }) => {
+    //             setAddress(data.features[0].place_name);
+    //         });
+    // // eslint-disable-next-line react-hooks/exhaustive-deps
+    // }, []);
 
     const [result, setResult] = useState<any>();
 
@@ -201,7 +201,7 @@ export default function MatchView({ data }: Props) {
                 {/* Sub Header for Match Type */}
                 <h3>Address</h3>
                 {/* Data for match type */}
-                <p>{address}</p>
+                <p>{data.location.address.fullAddress}</p>
             </div>
             <div>
                 {/* https://www.npmjs.com/package/add-to-calendar-button */}
@@ -216,10 +216,10 @@ export default function MatchView({ data }: Props) {
                 <h3>Date and Time</h3>
                 {/* Data for match type */}
                 <p>
-                    {new Date(data.matchStart!)
+                    {new Date(data.matchStart)
                         .toDateString()
                         .concat(
-                            " " + new Date(data.matchStart!).toLocaleTimeString("en-US")
+                            " " + new Date(data.matchStart).toLocaleTimeString("en-US")
                         )}
                 </p>
             </div>
