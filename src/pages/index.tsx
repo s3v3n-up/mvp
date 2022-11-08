@@ -1,4 +1,5 @@
 //third-party import
+import Image from "next/image";
 import { useState, ChangeEvent, useEffect } from "react";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useSession } from "next-auth/react";
@@ -51,9 +52,10 @@ export default function Home({ regMatches, quickMatches, users }: any) {
         return router.push(`/match/${id}/view`);
     }
 
-    {
+    function hostAvatar(id: string) {
+        const host = users.filter((user: any) => user._id === id);
 
-    /* //add comments */
+        return host[0].image;
     }
 
     function lookUser(id: string) {
@@ -92,7 +94,6 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                     </p>
                 )}
                 <ScrollContainer className="flex w-full" horizontal hideScrollbars>
-                    {/* //add comments */}
                     {quickMatches.length > 0 &&
             quickMatches
                 .filter(
@@ -121,6 +122,13 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                                 <LocationOnIcon />
                             </div>
                             <p>location</p>
+                            <Image
+                                src={hostAvatar(quick.matchHost)}
+                                alt="avatar"
+                                className={Cardstyles.avatar}
+                                width={45}
+                                height={45}
+                            />
                         </div>
                     </div>
                 ))}
@@ -181,6 +189,13 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                                 <LocationOnIcon />
                             </div>
                             <p> location</p>
+                            <Image
+                                src={hostAvatar(reg.matchHost)}
+                                alt="avatar"
+                                className={Cardstyles.avatar}
+                                width={45}
+                                height={45}
+                            />
                         </div>
                     </div>
                 ))}
