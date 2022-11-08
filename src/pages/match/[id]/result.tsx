@@ -76,7 +76,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext){
         } else if(team.status === "LOSE" && team.members.includes(session.user.userName)){
             matchResult.result = "LOSE";
         }
-
     });
 
     return {
