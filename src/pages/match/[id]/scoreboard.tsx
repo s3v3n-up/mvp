@@ -9,7 +9,7 @@ import { useSession } from "next-auth/react";
 import debounce from "lodash.debounce";
 
 //local import
-import { getMatches, getMatchById } from "@/lib/actions/match";
+import { getMatchById } from "@/lib/actions/match";
 import { getUsersByUserName } from "@/lib/actions/user";
 import Database from "@/lib/resources/database";
 import type { Match } from "@/lib/types/Match";
@@ -18,7 +18,6 @@ import styles from "@/styles/Scoreboard.module.sass";
 import fetcher from "@/lib/helpers/fetcher";
 import { UserProfile } from "@/lib/types/User";
 import { mapPlayerToTeam } from "@/lib/helpers/scoreboard";
-import MatchEdit from "./edit";
 
 /**
  * scoreboard props type
@@ -133,6 +132,7 @@ export default function Scoreboard({ match, players }: Props) {
             const currMemberNumbers = currMatch.teams[0].members.length + currMatch.teams[1].members.length;
             const isMemberFull = currMemberNumbers === maxPlayer;
 
+            //if match is full, set match start queue time
             if (isMemberFull && !currMatch.matchQueueStart && !currMatch.matchStart) {
                 await axios.put(`/api/match/${currMatch._id?.toString()}/time/queue`, {
                     queueStartTime: new Date().toString()
@@ -141,16 +141,25 @@ export default function Scoreboard({ match, players }: Props) {
 
             //queuing timer
             if (currMatch.matchQueueStart) {
+
+                //queue start time
                 const queueStart = new Date(new Date(currMatch.matchQueueStart).toUTCString()).getTime();
+
+                //queue timer
                 queuingTimer = setInterval(async()=> {
                     const now = new Date(new Date().toUTCString()).getTime();
                     const timeDiff = 31 - Math.floor((now - queueStart) / 1000);
                     setQueueTimer(timeDiff);
+
+                    //check if 30 seconds has passed or if match is not full
                     if (timeDiff <= 0 || !isMemberFull) {
+
+                        //set queue start time to null
                         await axios.put(`/api/match/${currMatch._id?.toString()}/time/queue`, {
                             queueStartTime: null
                         });
 
+                        //set start time to now if time has passed 30 seconds
                         if(timeDiff <= 0) {
                             await axios.put(`/api/match/${currMatch._id?.toString()}/operation/start`, {
                                 startTime: new Date().toString()
@@ -162,12 +171,14 @@ export default function Scoreboard({ match, players }: Props) {
                 }, 1000);
             }
 
-            //match timer
+            //match progress timer(timer after queue timer is finished)
             if(currMatch.matchStart) {
                 setIsLeavable(false);
                 const startTimer = new Date(new Date(currMatch.matchStart).toUTCString()).getTime();
                 clearInterval(queuingTimer as NodeJS.Timeout);
                 setQueueTimer(null);
+
+                //set match timer to null, if match does not have enough members
                 if (!isMemberFull) {
                     await axios.put(`/api/match/${currMatch._id?.toString()}/time/start`, {
                         startTime: null
@@ -181,8 +192,14 @@ export default function Scoreboard({ match, players }: Props) {
 
                 //checks if the match is paused
                 if(currMatch.matchPause){
+
+                    //get pause time
                     const pauseTimer = new Date(new Date(currMatch.matchPause).toUTCString()).getTime();
+
+                    //get time difference start and pause time
                     const timePassed = Math.floor((pauseTimer - startTimer) / 1000);
+
+                    //if match is in progress, start the timer from the time difference else stop timer, clear the interval
                     if(currMatch.status === "INPROGRESS") {
                         gameTimer = setInterval(async()=> {
                             const now = new Date(new Date().toUTCString()).getTime();
@@ -194,6 +211,8 @@ export default function Scoreboard({ match, players }: Props) {
                         clearInterval(gameTimer as NodeJS.Timeout);
                     }
                 } else {
+
+                    //timer start from start time
                     gameTimer = setInterval(async()=> {
                         const now = new Date(new Date().toUTCString()).getTime();
                         const timeDiff = Math.floor((now - startTimer) / 1000);
@@ -204,6 +223,7 @@ export default function Scoreboard({ match, players }: Props) {
         }
         updateTimer();
 
+        //clear interval on unmount
         return ()=>{
             clearInterval(gameTimer??0);
             clearInterval(queuingTimer??0);
@@ -467,8 +487,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             props: {
                 match: JSON.parse(JSON.stringify(match)),
                 players: JSON.parse(JSON.stringify(players))
-            },
-            revalidate: 1
+            }
         };
     } catch {
         return {
