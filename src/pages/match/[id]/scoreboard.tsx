@@ -468,7 +468,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                 match: JSON.parse(JSON.stringify(match)),
                 players: JSON.parse(JSON.stringify(players))
             },
-            revalidate: 1
         };
     } catch {
         return {
