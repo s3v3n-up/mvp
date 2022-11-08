@@ -112,7 +112,11 @@ export default function Home({ regMatches, quickMatches, users }: any) {
 
     // Function to join the regular match
     async function joinReg(id: string) {
-        await axios.put(`api/match/${id}/team/join`, { userName: session?.user.userName });
+        try {
+            await axios.put(`api/match/${id}/team/join`, { userName: session?.user.userName });
+        } catch (error) {
+            return;
+        }
 
         return router.push(`/match/${id}/view`).then(() => router.reload());
     }

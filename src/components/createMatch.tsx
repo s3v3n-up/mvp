@@ -167,7 +167,7 @@ export default function CreateMatch({ props }: Props) {
                 description: description,
                 matchType: "REGULAR",
                 status: "UPCOMING",
-                teams: [{ members: session!.user.userName, score: 0, status: "UNSET" }]
+                teams: [{ members: [session!.user.userName], score: 0, status: "UNSET" }, { members: [], score: 0, status: "UNSET" }]
             });
 
             // Checks if no successful post response

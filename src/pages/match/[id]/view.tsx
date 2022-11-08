@@ -164,12 +164,12 @@ export default function MatchView({ data }: Props) {
     return (
         <div className={styles.container}>
             {/* Header for Sport */}
-            <button
+            {session?.user.id === data.matchHost && <button
                 className={styles.edit}
                 onClick={() => editClicked(data._id as string)}
             >
         Edit
-            </button>
+            </button>}
             <h1>{data.sport}</h1>
             <div>
                 {/* Sub Header for Match Type */}
