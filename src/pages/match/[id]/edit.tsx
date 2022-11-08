@@ -3,8 +3,6 @@ import { getMatchById } from "@/lib/actions/match";
 import Database from "@/lib/resources/database";
 import { Match } from "@/lib/types/Match";
 import styles from "@/styles/MatchEdit.module.sass";
-import { Location } from "@/lib/types/General";
-import Input from "@/components/Input";
 
 //Third party imports
 import { AccessTime, AddLocationAlt } from "@mui/icons-material";
@@ -12,7 +10,6 @@ import axios from "axios";
 import { GetServerSidePropsContext } from "next";
 import router from "next/router";
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
-import styled from "styled-components";
 
 // interface for props
 interface Props {
@@ -144,13 +141,6 @@ export default function MatchEdit({ data }: Props) {
         }
     }
 
-
-    // Custom child wrapper for autofill feature
-    const Suggestion = styled.p`
-	 cursor: pointer;
-	 max-width: 320px;
-   `;
-
     return (
         <div className={styles.container}>
             <form onSubmit={handleFormSubmit}>
@@ -162,37 +152,35 @@ export default function MatchEdit({ data }: Props) {
                     <div className={styles.location}>
                         <div className={styles.address}>
                             <div>
-                                <Input
-                                    label="Location"
+                                <AddLocationAlt />
+                                <input
+                                    className={styles.inputaddress}
                                     value={address}
                                     name="location"
+                                    placeholder="Address"
                                     onChange={handleLocationChange}
-                                >
-                                    <AddLocationAlt />
-                                </Input>
+                                />
                             </div>
                         </div>
-                        <div className={styles.suggest}>
+
 						 {/* Autofill for address */}
 						 {suggestions?.length > 0 && (
-                                <div>
-                                    {suggestions.map((suggestion: any, index: any) => {
-                                        return (
-                                            <p
-                                                className="w-full text-[#31302f] text-base"
-                                                key={index}
-                                                onClick={() => {
-                                                    setAddress(suggestion.place_name);
-                                                    setSuggestions([]);
-                                                }}
-                                            >
-                                                {suggestion.place_name}
-                                            </p>
-                                        );
-                                    })}
-                                </div>
-                            )}
-                        </div>
+                            <div className={styles.suggest}>
+                                {suggestions.map((suggestion: any, index: any) => {
+                                    return (
+                                        <p
+                                            key={index}
+                                            onClick={() => {
+                                                setAddress(suggestion.place_name);
+                                                setSuggestions([]);
+                                            }}
+                                        >
+                                            {suggestion.place_name}
+                                        </p>
+                                    );
+                                })}
+                            </div>
+                        )}
                     </div>
                 </div>
                 <div>
