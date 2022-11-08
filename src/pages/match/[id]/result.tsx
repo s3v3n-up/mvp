@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import { GetServerSidePropsContext } from "next/types";
 import { getMatchById } from "@/lib/actions/match";
 import Database from "@/lib/resources/database";
+// eslint-disable-next-line camelcase
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
