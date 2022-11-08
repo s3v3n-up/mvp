@@ -18,7 +18,6 @@ import styles from "@/styles/Scoreboard.module.sass";
 import fetcher from "@/lib/helpers/fetcher";
 import { UserProfile } from "@/lib/types/User";
 import { mapPlayerToTeam } from "@/lib/helpers/scoreboard";
-import { setHttpAgentOptions } from "next/dist/server/config";
 
 /**
  * scoreboard props type
@@ -90,7 +89,7 @@ export default function Scoreboard({ match, players }: Props) {
 
     //refetch match data every 1 seconds
     const { data, error } = useSWR<{match: Match}>(`/api/match/${match._id?.toString()}`,fetcher, {
-        refreshInterval: 1000,
+        refreshInterval: 100,
         revalidateOnFocus: false,
         revalidateOnReconnect: false,
         fallback: match
@@ -110,6 +109,8 @@ export default function Scoreboard({ match, players }: Props) {
                     setHomeScore(data.match.teams[0].score);
                     setAwayScore(data.match.teams[1].score);
                 }
+            } else {
+                console.log(error);
             }
         })();
     },[data, error, isMatchHost, currMatch]);
@@ -500,7 +501,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                 players: JSON.parse(JSON.stringify(players))
             }
         };
-    } catch {
+    } catch(error) {
         return {
             notFound: true
         };

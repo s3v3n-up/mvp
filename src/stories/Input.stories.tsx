@@ -10,5 +10,10 @@ const config = {
 export default config;
 
 export const InputBarStory = () => (
-    <Input/>
+    <Input
+        placeholder="Search"
+        value="value"
+        onChange={(e) => console.log(e.target.value)}
+        readonly
+    />
 );
