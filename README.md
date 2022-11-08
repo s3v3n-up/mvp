@@ -74,6 +74,27 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 | :----------------| :----------- |
 | Charm | Google Font |
 
+<!-- FOLDER STRUCTURE -->
+### :file_folder: Folder Structure
+1. **Model** - models of the project
+ 
+2. **View**
+- public
+  - icons
+  - img
+- src
+  - components - 
+  - context
+  - hooks
+  - lib
+  - pages
+  - shared
+  - stories
+  - styles
+  - types
+  
+
+
 ## Getting Started
 
 First, run the development server:
