@@ -80,8 +80,12 @@ export default function Scoreboard({ match, players }: Props) {
     const [matchTimer, setMatchTimer] = useState<number | null>(null);
 
     //team score states
-    const [homeScore, setHomeScore] = useState<number>(0);
-    const [awayScore, setAwayScore] = useState<number>(0);
+    const [homeScore, setHomeScore] = useState<number>(
+        currMatch.teams[0].score
+    );
+    const [awayScore, setAwayScore] = useState<number>(
+        currMatch.teams[1].score
+    );
 
     //is match over state
     const [isFinished, setFinished] = useState<boolean>(false);
