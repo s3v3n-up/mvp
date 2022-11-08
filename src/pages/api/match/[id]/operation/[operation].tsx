@@ -1,7 +1,7 @@
 import {
     updateMatchQueueStartTime,
     getMatchById,
-    removeMemberFromTeam,
+    removeUserFromMatch,
     updateMatchFields
 } from "@/lib/actions/match";
 import { removeMatchFromUserMatches } from "@/lib/actions/user";
@@ -100,7 +100,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
 
             //remove member from match and update queue start time to null
-            await removeMemberFromTeam(id, teamIndex, userName);
+            await removeUserFromMatch(id as string, userName);
             await updateMatchQueueStartTime(id, null);
             await removeMatchFromUserMatches(userName, id);
 
