@@ -58,6 +58,8 @@ export default async function handler(
                     { members: [""], score: 0, status: "UNSET" },
                 ],
                 status: "UPCOMING",
+                matchPause: null,
+                matchQueueStart: null
             });
 
             // Then return updateMatch as a json response

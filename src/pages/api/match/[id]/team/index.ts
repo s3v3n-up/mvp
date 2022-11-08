@@ -17,8 +17,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             //guard route against invalid inputs
             if (isNaN(parseInt(teamIndex)) ||
-                teamIndex < 0 ||
-                teamIndex > 1 ||
+                parseInt(teamIndex) < 0 ||
+                parseInt(teamIndex) > 1 ||
                 operation !== "add" && operation !== "remove" ||
                 typeof userName !== "string") {
                 throw {

@@ -108,15 +108,19 @@ const matchSchema = new Schema<Match>({
     // This is the start date/time of the match
     matchStart: {
         type: Date,
-        required: true,
-        default: Date.now()
+        default: null
     },
 
     // This is the end date/time of the match
     matchEnd: {
         type: Date,
-        required: true,
-        default: Date.now()
+        default: null
+    },
+
+    // This is the pause time
+    matchPause: {
+        type: Date,
+        default: null
     },
 
     // This is the match details, also a place where you can input extra details eg. Discord link, Facebook messenger link etc.
@@ -142,10 +146,18 @@ const matchSchema = new Schema<Match>({
     // This is the status of the match
     status: {
         type: String,
-        enum: ["UPCOMING", "INPROGRESS", "FINISHED", "CANCELLED"],
+        enum: ["UPCOMING", "INPROGRESS", "FINISHED", "CANCELLED", "PAUSED"],
         required: true,
         default: "UPCOMING"
+    },
+
+    //This is the match queue start
+    matchQueueStart: {
+        type: Date,
+        default: null,
+
     }
+
 });
 
 /**

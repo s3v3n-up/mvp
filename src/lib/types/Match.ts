@@ -10,7 +10,7 @@ export namespace Matches {
 	export type TeamStatus = "WIN" | "LOSE" | "DRAW" | "UNSET";
 
 	// Matches status type
-	export type MatchStatus = "UPCOMING" | "INPROGRESS" | "FINISHED" | "CANCELLED";
+	export type MatchStatus = "UPCOMING" | "INPROGRESS" | "FINISHED" | "CANCELLED" | "PAUSED";
 }
 
 /**
@@ -58,10 +58,10 @@ export interface Match {
 	};
 
 	// This is the start date/time of the match
-	matchStart: Date;
+	matchStart: Date | null;
 
 	// This is the end date/time of the match
-	matchEnd: Date;
+	matchEnd: Date | null;
 
 	// This is the additional details for the match eg. discord links, whatsapp or zoom links, or any other information you would like to add.
 	description: string;
@@ -71,5 +71,11 @@ export interface Match {
 
 	//This is the status of the match
 	status: Matches.MatchStatus;
+
+	//This is the match queue start
+	matchQueueStart: Date | null;
+
+	//This is the match pause time;
+	matchPause: Date | null;
 }
 

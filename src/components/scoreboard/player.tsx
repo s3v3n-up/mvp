@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 /**
  * player props
@@ -56,11 +57,17 @@ export default function Player(props: PlayerProps) {
         }
     };
 
+    const router = useRouter();
+
     async function onLeave() {
         const teamIndex = props.variant === "home" ? 0 : 1;
         const userName= props.userName;
         try {
-            await axios.put(`/api/match/${props.matchId}/team`,{ teamIndex, userName, operation: "remove" });
+            await axios.put(`/api/match/${props.matchId}/operation/remove`, {
+                teamIndex,
+                userName
+            });
+            router.push("/");
         } catch(error) {
             alert("Error leaving match");
         }
