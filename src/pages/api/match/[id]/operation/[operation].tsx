@@ -159,22 +159,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (operation === "finish") {
             const homeScore = match.teams[0].score;
             const awayScore = match.teams[1].score;
+            
 
             //update match status and team scores, status
-            updateMatchFields(id, {
+            const updatedMatch = await updateMatchFields(id, {
                 status: "FINISHED",
-                matchEnd: new Date(),
-                teams: [
-                    {
-                        ...match.teams[0],
-                        status: homeScore > awayScore ? "WIN" : homeScore < awayScore ? "LOSE" : "DRAW",
-                    },
-                    {
-                        ...match.teams[1],
-                        status: homeScore > awayScore ? "LOSE" : homeScore < awayScore ? "WIN" : "DRAW",
-                    }
-                ]
+                matchEnd: new Date()
             });
+
+            updatedMatch!.teams[0].status = homeScore > awayScore ? "WIN" : homeScore < awayScore ? "LOSE" : "DRAW";
+            updatedMatch!.teams[1].status = awayScore > homeScore ? "WIN" : awayScore < homeScore ? "LOSE" : "DRAW";
+
+           updatedMatch!.save();
         }
 
         res.status(200).json({ message: "operation success" });

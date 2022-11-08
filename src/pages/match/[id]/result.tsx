@@ -65,28 +65,24 @@ export async function getServerSideProps(context: GetServerSidePropsContext){
         };
     }
 
+    const matchResult = {result: ""};
     //checks the status for each team and gets the result of either team
     match.teams.forEach(team => {
         if(team.status === "WIN" && team.members.includes(session.user.userName)){
-            return {
-                props: {
-                    result: "WIN"
-                }
-            };
+            matchResult.result = "WIN";
         } else if(team.status === "DRAW" && team.members.includes(session.user.userName)){
-            return {
-                props: {
-                    result: "DRAW"
-                }
-            };
+            matchResult.result = "DRAW";
         } else if(team.status === "LOSE" && team.members.includes(session.user.userName)){
-            return {
-                props: {
-                    result: "LOSE"
-                }
-            };
+           matchResult.result = "LOSE";
         }
+
     });
+
+    return {
+        props: {
+            result: matchResult.result
+        }
+    };
 }
 
 
