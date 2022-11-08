@@ -263,12 +263,12 @@ export async function getServerSideProps() {
 
     //check if the match is quick
     const quickMatches = matches.filter(
-        (match: any) => match.matchType === "QUICK"
+        (match: any) => match.matchType === "QUICK" && match.status === "UPCOMING"
     );
 
     //checks if the match is regular
     const regMatches = matches.filter(
-        (match: any) => match.matchType === "REGULAR"
+        (match: any) => match.matchType === "REGULAR" && match.status === "UPCOMING"
     );
 
     //returns as a props

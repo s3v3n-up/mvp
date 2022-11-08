@@ -4,12 +4,27 @@ import styles from "@/styles/History.module.sass";
 // Import useState and getMatches function
 import { useState } from "react";
 import { getMatches } from "@/lib/actions/match";
+import { useSession } from "next-auth/react";
+import router from "next/router";
+import axios from "axios";
 
 // History function for page
-export default function History({ createdMatches, pastMatches }: any) {
+export default function History({ pastMatches, activeMatches }: any) {
+
+    const { data:session } = useSession();
+
+    const joinActive = activeMatches.filter((match:any) => match.teams[0].members.includes(session?.user.userName) || (match.teams[1] && match.teams[1].members.includes(session?.user.userName)));
+    const pasts = pastMatches.filter((match:any) => match.teams[0].members.includes(session?.user.userName) || (match.teams[1] && match.teams[1].members.includes(session?.user.userName)));
 
     // Constants to indicate whether tab is active or not
     const [activeTabIndex, setActiveTabIndex] = useState(0);
+
+    // Function to delete match and refresh page
+    function deleteButton(id: string) {
+        axios.delete(`/api/match/${id}`);
+
+        return router.push("/userHistory").then(() => router.reload());
+    }
 
     // Labels and content to populate the selected tab
     const tabsData = [
@@ -20,12 +35,19 @@ export default function History({ createdMatches, pastMatches }: any) {
             content: (
                 <>
                     {/* Created match cards to hold match information*/}
-                    {createdMatches.map((created: any, idx: any) => (
+                    {joinActive.map((created: any, idx: any) => (
                         <div className={styles.cardContainer} key={idx}>
                             <div className={styles.cardInfo}>
                                 {/* The starting time of the match*/}
                                 <div className={styles.time}>
-                                    <p>{created.startTime}</p>
+                                    <p>{new Date(created.matchStart)
+                                        .toDateString()
+                                        .concat(
+                                            " " +
+                              new Date(created.matchStart).toLocaleTimeString(
+                                  "en-US"
+                              )
+                                        )}</p>
                                 </div>
                                 {/* The type of sport of the match*/}
                                 <div className={styles.sportType}>
@@ -34,11 +56,13 @@ export default function History({ createdMatches, pastMatches }: any) {
                                 <div className={styles.miniContainer}>
                                     {/* The type of sport of the match*/}
                                     <div className={styles.location}>
-                                        <p>{created.location}</p>
+                                        <p>{created.location.address.fullAddress}</p>
                                     </div>
                                     {/* The delete or leave button corresponding to whether the match was created or joined*/}
+                                    {}
                                     <button className={styles.cancelButton}>Leave</button>
-                                    <button className={styles.cancelButton}>Delete</button>
+                                    {created.status === "UPCOMING" && <button className={styles.cancelButton} onClick={(e) => deleteButton(created._id)}>Delete</button>}
+
                                 </div>
                             </div>
                         </div>
@@ -53,12 +77,19 @@ export default function History({ createdMatches, pastMatches }: any) {
             content: (
                 <>
                     {/* Past match cards to hold match information*/}
-                    {pastMatches.map((past: any, idx: any) => (
+                    {pasts.map((past: any, idx: any) => (
                         <div className={styles.cardContainer} key={idx}>
                             <div className={styles.cardInfo}>
                                 {/* The starting time of the match*/}
                                 <div className={styles.time}>
-                                    <p>{past.startTime}</p>
+                                    <p>{new Date(past.matchStart)
+                                        .toDateString()
+                                        .concat(
+                                            " " +
+                              new Date(past.matchStart).toLocaleTimeString(
+                                  "en-US"
+                              )
+                                        )}</p>
                                 </div>
                                 {/* The type of sport of the match*/}
                                 <div className={styles.sportType}>
@@ -67,7 +98,7 @@ export default function History({ createdMatches, pastMatches }: any) {
                                 {/* The match's location*/}
                                 <div className={styles.miniContainer}>
                                     <div className={styles.location}>
-                                        <p>{past.location}</p>
+                                        <p>{past.location.address.fullAddress}</p>
                                     </div>
                                 </div>
                             </div>
@@ -104,7 +135,7 @@ export default function History({ createdMatches, pastMatches }: any) {
                     </div>
                     {/*Here we display the appropriate tab content (or matches) that correspond to the active tab */}
                     <div className={styles.tabContent}>
-                        <p>{tabsData[activeTabIndex].content}</p>
+                        <div>{tabsData[activeTabIndex].content}</div>
                     </div>
                 </div>
             </div>
@@ -121,21 +152,17 @@ export async function getServerSideProps() {
     // This converts our data into an object.
     const matches = JSON.parse(JSON.stringify(data));
 
-    // We check if the match has yet to transpire
-    const createdMatches = matches.filter(
-        (match: any) => match.status === "UPCOMING"
-    );
+    // Filter all active matches
+    const activeMatches = matches.filter((match: any) => match.status === "UPCOMING" || match.status === "INPROGRESS");
 
-    // Checks if the match has passed already
-    const pastMatches = matches.filter(
-        (match: any) => match.status === "FINISHED"
-    );
+    // Filter all cancelled or finished matches
+    const pastMatches = matches.filter((match: any) => match.status === "CANCELLED" || match.status === "FINISHED");
 
     // Returns as props
     return {
         props: {
-            createdMatches,
             pastMatches,
+            activeMatches
         },
     };
 }

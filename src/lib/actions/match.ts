@@ -440,3 +440,15 @@ export async function findUserActiveMatches(matchHost: string) {
         throw new Error("Error in querying match", error);
     }
 }
+
+export async function updateMatchUser(matchId: string, user: string) {
+    try {
+
+        //ref: https://www.geeksforgeeks.org/mongoose-findbyidandupdate-function/
+        const updatedMatch = await MatchModel.updateOne({ _id: matchId }, { $pull: { teams:{ members: user } } }, { new: true });
+
+        return updatedMatch;
+    } catch (error: any) {
+        throw new Error("error updating match", { cause: error });
+    }
+}

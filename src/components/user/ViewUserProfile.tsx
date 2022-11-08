@@ -76,4 +76,3 @@ export default function ViewUserProfile({ data }: { data: Data }) {
         </div>
     );
 }
-
