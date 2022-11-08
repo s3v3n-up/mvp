@@ -1,5 +1,12 @@
- <div>
-  # Internet Programming and Web Apps - MVP Project
+###### CSTP 2107 Internet Programming and Web Apps
+
+<!-- LOGO -->
+<div align="center">
+  <a href="https://github.com/github_username/repo_name">
+    <img src="appLogo.jpg" alt="Logo" width="200" height="200">
+  </a>
+
+  #  MVP Project
 
 <!-- TEAM MEMBERS -->
 ## Authors
