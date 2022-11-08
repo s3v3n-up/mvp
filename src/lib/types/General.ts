@@ -16,6 +16,7 @@ export interface SportsOptions {
   name: string;
 }
 
+// Address interface for the geolocation, pointOfInterest is the nearest landmark
 export interface Address {
   fullAddress: string;
   pointOfInterest: string;
