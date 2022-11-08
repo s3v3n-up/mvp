@@ -193,7 +193,7 @@ export default function Scoreboard({ match, players }: Props) {
                 }
 
                 //checks if the match is paused
-                if(currMatch.matchPause) {
+                if(currMatch.matchPause){
 
                     //get pause time
                     const pauseTimer = new Date(new Date(currMatch.matchPause).toUTCString()).getTime();
@@ -246,7 +246,7 @@ export default function Scoreboard({ match, players }: Props) {
         try{
             if(currMatch.status === "PAUSED") return;
             await axios.put(`/api/match/${currMatch._id?.toString()}/operation/pause`, {
-                pauseTime: new Date(Date.now()).toUTCString()
+                pauseTime: new Date().toString()
             });
         } catch(err: any){
             alert(err.response.data.message);
