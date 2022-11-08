@@ -33,6 +33,11 @@
 - [License](#copyright-license)
 - [References](#pushpin-references)
 
+<!-- ABOUT THE PROJECT -->
+## :star2: About the Project
+MVP is a web app specially designed to connect sports lovers in seconds through fun, competitive matches. With a streamlined design to simplify the gam process and the ability to input users' team wins, they can work their way to the top of our leaderboard.
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
