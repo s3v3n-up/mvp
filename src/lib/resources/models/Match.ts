@@ -1,5 +1,6 @@
 import { models, model, Model, Schema } from "mongoose";
 import { Match } from "@/lib/types/Match";
+import { NineK } from "@mui/icons-material";
 
 /**
  * subdocument schema for teams
@@ -70,23 +71,56 @@ const matchSchema = new Schema<Match>({
 
     // This is the location where the match is or will happen
     location: {
-        type: Object,
-        required: true,
-        default: {}
+        lng: {
+            type: Number,
+            required: true,
+            default: 0
+        },
+        lat: {
+            type: Number,
+            required: true,
+            default: 0
+        },
+        address: {
+            fullAddress: {
+                type: String,
+                required: true,
+                default: ""
+            },
+            pointOfInterest: {
+                type: String,
+                required: true,
+                default: ""
+            },
+            city: {
+                type: String,
+                required: true,
+                default: ""
+            },
+            country: {
+                type: String,
+                required: true,
+                default: ""
+            }
+        }
     },
 
     // This is the start date/time of the match
     matchStart: {
         type: Date,
-        required: true,
-        default: Date.now()
+        default: null
     },
 
     // This is the end date/time of the match
     matchEnd: {
         type: Date,
-        required: true,
-        default: Date.now()
+        default: null
+    },
+
+    // This is the pause time
+    matchPause: {
+        type: Date,
+        default: null
     },
 
     // This is the match details, also a place where you can input extra details eg. Discord link, Facebook messenger link etc.
@@ -112,10 +146,17 @@ const matchSchema = new Schema<Match>({
     // This is the status of the match
     status: {
         type: String,
-        enum: ["UPCOMING", "INPROGRESS", "FINISHED", "CANCELLED"],
+        enum: ["UPCOMING", "INPROGRESS", "FINISHED", "CANCELLED", "PAUSED"],
         required: true,
         default: "UPCOMING"
+    },
+
+    //This is the match queue start
+    matchQueueStart: {
+        type: Date,
+        default: null,
     }
+
 });
 
 /**

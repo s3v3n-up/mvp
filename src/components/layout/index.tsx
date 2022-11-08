@@ -93,7 +93,7 @@ const Layout = ({ children }: Props) => {
                             layout="fill"
                             objectFit="cover"
                             objectPosition="center center"
-                            className="rounded-full"
+                            className="rounded-full bg-white"
                             onLoad={() => setIsAvatarLoaded(true)}
                         />
                     </button> :

@@ -1,5 +1,5 @@
 import MatchModel from "../resources/models/Match";
-import type { Match } from "@/lib/types/Match";
+import type { Match, Matches } from "@/lib/types/Match";
 import Database from "../resources/database";
 
 /**
@@ -156,11 +156,9 @@ export async function addMembersToTeam(
             throw new Error("match not found");
         }
 
+        //guard against extra members being added to team
         const maxPlayerPerTeam = match.gameMode.requiredPlayers / 2;
-        if (
-            match.teams[teamIdx].members.length + userNames.length >
-      maxPlayerPerTeam
-        ) {
+        if (match.teams[teamIdx].members.length + userNames.length > maxPlayerPerTeam) {
             throw new Error("team is full");
         }
 
@@ -298,7 +296,7 @@ export async function joinMatch(matchId: string, userName: string) {
         //if user already joined match, return
         if (
             match.teams[0].members.includes(userName) ||
-      match.teams[1].members.includes(userName)
+            match.teams[1].members.includes(userName)
         ) {
             return;
         }
@@ -341,6 +339,115 @@ export async function updateMatch(matchId: string, match: Match) {
         return updatedMatch;
     } catch (error: any) {
         throw new Error("error updating match", { cause: error });
+    }
+}
+
+/**
+ * update fields of a match
+ * @param matchId id of match to update
+ * @param fields fields to update
+ * @returns {Promise<Match>} promise that resolves to updated match
+ * @throws {Error} if some thing went wrong
+ */
+export async function updateMatchFields(matchId: string,fields: Partial<Match>) {
+    try {
+        const updatedMatch = await MatchModel.findByIdAndUpdate(matchId, fields, { new: true });
+
+        return updatedMatch;
+    } catch (error: any) {
+        throw new Error("error updating match fields", { cause: error });
+    }
+}
+
+/**
+ * update match queue start time
+ * @param matchId id of match to update
+ * @param startTime new start time
+ * @returns {Promise<Match>} promise that resolves to updated match
+ * @throws {Error} if match is not found
+ */
+export async function updateMatchQueueStartTime(matchId: string, startTime: Date | null) {
+    try {
+        const match = await MatchModel.findById(matchId);
+
+        //if match is not found, throw error
+        if (!match) {
+            throw new Error("match not found");
+        }
+
+        match.matchQueueStart = startTime;
+        await match.save();
+
+        return match;
+
+    } catch (error: any) {
+        throw new Error("error updating match queue start time", { cause: error });
+    }
+}
+
+/**
+ * update match start time
+ * @param matchId id of match to update
+ * @param startTime new start time
+ * @returns {Promise<Match>} promise that resolves to updated match
+ * @throws {Error} if match is not found
+ */
+export async function updateMatchStartTime(matchId: string, startTime: Date | null) {
+    try {
+        const match = await MatchModel.findById(matchId);
+        if (!match) {
+            throw new Error("match not found");
+        }
+        match.matchStart = startTime;
+        await match.save();
+
+        return match;
+    } catch (error: any) {
+        throw new Error("error updating match start time", { cause: error });
+    }
+}
+
+/**
+ * update match pause time
+ * @param matchId id of match to update
+ * @param pauseTime new pause time
+ * @returns {Promise<Match>} promise that resolves to updated match
+ * @throws {Error} if match is not found
+ */
+export async function updateMatchPauseTime(matchId: string, pauseTime: Date | null) {
+    try {
+        const match = await MatchModel.findById(matchId);
+        if (!match) {
+            throw new Error("match not found");
+        }
+        match.matchPause = pauseTime;
+        await match.save();
+
+        return match;
+    } catch (error: any) {
+        throw new Error("error updating match pause time", { cause: error });
+    }
+}
+
+/**
+ * update match status
+ * @param matchId id of match to update
+ * @param status new status
+ * @returns {Promise<Match>} promise that resolves to updated match
+ * @throws {Error} if match is not found
+ */
+export async function updateMatchStatus(matchId: string, status: Matches.MatchStatus) {
+    try {
+        const match = await MatchModel.findById(matchId);
+        if (!match) {
+            throw new Error("match not found");
+        }
+        match.status = status;
+        await match.save();
+
+        return match;
+    } catch (error: any) {
+        throw new Error("error updating match status", { cause: error });
     }
 }
 

@@ -3,7 +3,6 @@ import { getMatchById } from "@/lib/actions/match";
 import Database from "@/lib/resources/database";
 import { Match } from "@/lib/types/Match";
 import styles from "@/styles/MatchEdit.module.sass";
-import { Location } from "@/lib/types/General";
 
 //Third party imports
 import { AccessTime, AddLocationAlt } from "@mui/icons-material";
@@ -24,7 +23,7 @@ interface Props {
 export default function MatchEdit({ data }: Props) {
 
     //location useState
-    const [location, setLocation] = useState<Location>();
+    const [location, setLocation] = useState<any>();
 
     // Address useState
     const [address, setAddress] = useState("");
@@ -46,7 +45,7 @@ export default function MatchEdit({ data }: Props) {
 
     //axios to get the userdata and stats from api
     useEffect(() => {
-        setDate(new Date(data.matchStart).toISOString().slice(0, 16));
+        setDate(new Date(data.matchStart!).toISOString().slice(0, 16));
         setDescription(data.description);
         setIsDataLoaded(true);
     }, [data.matchStart, data.description]);
@@ -62,10 +61,7 @@ export default function MatchEdit({ data }: Props) {
         try {
             const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${val}.json?&limit=3&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`;
             await axios.get(endpoint).then(({ data }) => {
-                setLocation({
-                    lat: data.features[0].geometry.coordinates[1],
-                    lng: data.features[0].geometry.coordinates[0],
-                });
+                setLocation(data);
                 setSuggestions(data?.features);
             });
         } catch (error) {
@@ -76,7 +72,6 @@ export default function MatchEdit({ data }: Props) {
     // Function to handle date change event
     function handleDateChange(e: ChangeEvent<HTMLInputElement>) {
         const val = e.target.value;
-        console.log(typeof val);
         setDate(val);
     }
 
@@ -107,7 +102,16 @@ export default function MatchEdit({ data }: Props) {
                 teams: data.teams,
                 matchHost: data.matchHost,
                 sport: data.sport,
-                location: { lat: 22, lng: -122 },
+                location: {
+                    lng: location?.features[0].geometry.coordinates[0],
+                    lat: location?.features[0].geometry.coordinates[1],
+                    address: {
+                        fullAddress: location?.features[0].place_name,
+                        pointOfInterest: location?.features[0].context[0].text,
+                        city: location?.features[0].context[2].text,
+                        country: location?.features[0].context[5].text,
+                    }
+                },
                 matchStart: date,
                 description: description,
             });
@@ -177,7 +181,6 @@ export default function MatchEdit({ data }: Props) {
                                 {suggestions.map((suggestion: any, index: any) => {
                                     return (
                                         <Suggestion
-                                            className="w-full text-[#31302f] text-base"
                                             key={index}
                                             onClick={() => {
                                                 setAddress(suggestion.place_name);

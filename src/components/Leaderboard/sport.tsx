@@ -19,11 +19,13 @@ export default function Sport({ sportName }: {sportName: string}) {
         <button
             className={
                 `bg-white text-orange-500 
-                font-bold py-2 px-4 
+                font-bold py-2 px-10 
                 border-2 border-orange-500
-                hover:bg-orange-500 hover:text-white
-                hover:border-white rounded-md 
-                text-2xl`
+                hover:bg-orange-600 hover:text-white
+                hover:border-white rounded-3xl
+                md:text-lg text-sm h-full min-w-42
+                ease-out duration-200
+                `
             }
             onClick={onRedirect}>
             <p className="text-center">{sportName}</p>

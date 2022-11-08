@@ -38,13 +38,13 @@ export default async function handler(
                 sport: string().required(),
                 gameMode: object().required(),
                 matchType: string().required(),
-                location: object().required(),
+                location: object(),
                 matchStart: date().when("matchType", {
                     is: ((matchType: any) => matchType==="REGULAR"),
                     then: date().min(
                         new Date(Date.now() + 3600000),
-                        "You cannot set a date or time less than 1 hour from now.").required(),
-                    otherwise: date().min(new Date(Date.now() - 60000), "You cannot set a date or time in the past").required()
+                        "You cannot set a date or time less than 1 hour from now."),
+                    otherwise: date().min(new Date(Date.now() - 60000), "You cannot set a date or time in the past")
                 }),
                 matchEnd: date(),
                 description: string(),
@@ -67,7 +67,7 @@ export default async function handler(
 
             // Loops through all matches and look for UPCOMING and INPROGRESS matches
             matches.map(async (match: Match) => {
-                if (Date.now() - match.matchStart.getTime() > 3600000) {
+                if (Date.now() - match.matchStart!.getTime() > 3600000) {
                     lapsedMatches.push(match);
                 } else {
                     activeMatches.push(match);
@@ -103,6 +103,8 @@ export default async function handler(
                 description,
                 teams,
                 status,
+                matchQueueStart: null,
+                matchPause: null
             };
 
             // Call upon the createMatch action to use the values above and create a match model

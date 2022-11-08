@@ -11,7 +11,7 @@ export default function CreateMatch() {
 
     return (
         <section>
-            <h1 className="text-white text-3xl font-bold text-center mt-5">Create Match</h1>
+            <h1 className="text-white text-3xl font-bold text-center mt-10">Create Match</h1>
             <div className={
                 `px-5 
                 py-3 lg:w-3/5 
@@ -25,26 +25,36 @@ export default function CreateMatch() {
                 <button
                     className={`
                         bg-[#172123] bg-opacity-75 
-                        p-30 text-3xl 
-                        w-56 h-56
-                        rounded-lg drop-shadow-lg`
+                        p-40 text-3xl 
+                        w-56 h-56 mt-5
+                        flex items-center justify-center flex-col
+                        rounded-lg drop-shadow-lg
+                        hover:bg-opacity-100
+                        hover:bg-[#fb923c]
+                        ease-out duration-200
+                        `
                     }
                     onClick={() => router.push("/create/regularmatch")}
                 >
-                    <LocalFireDepartmentIcon sx={ { marginBottom: "2rem", color: "red" }} fontSize="large" /><br/>
-                    REGULAR<br/>MATCH
+                    <LocalFireDepartmentIcon sx={ { marginBottom: "0.25rem", color: "red", fontSize: "5rem" }}/><br/>
+                    Regular Match
                 </button>
                 <button
                     className={
                         `bg-[#172123] bg-opacity-75
-                        p-30 text-3xl 
-                        w-56 h-56 rounded-lg
-                        drop-shadow-lg`
+                        p-40 text-3xl 
+                        w-56 h-56 mt-5 rounded-lg
+                        flex items-center justify-center flex-col
+                        drop-shadow-lg
+                        hover:bg-opacity-100
+                        hover:bg-[#ef4444]
+                        ease-out duration-200
+                        `
                     }
                     onClick={() => router.push("/create/quickmatch")}
                 >
-                    <ElectricBoltIcon sx={ { marginBottom: "2rem", color: "orange" }} fontSize="large" /><br/>
-                    QUICK<br/>MATCH
+                    <ElectricBoltIcon sx={ { marginBottom: "0.25rem", color: "orange", fontSize: "5rem" }}/><br/>
+                    Quick Match
                 </button>
             </div>
         </section>
