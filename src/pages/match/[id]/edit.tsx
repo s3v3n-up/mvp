@@ -10,7 +10,6 @@ import axios from "axios";
 import { GetServerSidePropsContext } from "next";
 import router from "next/router";
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
-import styled from "styled-components";
 
 // interface for props
 interface Props {
@@ -142,23 +141,6 @@ export default function MatchEdit({ data }: Props) {
         }
     }
 
-	 // Custom parent wrapper for autofill feature
-	 const SuggestionWrapper = styled.div`
-	 display: flex;
-	 flex-direction: column;
-	 background: white;
-	 width: 320px;
-	 padding: 10px 20px;
-	 border-radius: 0px 0px 10px 10px;
-	 gap: 10px 0px;
-   `;
-
-    // Custom child wrapper for autofill feature
-    const Suggestion = styled.p`
-	 cursor: pointer;
-	 max-width: 320px;
-   `;
-
     return (
         <div className={styles.container}>
             <form onSubmit={handleFormSubmit}>
@@ -167,20 +149,26 @@ export default function MatchEdit({ data }: Props) {
                 <div>
                     {/* Sub Header for Match Type */}
                     <h3>Address</h3>
-                    <div className={styles.address}>
-                        <AddLocationAlt />
-                        <input
-                            value={address}
-                            name="location"
-                            placeholder="Address"
-                            onChange={handleLocationChange}
-                        />
+                    <div className={styles.location}>
+                        <div className={styles.address}>
+                            <div>
+                                <AddLocationAlt />
+                                <input
+                                    className={styles.inputaddress}
+                                    value={address}
+                                    name="location"
+                                    placeholder="Address"
+                                    onChange={handleLocationChange}
+                                />
+                            </div>
+                        </div>
+
 						 {/* Autofill for address */}
 						 {suggestions?.length > 0 && (
-                            <SuggestionWrapper>
+                            <div className={styles.suggest}>
                                 {suggestions.map((suggestion: any, index: any) => {
                                     return (
-                                        <Suggestion
+                                        <p
                                             key={index}
                                             onClick={() => {
                                                 setAddress(suggestion.place_name);
@@ -188,10 +176,10 @@ export default function MatchEdit({ data }: Props) {
                                             }}
                                         >
                                             {suggestion.place_name}
-                                        </Suggestion>
+                                        </p>
                                     );
                                 })}
-                            </SuggestionWrapper>
+                            </div>
                         )}
                     </div>
                 </div>

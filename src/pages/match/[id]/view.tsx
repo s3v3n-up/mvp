@@ -117,6 +117,15 @@ export default function MatchView({ data }: Props) {
         return router.push(`/match/${id}/edit`);
     }
 
+    async function leave(id: string, teamIdx: any) {
+        await axios.put(`api/match/${id}/operation/remove`, {
+            teamIdx,
+            UserName: session?.user.userName
+        });
+
+        return router.push("/").then(() => router.reload());
+    }
+
     // Function to handle get direction click event
     async function getDirectionsClicked() {
 
@@ -205,10 +214,10 @@ export default function MatchView({ data }: Props) {
                 <h3>Date and Time</h3>
                 {/* Data for match type */}
                 <p>
-                    {new Date(data.matchStart!)
+                    {new Date(data.matchStart)
                         .toDateString()
                         .concat(
-                            " " + new Date(data.matchStart!).toLocaleTimeString("en-US")
+                            " " + new Date(data.matchStart).toLocaleTimeString("en-US")
                         )}
                 </p>
             </div>
