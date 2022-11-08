@@ -155,7 +155,6 @@ const matchSchema = new Schema<Match>({
     matchQueueStart: {
         type: Date,
         default: null,
-
     }
 
 });
