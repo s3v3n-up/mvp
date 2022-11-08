@@ -1,7 +1,7 @@
 <!-- LOGO -->
 <div align="center">
   <a href="https://github.com/github_username/repo_name">
-    <img src="logo.png" alt="Logo" width="200" height="200">
+    <img src="public/logo.png" alt="Logo" width="200" height="200">
   </a>
 
   # Internet Programming and Web Apps - MVP Project
@@ -11,7 +11,7 @@
 [Abbe Azale](https://github.com/abbeazale) •
 [Karla Barrera](https://github.com/karla-bot) •
 [Yifei Chen](https://github.com/MelodyC823) •
-[Angelo Guerra]() •
+[Angelo Guerra](https://github.com/RazielGelo) •
 [Emil Sangil](https://github.com/emilsangil) •
 [Son Minh Nguyen](https://github.com/SonMinhNguyen2000) •
 [Ryan Urbien](https://github.com/dmncrynn)
