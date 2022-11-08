@@ -133,44 +133,44 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                 <ScrollContainer className="flex w-full" horizontal hideScrollbars>
                     {/* //add comments */}
                     {quickMatches.length > 0 &&
-            quickMatches
-                .filter(
-                    (quick: any) =>
-                        quick.sport.toLowerCase().includes(search.toLowerCase()) ||
+                        quickMatches
+                            .filter(
+                                (quick: any) =>
+                                    quick.sport.toLowerCase().includes(search.toLowerCase()) ||
                   lookUser(quick.matchHost).includes(search.toLowerCase())
-                )
-                .map((quick: any, idx: any) => (
+                            )
+                            .map((quick: any, idx: any) => (
 
-                    // card container
-                    <div className={Cardstyles.container} key={idx}>
-                        <div className={Cardstyles.time}>
-                            <div className={Cardstyles.detail}>
-                                <p>Now</p>
-                            </div>
-                            <div>
-                                <button className={Cardstyles.join}>join</button>
-                            </div>
-                        </div>
+                                // card container
+                                <div className={Cardstyles.container} key={idx}>
+                                    <div className={Cardstyles.time}>
+                                        <div className={Cardstyles.detail}>
+                                            <p>Now</p>
+                                        </div>
+                                        <div>
+                                            <button className={Cardstyles.join}>join</button>
+                                        </div>
+                                    </div>
 
-                        <div className={Cardstyles.sport}>
-                            <p>{quick.sport}</p>
-                        </div>
-                        <div className={Cardstyles.location}>
-                            <div>
-                                <LocationOnIcon />
-                            </div>
-                            <p>{quick.location.address.pointOfInterest}</p>
-                            <p>{(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: quick.location.lat as number, longitude: quick.location.lng as number }) / 1000).toFixed(2)}km away</p>
-                            <Image
-                                src={hostAvatar(quick.matchHost)}
-                                alt="avatar"
-                                className={Cardstyles.avatar}
-                                width={45}
-                                height={45}
-                            />
-                        </div>
-                    </div>
-                ))}
+                                    <div className={Cardstyles.sport}>
+                                        <p>{quick.sport}</p>
+                                    </div>
+                                    <div className={Cardstyles.location}>
+                                        <div>
+                                            <LocationOnIcon />
+                                        </div>
+                                        <p>{quick.location.address.pointOfInterest}</p>
+                                        <p>{(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: quick.location.lat as number, longitude: quick.location.lng as number }) / 1000).toFixed(2)}km away</p>
+                                        <Image
+                                            src={hostAvatar(quick.matchHost)}
+                                            alt="avatar"
+                                            className={Cardstyles.avatar}
+                                            width={45}
+                                            height={45}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
                 </ScrollContainer>
             </div>
             <div className="sm:mt-4 mt-10">

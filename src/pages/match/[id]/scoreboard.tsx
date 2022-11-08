@@ -308,7 +308,7 @@ export default function Scoreboard({ match, players }: Props) {
                 />
             </div>
             <h2 className="text-white text-center mt-5 text-3xl font-bold">
-                { currMatch.matchQueueStart && "Match is starting in " + queueTimer }
+                { currMatch.matchQueueStart && queueTimer && "Match is starting in " + queueTimer }
                 { matchTimer && "Match is in progress " + new Date(matchTimer * 1000).toISOString().slice(11, 19) }
             </h2>
             <div className={styles.scoreboard}>
