@@ -110,16 +110,18 @@ export default function Home({ regMatches, quickMatches, users }: any) {
         return router.push(`/user/${user}`);
     }
 
+    // Function to join the regular match
     async function joinReg(id: string) {
-        await axios.put(`api/match/${id}/team/join`, {userName: session?.user.userName})
+        await axios.put(`api/match/${id}/team/join`, { userName: session?.user.userName });
 
-        return router.push(`/match/${id}/view`).then(() => router.reload())
+        return router.push(`/match/${id}/view`).then(() => router.reload());
     }
 
+    // Functrion to join the quick match
     async function joinQuick(id: string) {
-        await axios.put(`api/match/${id}/team/join`, {userName: session?.user.userName})
+        await axios.put(`api/match/${id}/team/join`, { userName: session?.user.userName });
 
-        return router.push(`/match/${id}/scoreboard`).then(() => router.reload())
+        return router.push(`/match/${id}/scoreboard`).then(() => router.reload());
     }
 
     return (

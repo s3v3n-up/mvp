@@ -121,9 +121,9 @@ export default function MatchView({ data }: Props) {
         await axios.put(`api/match/${id}/operation/remove`, {
             teamIdx,
             UserName: session?.user.userName
-        })
+        });
 
-        return router.push(`/`).then(() => router.reload())
+        return router.push("/").then(() => router.reload());
     }
 
     // Function to handle get direction click event
