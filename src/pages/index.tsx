@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import haversine from "haversine-distance";
+import Head from "next/head";
 
 //local import
 import styles from "@/styles/Home.module.sass";
@@ -40,14 +41,14 @@ export default function Home({ regMatches, quickMatches, users }: any) {
 
     const [search, setSearch] = useState("");
 
-	 // Location useState
-	 const [currentLocation, setCurrentLocation] = useState<Location>();
+    // Location useState
+    const [currentLocation, setCurrentLocation] = useState<Location>();
 
-	 // Address useState
-	 const [address, setAddress] = useState<Location>();
+    // Address useState
+    const [address, setAddress] = useState<Location>();
 
-	 // useEffect to get user current location then set location to be saved in database
-	 useEffect(() => {
+    // useEffect to get user current location then set location to be saved in database
+    useEffect(() => {
 
         // options parameter for currentPosition function
         const options = {
@@ -101,7 +102,42 @@ export default function Home({ regMatches, quickMatches, users }: any) {
         return userFound[0].userName;
     }
 
+    function imageClick(id: string) {
+        const user = lookUser(id);
+
+        return router.push(`/user/${user}`);
+    }
+
+    function join(id: string){
+
+    }
+
     return (
+        <>
+            <Head>
+                <meta charSet="utf-8" />
+                <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+                <title>MVP | Home</title>
+                <meta name="description" content="Index page" />
+                <link rel="icon" href="/favicon.ico"></link>
+            </Head>
+            <div className={styles.matches}>
+                {/* search container */}
+                <div className={styles.search}>
+                    {/* title for the page */}
+                    <h1>Matches</h1>
+                    <div className={styles.searchitem}>
+                        {/* search input field */}
+                        <Input
+                            type="text"
+                            placeholder="Enter username or location"
+                            value={search}
+                            onChange={handleSearchChange}
+                        />
+                        <button>
+                            <Search fontSize="medium" />
+                        </button>
+=======
         <div className={styles.matches}>
             {/* search container */}
             <div className={styles.search}>
@@ -198,7 +234,6 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                     <div
                         className={Cardstyles.container}
                         key={idx}
-                        onClick={() => cardClicked(reg._id as string)}
                     >
                         <div className={Cardstyles.time}>
                             <div className={Cardstyles.detail}>
@@ -219,7 +254,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                             </div>
                         </div>
 
-                        <div className={Cardstyles.sport}>
+                        <div className={Cardstyles.sport} onClick={() => cardClicked(reg._id as string)}>
                             <p>{reg.sport}</p>
                         </div>
 
@@ -230,18 +265,20 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                             <p>{reg.location.address.pointOfInterest}</p>
                             <p>{Math.ceil(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: reg.location.lat as number, longitude: reg.location.lng as number }) / 1000)}km away</p>
                             <Image
+                                onClick={(e) => {imageClick(reg.matchHost)}}
                                 src={hostAvatar(reg.matchHost)}
                                 alt="avatar"
                                 className={Cardstyles.avatar}
                                 width={45}
                                 height={45}
                             />
-                        </div>
-                    </div>
-                ))}
-                </ScrollContainer>
+                          </div>
+                      </div>
+                  ))}
+                    </ScrollContainer>
+                </div>
             </div>
-        </div>
+        </>
     );
 }
 
