@@ -3,25 +3,34 @@ import { getMatchById } from "@/lib/actions/match";
 import Database from "@/lib/resources/database";
 import { Match } from "@/lib/types/Match";
 import styles from "@/styles/MatchEdit.module.sass";
-import { AccessTime,AddLocationAlt } from "@mui/icons-material";
+import { Location } from "@/lib/types/General";
+
+//Third party imports
+import { AccessTime, AddLocationAlt } from "@mui/icons-material";
 import axios from "axios";
 import { GetServerSidePropsContext } from "next";
 import router from "next/router";
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
-import { Location } from "@/lib/types/General";
+import styled from "styled-components";
 
 // interface for props
 interface Props {
-    data: Match
+  data: Match;
 }
 
 /**
  * @description displays Match Edit page
-*/
-export default function MatchEdit({ data } : Props){
+ */
+export default function MatchEdit({ data }: Props) {
 
     //location useState
     const [location, setLocation] = useState<Location>();
+
+    // Address useState
+    const [address, setAddress] = useState("");
+
+    // Address suggestions useState - this is for the autofill
+    const [suggestions, setSuggestions] = useState([]);
 
     // Date useState
     const [date, setDate] = useState("");
@@ -37,20 +46,31 @@ export default function MatchEdit({ data } : Props){
 
     //axios to get the userdata and stats from api
     useEffect(() => {
-        setDate(new Date(data.matchStart!).toISOString().slice(0,16));
+        setDate(new Date(data.matchStart!).toISOString().slice(0, 16));
         setDescription(data.description);
         setIsDataLoaded(true);
-    }, [data.matchStart, data.description]
-    );
+    }, [data.matchStart, data.description]);
 
     // Function to handle location change event
-    function handleLocationChange(e: ChangeEvent<HTMLInputElement>) {
+    async function handleLocationChange(e: ChangeEvent<HTMLInputElement>) {
         const val = e.target.value;
 
-        setLocation({
-            lat: 0,
-            lng: 0,
-        });
+        // handle change of address value in front end
+        setAddress(val);
+
+        // Code to set location to be saved on database and set suggestions for autofill
+        try {
+            const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${val}.json?&limit=3&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`;
+            await axios.get(endpoint).then(({ data }) => {
+                setLocation({
+                    lat: data.features[0].geometry.coordinates[1],
+                    lng: data.features[0].geometry.coordinates[0],
+                });
+                setSuggestions(data?.features);
+            });
+        } catch (error) {
+            console.log("Error fetching data, ", error);
+        }
     }
 
     // Function to handle date change event
@@ -67,7 +87,7 @@ export default function MatchEdit({ data } : Props){
     }
 
     //function that handles delete
-    async function handleDelete(id: string){
+    async function handleDelete(id: string) {
 
         //axios fetch post to delete a match
         await axios.delete(`/api/match/${data._id}`);
@@ -89,7 +109,7 @@ export default function MatchEdit({ data } : Props){
                 sport: data.sport,
                 location: { lat: 22, lng: -122 },
                 matchStart: date,
-                description: description
+                description: description,
             });
 
             // Checks if no successful post response
@@ -118,7 +138,24 @@ export default function MatchEdit({ data } : Props){
         }
     }
 
-    return(
+	 // Custom parent wrapper for autofill feature
+	 const SuggestionWrapper = styled.div`
+	 display: flex;
+	 flex-direction: column;
+	 background: white;
+	 width: 320px;
+	 padding: 10px 20px;
+	 border-radius: 0px 0px 10px 10px;
+	 gap: 10px 0px;
+   `;
+
+    // Custom child wrapper for autofill feature
+    const Suggestion = styled.p`
+	 cursor: pointer;
+	 max-width: 320px;
+   `;
+
+    return (
         <div className={styles.container}>
             <form onSubmit={handleFormSubmit}>
                 {/* Header for Sport */}
@@ -128,15 +165,44 @@ export default function MatchEdit({ data } : Props){
                     <h3>Address</h3>
                     <div className={styles.address}>
                         <AddLocationAlt />
-                        <input value={"0"} name="location" placeholder="Address" onChange={handleLocationChange}/>
+                        <input
+                            value={address}
+                            name="location"
+                            placeholder="Address"
+                            onChange={handleLocationChange}
+                        />
+						 {/* Autofill for address */}
+						 {suggestions?.length > 0 && (
+                            <SuggestionWrapper>
+                                {suggestions.map((suggestion: any, index: any) => {
+                                    return (
+                                        <Suggestion
+                                            className="w-full text-[#31302f] text-base"
+                                            key={index}
+                                            onClick={() => {
+                                                setAddress(suggestion.place_name);
+                                                setSuggestions([]);
+                                            }}
+                                        >
+                                            {suggestion.place_name}
+                                        </Suggestion>
+                                    );
+                                })}
+                            </SuggestionWrapper>
+                        )}
                     </div>
                 </div>
                 <div>
                     {/* Sub Header for Date and Time */}
                     <h3>Date and Time</h3>
                     <div className={styles.date}>
-                        <AccessTime/>
-                        <input value={date} name="date" type="datetime-local" onChange={handleDateChange}/>
+                        <AccessTime />
+                        <input
+                            value={date}
+                            name="date"
+                            type="datetime-local"
+                            onChange={handleDateChange}
+                        />
                     </div>
                 </div>
                 <div>
@@ -156,9 +222,16 @@ export default function MatchEdit({ data } : Props){
                 </div>
                 <div>
                     {/* button for delete */}
-                    <button className={styles.delete} onClick={() => handleDelete(data._id as string)}>Delete</button>
+                    <button
+                        className={styles.delete}
+                        onClick={() => handleDelete(data._id as string)}
+                    >
+            Delete
+                    </button>
                     {/* button for save */}
-                    <button type="submit" className={styles.save} >Save</button>
+                    <button type="submit" className={styles.save}>
+            Save
+                    </button>
                 </div>
             </form>
         </div>
@@ -166,7 +239,7 @@ export default function MatchEdit({ data } : Props){
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-    try{
+    try {
 
         // Gets the id parameter in the dynamic url
         const { id } = context.params!;
@@ -178,26 +251,25 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         const match = await getMatchById(id as string);
 
         // Redirect them to index if the match type is not REGULAR
-        if(match.matchType === "QUICK" || !match) {
+        if (match.matchType === "QUICK" || !match) {
             return {
                 redirect: {
-                    destination: "/"
-                }
+                    destination: "/",
+                },
             };
         }
 
         // Returns the data as props
         return {
             props: {
-                data: JSON.parse(JSON.stringify(match))
-            }
+                data: JSON.parse(JSON.stringify(match)),
+            },
         };
-    }
-    catch(error: any){
-        return{
+    } catch (error: any) {
+        return {
             redirect: {
-                destination: "/"
-            }
+                destination: "/",
+            },
         };
     }
 }

@@ -38,7 +38,7 @@ export default async function handler(
                 sport: string().required(),
                 gameMode: object().required(),
                 matchType: string().required(),
-                location: object().required(),
+                location: object(),
                 matchStart: date().when("matchType", {
                     is: ((matchType: any) => matchType==="REGULAR"),
                     then: date().min(

@@ -11,7 +11,7 @@ export default function CreateMatch() {
 
     return (
         <section>
-            <h1 className="text-white text-3xl font-bold text-center mt-5">Create Match</h1>
+            <h1 className="text-white text-3xl font-bold text-center mt-10">Create Match</h1>
             <div className={
                 `px-5 
                 py-3 lg:w-3/5 
@@ -26,25 +26,25 @@ export default function CreateMatch() {
                     className={`
                         bg-[#172123] bg-opacity-75 
                         p-30 text-3xl 
-                        w-56 h-56
+                        w-56 h-56 mt-5
                         rounded-lg drop-shadow-lg`
                     }
                     onClick={() => router.push("/create/regularmatch")}
                 >
                     <LocalFireDepartmentIcon sx={ { marginBottom: "2rem", color: "red" }} fontSize="large" /><br/>
-                    REGULAR<br/>MATCH
+                    Regular<br/>Match
                 </button>
                 <button
                     className={
                         `bg-[#172123] bg-opacity-75
                         p-30 text-3xl 
-                        w-56 h-56 rounded-lg
+                        w-56 h-56 mt-5 rounded-lg
                         drop-shadow-lg`
                     }
                     onClick={() => router.push("/create/quickmatch")}
                 >
                     <ElectricBoltIcon sx={ { marginBottom: "2rem", color: "orange" }} fontSize="large" /><br/>
-                    QUICK<br/>MATCH
+                    Quick<br/>Match
                 </button>
             </div>
         </section>

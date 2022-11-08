@@ -60,13 +60,13 @@ export default function Navbar() {
                     />
                 </button>
                 <ul className={styles.option}>
-                    <NavTab href="/leaderboard" pageName="Leaderboard"/>
                     <NavTab href="/" pageName="Matches"/>
                     <NavTab href="/create" pageName="Create"/>
+                    <NavTab href="/leaderboard" pageName="Leaderboard"/>
                     <NavTab href="/userHistory" pageName="History"/>
                 </ul>
                 <ul className={styles.auth}>
-                    <button className="relative h-14 w-14 rounded-full" onClick={()=>router.push("/user/profile")}>
+                    <button className="relative h-14 w-14 rounded-full bg-white" onClick={()=>router.push("/user/profile")}>
                         { isAvatarLoaded &&
                             <Skeleton
                                 variant="circular"
@@ -81,7 +81,7 @@ export default function Navbar() {
                             layout="fill"
                             objectFit="cover"
                             objectPosition="center center"
-                            className="rounded-full"
+                            className="rounded-full bg-white"
                             onLoad={() => setIsAvatarLoaded(true)}
                         />
                     </button>
@@ -90,14 +90,14 @@ export default function Navbar() {
             </nav>
             <nav className={styles.bottomNav}>
                 <ul className={styles.option}>
-                    <NavTab href="/leaderboard" pageName="Leaderboard">
-                        <LeaderboardIcon/>
-                    </NavTab>
                     <NavTab href="/" pageName="Matches">
                         <HomeIcon/>
                     </NavTab>
                     <NavTab href="/create" pageName="Create">
                         <AddHomeOutlinedIcon/>
+                    </NavTab>
+                    <NavTab href="/leaderboard" pageName="Leaderboard">
+                        <LeaderboardIcon/>
                     </NavTab>
                     <NavTab href="/userHistory" pageName="History">
                         <Person/>
