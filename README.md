@@ -78,16 +78,25 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 ### :file_folder: Folder Structure
 1. **public** - icons and images go here
  
-2. **src**
-  - components
-  - context
-  - hooks
-  - lib
-  - pages
-  - shared
-  - stories
-  - styles
-  - types
+2. **src** - source folder where below folders are contained
+
+3. **components**
+  
+4. **context**
+
+5. **hooks**
+
+6. **lib**
+
+7. **pages**
+
+8. **shared**
+
+9. **stories**
+
+10. **styles**
+
+11. **types**
   
 
 
