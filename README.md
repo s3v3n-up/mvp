@@ -99,8 +99,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 11. **types**
   
 
-
-## Getting Started
+<!-- GETTING STARTED -->
+## :memo: Getting Started
 
 First, run the development server:
 
@@ -132,3 +132,29 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+<!-- RUN LOCALLY-->
+### :running: Run Locally
+1. Clone or download the project repository
+2. In your terminal, do 
+  ``npm i`` and then 
+  ```bash
+npm run dev
+# or
+yarn dev
+```
+to run the development server!
+
+<!-- CONTRIBUTING -->
+## :busts_in_silhouette: Contributing
+Contributions are always welcme and appreciated. Please ensure to always make a new branch for your additions.
+
+<!-- LICENSE -->
+## :copyright: License
+Distributed under the **MIT License**. See ***LICENSE.md*** for more information.
+
+<!-- REFERENCES -->
+## :pushpin: References
+- [Wonderful README](https://github.com/Louis3797/awesome-readme-template/blob/main/README.md#art-color-reference)
+- [Emojis for Github README](https://gist.github.com/rxaviers/7360908)
+- [Color Code Hex](https://www.colorcodehex.com/)
