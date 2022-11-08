@@ -1,5 +1,5 @@
  <div>
- # Internet Programming and Web Apps - MVP Project
+  # Internet Programming and Web Apps - MVP Project
 
 <!-- TEAM MEMBERS -->
 ## Authors
