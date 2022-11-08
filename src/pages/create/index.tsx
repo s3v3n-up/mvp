@@ -75,6 +75,6 @@ export default function CreateMatch() {
                 </div>
             </section>
         </>
-                      
+
     );
 }

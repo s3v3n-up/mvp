@@ -1,12 +1,12 @@
 //third-party import
 import Image from "next/image";
+import Head from "next/head";
 import { useState, ChangeEvent, useEffect } from "react";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import haversine from "haversine-distance";
-import Head from "next/head";
 
 //local import
 import styles from "@/styles/Home.module.sass";
@@ -41,14 +41,14 @@ export default function Home({ regMatches, quickMatches, users }: any) {
 
     const [search, setSearch] = useState("");
 
-    // Location useState
-    const [currentLocation, setCurrentLocation] = useState<Location>();
+	 // Location useState
+	 const [currentLocation, setCurrentLocation] = useState<Location>();
 
-    // Address useState
-    const [address, setAddress] = useState<Location>();
+	 // Address useState
+	 const [address, setAddress] = useState<Location>();
 
-    // useEffect to get user current location then set location to be saved in database
-    useEffect(() => {
+	 // useEffect to get user current location then set location to be saved in database
+	 useEffect(() => {
 
         // options parameter for currentPosition function
         const options = {
@@ -111,18 +111,11 @@ export default function Home({ regMatches, quickMatches, users }: any) {
 
     return (
         <>
-            <Head>
-                <meta charSet="utf-8" />
-                <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-                <title>MVP | Home</title>
-                <meta name="description" content="Index page" />
-                <link rel="icon" href="/favicon.ico"></link>
-            </Head>
             <div className={styles.matches}>
                 {/* search container */}
                 <div className={styles.search}>
                     {/* title for the page */}
-                    <h1>Matches</h1>
+                    <h1 className="px-2 py-3">Matches</h1>
                     <div className={styles.searchitem}>
                         {/* search input field */}
                         <Input
@@ -134,38 +127,21 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                         <button>
                             <Search fontSize="medium" />
                         </button>
-=======
-        <div className={styles.matches}>
-            {/* search container */}
-            <div className={styles.search}>
-                {/* title for the page */}
-                <h1 className="px-2 py-3">Matches</h1>
-                <div className={styles.searchitem}>
-                    {/* search input field */}
-                    <Input
-                        type="text"
-                        placeholder="Enter username or location"
-                        value={search}
-                        onChange={handleSearchChange}
-                    />
-                    <button>
-                        <Search fontSize="medium" />
-                    </button>
+                    </div>
                 </div>
-            </div>
-            <div>
-                {/* Subtitle for quick matches */}
-                <p>Quick Matches</p>
-                {quickMatches.length === 0 && (
-                    <p className="text-2xl text-white text-center">
-                        {" "}
+                <div>
+                    {/* Subtitle for quick matches */}
+                    <p>Quick Matches</p>
+                    {quickMatches.length === 0 && (
+                        <p className="text-2xl text-white text-center">
+                            {" "}
             ⚠️ There is no quick match found
-                    </p>
-                )}
-                {/* horizontal sroll for created matches */}
-                <ScrollContainer className="flex w-full" horizontal hideScrollbars>
-                    {/*filters through quick matches including lower case letters in text input*/}
-                    {quickMatches.length > 0 &&
+                        </p>
+                    )}
+                    {/* horizontal sroll for created matches */}
+                    <ScrollContainer className="flex w-full" horizontal hideScrollbars>
+                        {/*filters through quick matches including lower case letters in text input*/}
+                        {quickMatches.length > 0 &&
                         quickMatches
                             .filter(
                                 (quick: any) =>
@@ -208,21 +184,21 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                                     </div>
                                 </div>
                             ))}
-                </ScrollContainer>
-            </div>
-            <div className="sm:mt-4 mt-10">
-                {/*  Subtitle for regular matches */}
-                <p>Regular Matches</p>
-                {regMatches.length === 0 && (
-                    <p className="text-2xl text-white text-center">
-                        {" "}
+                    </ScrollContainer>
+                </div>
+                <div className="sm:mt-4 mt-10">
+                    {/*  Subtitle for regular matches */}
+                    <p>Regular Matches</p>
+                    {regMatches.length === 0 && (
+                        <p className="text-2xl text-white text-center">
+                            {" "}
             ⚠️ There is no regular match found
-                    </p>
-                )}
-                {/* horizontal scroll for created matches */}
-                <ScrollContainer className="flex w-full" horizontal hideScrollbars>
-                    {/*filters through regular matches including lower case letters in text input*/}
-                    {regMatches.length > 0 &&
+                        </p>
+                    )}
+                    {/* horizontal scroll for created matches */}
+                    <ScrollContainer className="flex w-full" horizontal hideScrollbars>
+                        {/*filters through regular matches including lower case letters in text input*/}
+                        {regMatches.length > 0 &&
             regMatches
                 .filter(
                     (reg: any) =>
@@ -275,9 +251,9 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                                 width={45}
                                 height={45}
                             />
-                          </div>
-                      </div>
-                  ))}
+                        </div>
+                    </div>
+                ))}
                     </ScrollContainer>
                 </div>
             </div>
