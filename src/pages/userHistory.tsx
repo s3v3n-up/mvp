@@ -1,5 +1,6 @@
 // Import the style module for the userHistory page
 import styles from "@/styles/History.module.sass";
+import Head from "next/head";
 
 // Import useState and getMatches function
 import { useState } from "react";
@@ -80,35 +81,49 @@ export default function History({ createdMatches, pastMatches }: any) {
 
     // The rendered content of the page
     return (
-        <div className={styles.baseContainer}>
-            <div className={styles.historyContainer}>
-                <div className={styles.background}>
-                    <div className={styles.titleContainer}>
-                        {/*Each tab has a key, either 1 or 0, depending on the key, the tab is active or not*/}
-                        {/*Tabs styling changes depending on it being selected or clicked*/}
-                        {tabsData.map((tab, idx) => {
-                            return (
-                                <button
-                                    key={idx}
-                                    className={` ${
-                                        idx === activeTabIndex
-                                            ? styles.selectedTab
-                                            : styles.unselectedTab
-                                    }`}
-                                    onClick={() => setActiveTabIndex(idx)}
-                                >
-                                    {tab.label}
-                                </button>
-                            );
-                        })}
-                    </div>
-                    {/*Here we display the appropriate tab content (or matches) that correspond to the active tab */}
-                    <div className={styles.tabContent}>
-                        <p>{tabsData[activeTabIndex].content}</p>
+        <>
+            <Head>
+                <meta charSet="utf-8" />
+                <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+                <title>MVP | History</title>
+                <meta name="description" content="History page" />
+                <link
+                    rel="icon"
+                    type="image/png"
+                    sizes="16x16"
+                    href="/favicon.ico"
+                ></link>
+            </Head>
+            <div className={styles.baseContainer}>
+                <div className={styles.historyContainer}>
+                    <div className={styles.background}>
+                        <div className={styles.titleContainer}>
+                            {/*Each tab has a key, either 1 or 0, depending on the key, the tab is active or not*/}
+                            {/*Tabs styling changes depending on it being selected or clicked*/}
+                            {tabsData.map((tab, idx) => {
+                                return (
+                                    <button
+                                        key={idx}
+                                        className={` ${
+                                            idx === activeTabIndex
+                                                ? styles.selectedTab
+                                                : styles.unselectedTab
+                                        }`}
+                                        onClick={() => setActiveTabIndex(idx)}
+                                    >
+                                        {tab.label}
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        {/*Here we display the appropriate tab content (or matches) that correspond to the active tab */}
+                        <div className={styles.tabContent}>
+                            <p>{tabsData[activeTabIndex].content}</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 }
 
