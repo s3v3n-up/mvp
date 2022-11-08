@@ -1,5 +1,6 @@
 import { models, model, Model, Schema } from "mongoose";
 import { Match } from "@/lib/types/Match";
+import { NineK } from "@mui/icons-material";
 
 /**
  * subdocument schema for teams
@@ -70,9 +71,38 @@ const matchSchema = new Schema<Match>({
 
     // This is the location where the match is or will happen
     location: {
-        type: Object,
-        required: true,
-        default: {}
+        lng: {
+            type: Number,
+            required: true,
+            default: 0
+        },
+        lat: {
+            type: Number,
+            required: true,
+            default: 0
+        },
+        address: {
+            fullAddress: {
+                type: String,
+                required: true,
+                default: ""
+            },
+            pointOfInterest: {
+                type: String,
+                required: true,
+                default: ""
+            },
+            city: {
+                type: String,
+                required: true,
+                default: ""
+            },
+            country: {
+                type: String,
+                required: true,
+                default: ""
+            }
+        }
     },
 
     // This is the start date/time of the match

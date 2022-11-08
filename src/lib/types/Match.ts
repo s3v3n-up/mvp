@@ -46,7 +46,16 @@ export interface Match {
 	matchType: Matches.MatchType;
 
 	// This is the location where the match is or will happen
-	location: object;
+	location: {
+		lng: number,
+		lat: number,
+		address: {
+			fullAddress: string,
+			pointOfInterest: string,
+			city: string,
+			country: string
+		}
+	};
 
 	// This is the start date/time of the match
 	matchStart: Date;
