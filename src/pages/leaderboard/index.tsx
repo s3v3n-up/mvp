@@ -18,9 +18,9 @@ export default function Leaderboard({ sports }: {sports: Sport[]}) {
                     ⚠️ NO SPORT FOUND - ADMINS NEED TO ADD MORE SPORT
                 </h2>
             }
-            <ul className="flex flex-rows items-center justify-center flex-wrap sm:w-3/5 w-4/5 m-auto sm:p-5 p-3">
+            <ul className="flex flex-row flex-wrap justify-center gap-3 sm:w-3/5 w-4/5 m-auto sm:p-5 p-3">
                 {sports.length > 0 && sports.map((sport) => (
-                    <li key={sport.name}>
+                    <li key={sport.name} className="h-full">
                         <SportButton sportName={sport.name} />
                     </li>
                 ))}
@@ -45,7 +45,9 @@ export async function getStaticProps() {
         };
     } catch {
         return {
-            notFound: true
+            props: {
+                sports: []
+            }
         };
     }
 }

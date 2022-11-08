@@ -87,9 +87,6 @@ export default function Scoreboard({ match, players }: Props) {
         currMatch.teams[1].score
     );
 
-    //is match over state
-    const [isFinished, setFinished] = useState<boolean>(false);
-
     //refetch match data every 1 seconds
     const { data, error } = useSWR<{match: Match}>(`/api/match/${match._id?.toString()}`,fetcher, {
         refreshInterval: 1000,
@@ -137,7 +134,7 @@ export default function Scoreboard({ match, players }: Props) {
             const isMemberFull = currMemberNumbers === maxPlayer;
 
             //if match is full, set match start queue time
-            if (isMemberFull && !currMatch.matchQueueStart && !currMatch.matchStart) {
+            if (isMemberFull && !currMatch.matchQueueStart && !currMatch.matchStart && currMatch.matchType !== "REGULAR") {
                 await axios.put(`/api/match/${currMatch._id?.toString()}/time/queue`, {
                     queueStartTime: new Date().toString()
                 });
@@ -152,7 +149,7 @@ export default function Scoreboard({ match, players }: Props) {
                 //queue timer
                 queuingTimer = setInterval(async()=> {
                     const now = new Date(new Date().toUTCString()).getTime();
-                    const timeDiff = 31 - Math.floor((now - queueStart) / 1000);
+                    const timeDiff = 35 - Math.floor((now - queueStart) / 1000);
                     setQueueTimer(timeDiff);
 
                     //check if 30 seconds has passed or if match is not full
@@ -195,7 +192,7 @@ export default function Scoreboard({ match, players }: Props) {
                 }
 
                 //checks if the match is paused
-                if(currMatch.matchPause){
+                if(currMatch.matchPause) {
 
                     //get pause time
                     const pauseTimer = new Date(new Date(currMatch.matchPause).toUTCString()).getTime();
@@ -207,10 +204,10 @@ export default function Scoreboard({ match, players }: Props) {
                     if(currMatch.status === "INPROGRESS") {
                         gameTimer = setInterval(async()=> {
                             const now = new Date(new Date().toUTCString()).getTime();
-                            const timeDiff = timePassed + Math.floor((now - pauseTimer) / 1000);
+                            const timeDiff = Math.floor((now - pauseTimer)/1000) + timePassed;
                             setMatchTimer(timeDiff);
                         }, 1000);
-                    } else{
+                    } else {
                         setMatchTimer(timePassed);
                         clearInterval(gameTimer as NodeJS.Timeout);
                     }
@@ -239,7 +236,7 @@ export default function Scoreboard({ match, players }: Props) {
         try{
             if(currMatch.status === "PAUSED") return;
             await axios.put(`/api/match/${currMatch._id?.toString()}/operation/pause`, {
-                pauseTime: new Date().toString()
+                pauseTime: new Date(Date.now()).toUTCString()
             });
         } catch(err: any){
             alert(err.response.data.message);
@@ -311,7 +308,7 @@ export default function Scoreboard({ match, players }: Props) {
                     objectPosition="center"
                 />
             </div>
-            <h2 className="text-white text-center mt-5 text-3xl font-bold">
+            <h2 className="text-white text-center mt-5 text-3xl font-bold mb-3">
                 { currMatch.matchQueueStart && queueTimer && "Match is starting in " + queueTimer }
                 { matchTimer && "Match is in progress " + new Date(matchTimer * 1000).toISOString().slice(11, 19) }
             </h2>
@@ -416,18 +413,18 @@ export default function Scoreboard({ match, players }: Props) {
                 { isMatchHost &&
                     <>
                         { currMatch.status === "INPROGRESS" &&
-                            <button onClick={pauseMatch} className={styles.pause}>
+                            <button onClick={pauseMatch} className={`${styles.pause} text-base p-5`}>
                                 Pause
                             </button>
                         }
                         { currMatch.status === "PAUSED" &&
-                            <button onClick={resumeMatch} className={styles.pause}>
+                            <button onClick={resumeMatch} className={`${styles.pause} text-base p-5`}>
                                 Resume
                             </button>
                         }
-                        { currMatch.matchStart &&
+                        { (currMatch.status === "INPROGRESS" || currMatch.status === "PAUSED") &&
                             <button
-                                className={styles.finish}
+                                className={`${styles.finish} text-base p-5`}
                                 onClick={endMatch}
                             >
                                 Finish
@@ -439,7 +436,7 @@ export default function Scoreboard({ match, players }: Props) {
                                 text-center text-orange-500 
                                 rounded border-2 
                                 border-orange-500 md:w-1/4
-                                w-full m-auto col-span-2`
+                                w-full m-auto col-span-2 text-base p-5`
                             }
                             onClick={cancelMatch}
                         >

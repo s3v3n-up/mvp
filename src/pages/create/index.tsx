@@ -25,26 +25,36 @@ export default function CreateMatch() {
                 <button
                     className={`
                         bg-[#172123] bg-opacity-75 
-                        p-30 text-3xl 
+                        p-40 text-3xl 
                         w-56 h-56 mt-5
-                        rounded-lg drop-shadow-lg`
+                        flex items-center justify-center flex-col
+                        rounded-lg drop-shadow-lg
+                        hover:bg-opacity-100
+                        hover:bg-[#fb923c]
+                        ease-out duration-200
+                        `
                     }
                     onClick={() => router.push("/create/regularmatch")}
                 >
-                    <LocalFireDepartmentIcon sx={ { marginBottom: "2rem", color: "red" }} fontSize="large" /><br/>
-                    Regular<br/>Match
+                    <LocalFireDepartmentIcon sx={ { marginBottom: "0.25rem", color: "red", fontSize: "5rem" }}/><br/>
+                    Regular Match
                 </button>
                 <button
                     className={
                         `bg-[#172123] bg-opacity-75
-                        p-30 text-3xl 
+                        p-40 text-3xl 
                         w-56 h-56 mt-5 rounded-lg
-                        drop-shadow-lg`
+                        flex items-center justify-center flex-col
+                        drop-shadow-lg
+                        hover:bg-opacity-100
+                        hover:bg-[#ef4444]
+                        ease-out duration-200
+                        `
                     }
                     onClick={() => router.push("/create/quickmatch")}
                 >
-                    <ElectricBoltIcon sx={ { marginBottom: "2rem", color: "orange" }} fontSize="large" /><br/>
-                    Quick<br/>Match
+                    <ElectricBoltIcon sx={ { marginBottom: "0.25rem", color: "orange", fontSize: "5rem" }}/><br/>
+                    Quick Match
                 </button>
             </div>
         </section>

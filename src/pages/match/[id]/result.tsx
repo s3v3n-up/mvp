@@ -65,7 +65,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext){
         };
     }
 
-    const matchResult = {result: ""};
+    const matchResult = { result: "" };
+
     //checks the status for each team and gets the result of either team
     match.teams.forEach(team => {
         if(team.status === "WIN" && team.members.includes(session.user.userName)){
@@ -73,9 +74,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext){
         } else if(team.status === "DRAW" && team.members.includes(session.user.userName)){
             matchResult.result = "DRAW";
         } else if(team.status === "LOSE" && team.members.includes(session.user.userName)){
-           matchResult.result = "LOSE";
+            matchResult.result = "LOSE";
         }
-
     });
 
     return {
@@ -84,5 +84,3 @@ export async function getServerSideProps(context: GetServerSidePropsContext){
         }
     };
 }
-
-

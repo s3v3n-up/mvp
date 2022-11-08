@@ -116,7 +116,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
             {/* search container */}
             <div className={styles.search}>
                 {/* title for the page */}
-                <h1>Matches</h1>
+                <h1 className="px-2 py-3">Matches</h1>
                 <div className={styles.searchitem}>
                     {/* search input field */}
                     <Input
@@ -170,7 +170,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                                             <LocationOnIcon />
                                         </div>
                                         <p>{quick.location.address.pointOfInterest}</p>
-                                        <p>{(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: quick.location.lat as number, longitude: quick.location.lng as number }) / 1000).toFixed(2)}km away</p>
+                                        <p>{Math.ceil(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: quick.location.lat as number, longitude: quick.location.lng as number }) / 1000)}km away</p>
                                         <Image
                                             src={hostAvatar(quick.matchHost)}
                                             alt="avatar"
@@ -237,7 +237,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                                 <LocationOnIcon />
                             </div>
                             <p>{reg.location.address.pointOfInterest}</p>
-                            <p>{(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: reg.location.lat as number, longitude: reg.location.lng as number }) / 1000).toFixed(2)}km away</p>
+                            <p>{Math.ceil(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: reg.location.lat as number, longitude: reg.location.lng as number }) / 1000)}km away</p>
                             <Image
                                 onClick={(e) => {imageClick(reg.matchHost)}}
                                 src={hostAvatar(reg.matchHost)}
@@ -272,12 +272,12 @@ export async function getServerSideProps() {
 
     //check if the match is quick
     const quickMatches = matches.filter(
-        (match: any) => match.matchType === "QUICK"
+        (match: any) => match.matchType === "QUICK" && match.status === "UPCOMING"
     );
 
     //checks if the match is regular
     const regMatches = matches.filter(
-        (match: any) => match.matchType === "REGULAR"
+        (match: any) => match.matchType === "REGULAR" && match.status === "UPCOMING"
     );
 
     //returns as a props

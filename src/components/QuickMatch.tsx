@@ -145,6 +145,7 @@ export default function QuickMatch({ props }: Props) {
                 matchStart: new Date(Date.now()),
                 matchType: "QUICK",
                 status: "UPCOMING",
+                teams: [{ members: session!.user.userName, score: 0, status: "UNSET" }]
             });
 
             // Checks if no successful post response
@@ -194,16 +195,16 @@ export default function QuickMatch({ props }: Props) {
     });
 
     return (
-        <div className="flex justify-evenly mt-10">
-            <div className="flex flex-col space-y-2 lg:justify-end ">
+        <div className="flex justify-evenly mt-10 w-full">
+            <div className="flex flex-col space-y-2 sm:w-3/5 w-11/12">
                 <div>
                     {/* Header for Quick Match Page */}
-                    <h1 className="text-[#f3f2ef] text-3xl text-center pt-3">
-            Create Quick Match
+                    <h1 className="text-[#f3f2ef] text-3xl text-center pt-1 mb-5">
+                        Create Quick Match
                     </h1>
                 </div>
                 {/* Form to be submitted */}
-                <form onSubmit={handleFormSubmit}>
+                <form onSubmit={handleFormSubmit} className="lg:w-2/5 w-11/12 m-auto text-base flex flex-col gap-3">
                     {/* Error and Loading div */}
                     {error && <AlertMessage message={error} type="error" />}
                     {loading && <AlertMessage message="Loading..." type="loading" />}
@@ -239,9 +240,9 @@ export default function QuickMatch({ props }: Props) {
                     <div className="flex justify-center pt-5 cursor-pointer">
                         <button
                             type="submit"
-                            className="rounded-sm w-80 bg-[#fc5c3e] h-10  font-extrabold  text-[#f1ecec]"
+                            className="rounded-md bg-[#fc5c3e] h-10  font-extrabold  text-[#f1ecec] w-full"
                         >
-              CREATE
+                            CREATE
                         </button>
                     </div>
                 </form>

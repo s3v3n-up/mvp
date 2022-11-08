@@ -18,6 +18,7 @@ import { Location } from "@/lib/types/General";
 // eslint-disable-next-line camelcase
 import { atcb_action } from "add-to-calendar-button";
 import "add-to-calendar-button/assets/css/atcb.css";
+import { useSession } from "next-auth/react";
 
 // Interface for passed props
 interface Props {
@@ -40,23 +41,11 @@ interface Config {
  */
 export default function MatchView({ data }: Props) {
 
+    // Access session
+    const { data: session } = useSession();
+
     // Stores and Sets the location
     const [startLocation, setstartLocation] = useState<Location>();
-
-    // Stores and Sets the location
-    const [address, setAddress] = useState();
-
-    // useEffect to set address for it to display as a string since we are storing location as longitude and latitude in the database
-    // useEffect(() => {
-    //     axios
-    //         .get(
-    //             `https://api.mapbox.com/geocoding/v5/mapbox.places/${data.location.lng},${data.location.lat}.json?types=address&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`
-    //         )
-    //         .then(({ data }) => {
-    //             setAddress(data.features[0].place_name);
-    //         });
-    // // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, []);
 
     const [result, setResult] = useState<any>();
 
@@ -90,7 +79,7 @@ export default function MatchView({ data }: Props) {
     }, []);
 
     // Combine team1 and team2
-    let allTeams: string[] = data.teams[0].members.concat(data.teams[1].members);
+    let allTeams: string[] = data.teams[1] ? data.teams[0].members.concat(data.teams[1].members) : data.teams[0].members;
 
     // Converts the date type(mm/dd/yyyy) to string format ("yyyy-dd-mm")
     const startTime = new Date(data.matchStart)
@@ -98,7 +87,7 @@ export default function MatchView({ data }: Props) {
         .split("/")
         .reverse()
         .join("-");
-    const endTime = new Date(data.matchStart)
+    const endTime = new Date(data.matchEnd)
         .toLocaleDateString("en-GB")
         .split("/")
         .reverse()
@@ -231,7 +220,7 @@ export default function MatchView({ data }: Props) {
             </div>
             <div>
                 {/* Sub Header for Joined Players */}
-                <button className={styles.directions}>Join</button>
+                {session?.user.id !== data.matchHost && <button className={styles.directions}>Join</button>}
                 <h3>Joined Players</h3>
                 <div>
                     {/* Displays all joined players */}
