@@ -1,3 +1,18 @@
+# Internet Programming and Web Apps - MVP Project
+
+
+<!-- TABLE OF CONTENTS -->
+## Table of Contents
+- [About the Project](#about-the-project)
+  * [Tech Stack](#tech-stack)
+  * [Features](#features)
+  * [Folders Structure](#folder-structure)
+- [Getting Started](#getting-started)
+  * [Requirements](#crequirements)
+  * [Run Locally](#run-locally)
+- [Contributing](#contributing)
+- [License](#license)
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
