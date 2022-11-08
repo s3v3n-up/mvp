@@ -18,6 +18,7 @@ import styles from "@/styles/Scoreboard.module.sass";
 import fetcher from "@/lib/helpers/fetcher";
 import { UserProfile } from "@/lib/types/User";
 import { mapPlayerToTeam } from "@/lib/helpers/scoreboard";
+import { setHttpAgentOptions } from "next/dist/server/config";
 
 /**
  * scoreboard props type
@@ -173,7 +174,7 @@ export default function Scoreboard({ match, players }: Props) {
             }
 
             //match progress timer(timer after queue timer is finished)
-            if(currMatch.matchStart) {
+            if (currMatch.status === "INPROGRESS" && currMatch.matchStart) {
                 setIsLeavable(false);
                 const startTimer = new Date(new Date(currMatch.matchStart).toUTCString()).getTime();
                 clearInterval(queuingTimer as NodeJS.Timeout);
@@ -201,16 +202,11 @@ export default function Scoreboard({ match, players }: Props) {
                     const timePassed = Math.floor((pauseTimer - startTimer) / 1000);
 
                     //if match is in progress, start the timer from the time difference else stop timer, clear the interval
-                    if(currMatch.status === "INPROGRESS") {
-                        gameTimer = setInterval(async()=> {
-                            const now = new Date(new Date().toUTCString()).getTime();
-                            const timeDiff = Math.floor((now - pauseTimer)/1000) + timePassed;
-                            setMatchTimer(timeDiff);
-                        }, 1000);
-                    } else {
-                        setMatchTimer(timePassed);
-                        clearInterval(gameTimer as NodeJS.Timeout);
-                    }
+                    gameTimer = setInterval(async()=> {
+                        const now = new Date(new Date().toUTCString()).getTime();
+                        const timeDiff = Math.floor((now - pauseTimer)/1000) + timePassed;
+                        setMatchTimer(timeDiff);
+                    }, 1000);
                 } else {
 
                     //timer start from start time
@@ -220,6 +216,20 @@ export default function Scoreboard({ match, players }: Props) {
                         setMatchTimer(timeDiff);
                     }, 1000);
                 }
+            } else if (currMatch.status === "PAUSED" && currMatch.matchPause) {
+
+                //match start time
+                const startTimer = new Date(new Date(currMatch.matchStart!).toUTCString()).getTime();
+
+                //get pause time
+                const pauseTimer = new Date(new Date(currMatch.matchPause).toUTCString()).getTime();
+
+                //get time difference start and pause time in seconds
+                const timePassed = Math.floor((pauseTimer - startTimer) / 1000);
+
+                //set timer to the point user hit click pause
+                setMatchTimer(timePassed);
+                clearInterval(gameTimer as NodeJS.Timeout);
             }
         }
         updateTimer();
