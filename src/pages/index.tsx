@@ -15,6 +15,7 @@ import Input from "@/components/Input";
 import { getMatches } from "@/lib/actions/match";
 import { getUsers } from "@/lib/actions/user";
 import { Location } from "@/lib/types/General";
+import axios from "axios";
 
 //dynamic import
 const Search = dynamic(() => import("@mui/icons-material/Search"), {
@@ -30,7 +31,7 @@ const ScrollContainer = dynamic(() => import("react-indiana-drag-scroll"), {
  *
  */
 export default function Home({ regMatches, quickMatches, users }: any) {
-    const { status } = useSession();
+    const { data: session, status } = useSession();
     const router = useRouter();
     useEffect(() => {
         if (status === "loading") return;
@@ -109,6 +110,20 @@ export default function Home({ regMatches, quickMatches, users }: any) {
         return router.push(`/user/${user}`);
     }
 
+    // Function to join the regular match
+    async function joinReg(id: string) {
+        await axios.put(`api/match/${id}/team/join`, { userName: session?.user.userName });
+
+        return router.push(`/match/${id}/view`).then(() => router.reload());
+    }
+
+    // Functrion to join the quick match
+    async function joinQuick(id: string) {
+        await axios.put(`api/match/${id}/team/join`, { userName: session?.user.userName });
+
+        return router.push(`/match/${id}/scoreboard`).then(() => router.reload());
+    }
+
     return (
         <>
             <div className={styles.matches}>
@@ -158,9 +173,9 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                                             <p>Now</p>
                                         </div>
                                         {/* button for user join a match */}
-                                        <div>
-                                            <button className={Cardstyles.join}>join</button>
-                                        </div>
+                                        {quick.matchHost !== session?.user.id && <div>
+                                            <button className={Cardstyles.join} onClick={() => joinQuick(quick._id)}>join</button>
+                                        </div>}
                                     </div>
                                     {/* displays the type of sports */}
                                     <div className={Cardstyles.sport}>
@@ -227,9 +242,9 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                                 </p>
                             </div>
                             {/* button for user join a match */}
-                            <div>
-                                <button className={Cardstyles.join}>join</button>
-                            </div>
+                            {reg.matchHost !== session?.user.id && <div>
+                                <button className={Cardstyles.join} onClick={() => joinReg(reg._id)}>join</button>
+                            </div>}
                         </div>
                         {/* displays the type of sports */}
                         <div className={Cardstyles.sport} onClick={() => cardClicked(reg._id as string)}>

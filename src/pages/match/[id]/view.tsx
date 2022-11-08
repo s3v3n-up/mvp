@@ -117,6 +117,15 @@ export default function MatchView({ data }: Props) {
         return router.push(`/match/${id}/edit`);
     }
 
+    async function leave(id: string, teamIdx: any) {
+        await axios.put(`api/match/${id}/operation/remove`, {
+            teamIdx,
+            UserName: session?.user.userName
+        });
+
+        return router.push("/").then(() => router.reload());
+    }
+
     // Function to handle get direction click event
     async function getDirectionsClicked() {
 
