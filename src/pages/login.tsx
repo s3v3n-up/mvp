@@ -6,6 +6,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import dynamic from "next/dynamic";
+
 // eslint-disable-next-line camelcase
 import { unstable_getServerSession } from "next-auth";
 import { GetServerSidePropsContext } from "next";
