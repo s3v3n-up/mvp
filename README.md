@@ -1,9 +1,3 @@
-<!-- LOGO -->
-<div align="center">
-  <a href="https://github.com/github_username/repo_name">
-    <img src="public/logo.png" alt="Logo" width="200" height="200">
-  </a>
-
   # Internet Programming and Web Apps - MVP Project
 
 <!-- TEAM MEMBERS -->
