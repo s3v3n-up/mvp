@@ -76,14 +76,10 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 <!-- FOLDER STRUCTURE -->
 ### :file_folder: Folder Structure
-1. **Model** - models of the project
+1. **public** - icons and images go here
  
-2. **View**
-- public
-  - icons
-  - img
-- src
-  - components - 
+2. **src**
+  - components
   - context
   - hooks
   - lib
