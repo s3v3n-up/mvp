@@ -422,7 +422,7 @@ export default function Scoreboard({ match, players }: Props) {
                                 Resume
                             </button>
                         }
-                        { currMatch.matchStart &&
+                        { currMatch.status === "INPROGRESS" &&
                             <button
                                 className={`${styles.finish} text-base p-5`}
                                 onClick={endMatch}
