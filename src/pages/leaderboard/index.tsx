@@ -53,12 +53,14 @@ export async function getStaticProps() {
 
         return {
             props: {
-                sports: JSON.parse(JSON.stringify(sports)),
-            },
+                sports: JSON.parse(JSON.stringify(sports))
+            }
         };
     } catch {
         return {
-            notFound: true,
+            props: {
+                sports: []
+            }
         };
     }
 }

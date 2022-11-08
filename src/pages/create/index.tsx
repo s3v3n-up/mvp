@@ -42,7 +42,7 @@ export default function CreateMatch() {
                     <button
                         className={`
                         bg-[#172123] bg-opacity-75 
-                        p-30 text-3xl 
+                        p-40 text-3xl 
                         w-56 h-56 mt-5
                         rounded-lg drop-shadow-lg`}
                         onClick={() => router.push("/create/regularmatch")}
@@ -75,5 +75,6 @@ export default function CreateMatch() {
                 </div>
             </section>
         </>
+                      
     );
 }

@@ -102,6 +102,16 @@ export default function Home({ regMatches, quickMatches, users }: any) {
         return userFound[0].userName;
     }
 
+    function imageClick(id: string) {
+        const user = lookUser(id);
+
+        return router.push(`/user/${user}`);
+    }
+
+    function join(id: string){
+
+    }
+
     return (
         <>
             <Head>
@@ -127,152 +137,141 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                         <button>
                             <Search fontSize="medium" />
                         </button>
-                    </div>
+=======
+        <div className={styles.matches}>
+            {/* search container */}
+            <div className={styles.search}>
+                {/* title for the page */}
+                <h1 className="px-2 py-3">Matches</h1>
+                <div className={styles.searchitem}>
+                    {/* search input field */}
+                    <Input
+                        type="text"
+                        placeholder="Enter username or location"
+                        value={search}
+                        onChange={handleSearchChange}
+                    />
+                    <button>
+                        <Search fontSize="medium" />
+                    </button>
                 </div>
-                <div>
-                    {/* Subtitle for quick matches */}
-                    <p>Quick Matches</p>
-                    {/* Scroll container for quick matches */}
-                    {quickMatches.length === 0 && (
-                        <p className="text-2xl text-white text-center">
-                            {" "}
-              ⚠️ There is no quick match found
-                        </p>
-                    )}
-                    <ScrollContainer className="flex w-full" horizontal hideScrollbars>
-                        {/* //add comments */}
-                        {quickMatches.length > 0 &&
-              quickMatches
-                  .filter(
-                      (quick: any) =>
-                          quick.sport.toLowerCase().includes(search.toLowerCase()) ||
-                    lookUser(quick.matchHost).includes(search.toLowerCase())
-                  )
-                  .map((quick: any, idx: any) => (
+            </div>
+            <div>
+                {/* Subtitle for quick matches */}
+                <p>Quick Matches</p>
+                {/* Scroll container for quick matches */}
+                {quickMatches.length === 0 && (
+                    <p className="text-2xl text-white text-center">
+                        {" "}
+            ⚠️ There is no quick match found
+                    </p>
+                )}
+                <ScrollContainer className="flex w-full" horizontal hideScrollbars>
+                    {/* //add comments */}
+                    {quickMatches.length > 0 &&
+                        quickMatches
+                            .filter(
+                                (quick: any) =>
+                                    quick.sport.toLowerCase().includes(search.toLowerCase()) ||
+                  lookUser(quick.matchHost).includes(search.toLowerCase())
+                            )
+                            .map((quick: any, idx: any) => (
 
-                      // card container
-                      <div className={Cardstyles.container} key={idx}>
-                          <div className={Cardstyles.time}>
-                              <div className={Cardstyles.detail}>
-                                  <p>Now</p>
-                              </div>
-                              <div>
-                                  <button className={Cardstyles.join}>join</button>
-                              </div>
-                          </div>
+                                // card container
+                                <div className={Cardstyles.container} key={idx}>
+                                    <div className={Cardstyles.time}>
+                                        <div className={Cardstyles.detail}>
+                                            <p>Now</p>
+                                        </div>
+                                        <div>
+                                            <button className={Cardstyles.join}>join</button>
+                                        </div>
+                                    </div>
 
-                          <div className={Cardstyles.sport}>
-                              <p>{quick.sport}</p>
-                          </div>
-                          <div className={Cardstyles.location}>
-                              <div>
-                                  <LocationOnIcon />
-                              </div>
-                              <p>{quick.location.address.pointOfInterest}</p>
-                              <p>
-                                  {(
-                                      haversine(
-                                          {
-                                              latitude: currentLocation?.lat as number,
-                                              longitude: currentLocation?.lng as number,
-                                          },
-                                          {
-                                              latitude: quick.location.lat as number,
-                                              longitude: quick.location.lng as number,
-                                          }
-                                      ) / 1000
-                                  ).toFixed(2)}
-                        km away
-                              </p>
-                              <Image
-                                  src={hostAvatar(quick.matchHost)}
-                                  alt="avatar"
-                                  className={Cardstyles.avatar}
-                                  width={45}
-                                  height={45}
-                              />
-                          </div>
-                      </div>
-                  ))}
-                    </ScrollContainer>
-                </div>
-                <div className="sm:mt-4 mt-10">
-                    {/*  Subtitle for regular matches */}
-                    <p>Regular Matches</p>
-                    {/* Scroll container for regular matches */}
-                    {regMatches.length === 0 && (
-                        <p className="text-2xl text-white text-center">
-                            {" "}
-              ⚠️ There is no regular match found
-                        </p>
-                    )}
-                    <ScrollContainer className="flex w-full" horizontal hideScrollbars>
-                        {/*filters through regular matches including lower case letters in text input*/}
-                        {regMatches.length > 0 &&
-              regMatches
-                  .filter(
-                      (reg: any) =>
-                          reg.sport.toLowerCase().includes(search.toLowerCase()) ||
-                    lookUser(reg.matchHost).includes(search.toLowerCase())
-                  )
-                  .map((reg: any, idx: any) => (
+                                    <div className={Cardstyles.sport}>
+                                        <p>{quick.sport}</p>
+                                    </div>
+                                    <div className={Cardstyles.location}>
+                                        <div>
+                                            <LocationOnIcon />
+                                        </div>
+                                        <p>{quick.location.address.pointOfInterest}</p>
+                                        <p>{Math.ceil(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: quick.location.lat as number, longitude: quick.location.lng as number }) / 1000)}km away</p>
+                                        <Image
+                                            src={hostAvatar(quick.matchHost)}
+                                            alt="avatar"
+                                            className={Cardstyles.avatar}
+                                            width={45}
+                                            height={45}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
+                </ScrollContainer>
+            </div>
+            <div className="sm:mt-4 mt-10">
+                {/*  Subtitle for regular matches */}
+                <p>Regular Matches</p>
+                {/* Scroll container for regular matches */}
+                {regMatches.length === 0 && (
+                    <p className="text-2xl text-white text-center">
+                        {" "}
+            ⚠️ There is no regular match found
+                    </p>
+                )}
+                <ScrollContainer className="flex w-full" horizontal hideScrollbars>
+                    {/*filters through regular matches including lower case letters in text input*/}
+                    {regMatches.length > 0 &&
+            regMatches
+                .filter(
+                    (reg: any) =>
+                        reg.sport.toLowerCase().includes(search.toLowerCase()) ||
+                  lookUser(reg.matchHost).includes(search.toLowerCase())
+                )
+                .map((reg: any, idx: any) => (
 
-                      // card container
-                      <div
-                          className={Cardstyles.container}
-                          key={idx}
-                          onClick={() => cardClicked(reg._id as string)}
-                      >
-                          <div className={Cardstyles.time}>
-                              <div className={Cardstyles.detail}>
-                                  {/* custom format for match that includes date, day of the week and time */}
-                                  <p>
-                                      {new Date(reg.matchStart)
-                                          .toDateString()
-                                          .concat(
-                                              " " +
-                                new Date(reg.matchStart).toLocaleTimeString(
-                                    "en-US"
-                                )
-                                          )}
-                                  </p>
-                              </div>
-                              <div>
-                                  <button className={Cardstyles.join}>join</button>
-                              </div>
-                          </div>
+                    // card container
+                    <div
+                        className={Cardstyles.container}
+                        key={idx}
+                    >
+                        <div className={Cardstyles.time}>
+                            <div className={Cardstyles.detail}>
+                                {/* custom format for match that includes date, day of the week and time */}
+                                <p>
+                                    {new Date(reg.matchStart)
+                                        .toDateString()
+                                        .concat(
+                                            " " +
+                              new Date(reg.matchStart).toLocaleTimeString(
+                                  "en-US"
+                              )
+                                        )}
+                                </p>
+                            </div>
+                            <div>
+                                <button className={Cardstyles.join}>join</button>
+                            </div>
+                        </div>
 
-                          <div className={Cardstyles.sport}>
-                              <p>{reg.sport}</p>
-                          </div>
+                        <div className={Cardstyles.sport} onClick={() => cardClicked(reg._id as string)}>
+                            <p>{reg.sport}</p>
+                        </div>
 
-                          <div className={Cardstyles.location}>
-                              <div>
-                                  <LocationOnIcon />
-                              </div>
-                              <p>{reg.location.address.pointOfInterest}</p>
-                              <p>
-                                  {(
-                                      haversine(
-                                          {
-                                              latitude: currentLocation?.lat as number,
-                                              longitude: currentLocation?.lng as number,
-                                          },
-                                          {
-                                              latitude: reg.location.lat as number,
-                                              longitude: reg.location.lng as number,
-                                          }
-                                      ) / 1000
-                                  ).toFixed(2)}
-                        km away
-                              </p>
-                              <Image
-                                  src={hostAvatar(reg.matchHost)}
-                                  alt="avatar"
-                                  className={Cardstyles.avatar}
-                                  width={45}
-                                  height={45}
-                              />
+                        <div className={Cardstyles.location}>
+                            <div>
+                                <LocationOnIcon />
+                            </div>
+                            <p>{reg.location.address.pointOfInterest}</p>
+                            <p>{Math.ceil(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: reg.location.lat as number, longitude: reg.location.lng as number }) / 1000)}km away</p>
+                            <Image
+                                onClick={(e) => {imageClick(reg.matchHost)}}
+                                src={hostAvatar(reg.matchHost)}
+                                alt="avatar"
+                                className={Cardstyles.avatar}
+                                width={45}
+                                height={45}
+                            />
                           </div>
                       </div>
                   ))}
@@ -300,12 +299,12 @@ export async function getServerSideProps() {
 
     //check if the match is quick
     const quickMatches = matches.filter(
-        (match: any) => match.matchType === "QUICK"
+        (match: any) => match.matchType === "QUICK" && match.status === "UPCOMING"
     );
 
     //checks if the match is regular
     const regMatches = matches.filter(
-        (match: any) => match.matchType === "REGULAR"
+        (match: any) => match.matchType === "REGULAR" && match.status === "UPCOMING"
     );
 
     //returns as a props
