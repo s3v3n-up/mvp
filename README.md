@@ -57,7 +57,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 - [x] Ability to search through matches by sport and username
 - [x] Ability to create matches and input scores
 
-!-- UI REFERENCES -->
+<!-- UI REFERENCES -->
 ### :art: User Interface Reference
 **Color**
 | Color     | Hex |
