@@ -14,6 +14,7 @@ import Input from "@/components/Input";
 import { getMatches } from "@/lib/actions/match";
 import { getUsers } from "@/lib/actions/user";
 import { Location } from "@/lib/types/General";
+import { match } from "assert";
 
 //dynamic import
 const Search = dynamic(() => import("@mui/icons-material/Search"), {
@@ -160,7 +161,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                                 <LocationOnIcon />
                             </div>
                             <p>{quick.location.address.pointOfInterest}</p>
-                            <p>{(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: quick.location.lat as number, longitude: quick.location.lng as number }) / 1000).toFixed(2)}km away</p>
+                            <p>{Math.ceil(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: quick.location.lat as number, longitude: quick.location.lng as number }) / 1000)}km away</p>
                             <Image
                                 src={hostAvatar(quick.matchHost)}
                                 alt="avatar"
@@ -228,7 +229,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                                 <LocationOnIcon />
                             </div>
                             <p>{reg.location.address.pointOfInterest}</p>
-                            <p>{(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: reg.location.lat as number, longitude: reg.location.lng as number }) / 1000).toFixed(2)}km away</p>
+                            <p>{Math.ceil(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: reg.location.lat as number, longitude: reg.location.lng as number }) / 1000)}km away</p>
                             <Image
                                 src={hostAvatar(reg.matchHost)}
                                 alt="avatar"

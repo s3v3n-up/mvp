@@ -123,12 +123,12 @@ export async function getServerSideProps() {
 
     // We check if the match has yet to transpire
     const createdMatches = matches.filter(
-        (match: any) => match.matchType === "UPCOMING"
+        (match: any) => match.status === "UPCOMING"
     );
 
     // Checks if the match has passed already
     const pastMatches = matches.filter(
-        (match: any) => match.matchType === "FINISHED"
+        (match: any) => match.status === "FINISHED"
     );
 
     // Returns as props
