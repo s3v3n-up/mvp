@@ -148,15 +148,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             });
         }
 
+        //operation happens when the host cancel the match
         if (operation === "cancel") {
             await updateMatchFields(id, {
                 status: "CANCELLED",
             });
         }
 
+        //operation happens when the match ends
         if (operation === "finish") {
             const homeScore = match.teams[0].score;
             const awayScore = match.teams[1].score;
+
+            //update match status and team scores, status
             updateMatchFields(id, {
                 status: "FINISHED",
                 matchEnd: new Date(),

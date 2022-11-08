@@ -46,7 +46,7 @@ export default function MatchEdit({ data }: Props) {
 
     //axios to get the userdata and stats from api
     useEffect(() => {
-        setDate(new Date(data.matchStart!).toISOString().slice(0,16));
+        setDate(new Date(data.matchStart!).toISOString().slice(0, 16));
         setDescription(data.description);
         setIsDataLoaded(true);
     }, [data.matchStart, data.description]);
