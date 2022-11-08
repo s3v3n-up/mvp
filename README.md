@@ -13,7 +13,7 @@
 [Karla Barrera](https://github.com/karla-bot) •
 [Yifei Chen]() •
 [Angelo Guerra]() •
-[Emil Sangil]() •
+[Emil Sangil](https://github.com/emilsangil) •
 [Son Minh Nguyen](https://github.com/SonMinhNguyen2000) •
 [Ryan Urbien](https://github.com/dmncrynn) •
 
