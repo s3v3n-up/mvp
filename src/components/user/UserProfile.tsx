@@ -11,6 +11,7 @@ import Input from "@/components/Input";
 import { AvatarContext } from "@/context/avatar";
 import AlertMessage from "../alertMessage";
 import { UserProfile } from "@/lib/types/User";
+import { PHONE_REGEX } from "@/lib/helpers/validation";
 
 //dynamic imports
 const Person = dynamic(() => import("@mui/icons-material/Person"));
@@ -88,8 +89,8 @@ export default function Profile() {
     //get the user firstname input value, update it in the db through axios put api
     const fNameHandle = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
         const value = event.target.value;
-        if (!value) return;
         setFirstName(value);
+        if (value.length <= 2) return;
         debounce(async () => {
             await axios.put(`/api/user/${userName}`, {
                 firstName: value,
@@ -104,8 +105,8 @@ export default function Profile() {
     //get the user lastname input value, update it in the db through axios put api
     const lNameHandle = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
         const value = event.target.value;
-        if (!value) return;
         setLastName(value);
+        if (value.length <= 2) return;
         debounce(async () => {
             await axios.put(`/api/user/${userName}`, {
                 firstName,
@@ -119,8 +120,8 @@ export default function Profile() {
     //get the user phone input value, update it in the db through axios put api
     const phoneHandle = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
         const value = event.target.value;
-        if (!value) return;
         setPhone(value);
+        if (!PHONE_REGEX.test(value)) return;
         debounce(async () => {
             await axios.put(`/api/user/${userName}`, {
                 firstName,
