@@ -13,7 +13,6 @@ import GoogleProvider from "next-auth/providers/google";
 import Database from "@/lib/resources/database";
 
 import { getUserByEmail } from "@/lib/actions/user";
-import { url } from "inspector";
 
 /**
  * @description
