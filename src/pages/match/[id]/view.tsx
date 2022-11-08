@@ -130,7 +130,6 @@ export default function MatchView({ data }: Props) {
 
     // Function to handle get direction click event
     async function getDirectionsClicked() {
-        console.log("hello");
 
         // fetch mapbox api using directions services
         try {
