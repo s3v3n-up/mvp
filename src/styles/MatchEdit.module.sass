@@ -16,7 +16,6 @@
     div
         display: flex
         justify-content: space-between
-        margin: 0px 17px 0 17px
 
     h1
         display: flex
@@ -46,7 +45,13 @@
         margin-left: 17px
 
 //styles for location input container
+
+.location
+    display: flex
+    flex-direction: column
+
 .address
+    margin-right: 10px
     font-size: 17px
     padding: 10px
     width: 376px
@@ -55,8 +60,28 @@
     border: 1px solid #000000
     border-radius: 10px
 
+    div
+        padding-left: 0
+
+.inputaddress
+    width: 330px
+
+.suggest
+    display: flex
+    flex-direction: column
+    margin-bottom: 10px
+    border: 1px solid #000000
+    width: 376px
+    border-radius: 10px
+
+    p
+        font-size: 17px
+        line-height: 30px
+        color: black
+
 //styles for date and time container
 .date
+    margin: 0px 17px 0 17px
     font-size: 17px
     padding: 10px
     width: 376px
@@ -67,6 +92,7 @@
 
 //styles for description
 .description
+    margin: 0px 17px 0 17px
     display: flex
     width: 375px
     height: 138px
@@ -102,12 +128,19 @@
         width: 500px
         height: auto
 
+    .inputaddress
+        width: 250px
+
+    .suggest
+        margin-left: 50px
+        width: 320px
     .address
-        width: 290px
+        width: 320px
+        margin-left: 50px
 
     .date
         font-size: 17px
 
     .description
         font-size: 17px
-        width: 290px
+        width: 320px

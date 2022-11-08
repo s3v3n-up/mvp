@@ -1,5 +1,23 @@
-# Internet Programming and Web Apps - MVP Project
+<!-- LOGO -->
+<div align="center">
+  <a href="https://github.com/github_username/repo_name">
+    <img src="logo.png" alt="Logo" width="200" height="200">
+  </a>
+  
+  # Internet Programming and Web Apps - MVP Project
 
+<!-- TEAM MEMBERS -->
+## Authors
+[Abbe Azale]() •
+[Karla Barrera](https://github.com/karla-bot) •
+[Yifei Chen]() •
+[Angelo Guerra]() •
+[Emil Sangil]() •
+[Son Minh Nguyen](https://github.com/SonMinhNguyen2000) •
+[Ryan Urbien](https://github.com/dmncrynn) •
+
+[Harman Tiwana](https://github.com/HarmanTiwana901)
+</div> 
 
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
