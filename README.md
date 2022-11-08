@@ -40,6 +40,18 @@ MVP is a web app specially designed to connect sports lovers in seconds through 
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+<!-- TECH STACK -->
+### :space_invader: Tech Stack
+- [SwiftUI](https://developer.apple.com/xcode/swiftui/)
+- [Firebase](https://firebase.google.com/)
+- [Swift Package Manager](https://www.swift.org/package-manager/)
+
+<!-- FEATURES -->
+### :dart: Features
+- [x] Ability to quickjoin a match with the click of a button
+- [x] Ability to search through matches by sport
+- [x] Ability to create matches and input scores
+
 ## Getting Started
 
 First, run the development server:
