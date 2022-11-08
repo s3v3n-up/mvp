@@ -37,6 +37,97 @@
 		  "requiredPlayers": 2
 		}
 	  ]
-	}
+	},
+	{
+		"name": "Soccer",
+		"gameModes": [
+		  {
+			"modeNames": "2V2",
+			"requiredPlayers": 4
+		  },
+		  {
+			"modeNames": "3V3",
+			"requiredPlayers": 6
+		  },
+		  {
+			"modeNames": "4V4",
+			"requiredPlayers": 8
+		  },
+		  {
+			  "modeNames": "5V5",
+			  "requiredPlayers": 10
+		  },
+		  {
+			  "modeNames": "6V6",
+			  "requiredPlayers": 12
+		  },
+		  {
+			  "modeNames": "7V7",
+			  "requiredPlayers": 14
+		  },
+		  {
+			  "modeNames": "8V8",
+			  "requiredPlayers": 16
+		  },
+		  {
+			  "modeNames": "9V9",
+			  "requiredPlayers": 18
+		  },
+		  {
+			  "modeNames": "10V10",
+			  "requiredPlayers": 20
+		  }
+		]
+	  },
+	  {
+		"name": "Volleyball",
+		"gameModes": [
+		  {
+			"modeNames": "2V2",
+			"requiredPlayers": 4
+		  },
+		  {
+			"modeNames": "3V3",
+			"requiredPlayers": 6 
+		  },
+		  {
+			"modeNames": "4V4",
+			"requiredPlayers": 8 
+		  },
+		  {
+			  "modeNames": "5V5",
+			  "requiredPlayers": 10
+		  },
+		  {
+			  "modeNames": "6V6",
+			  "requiredPlayers": 12
+		  }
+		]
+	  },
+	  {
+		"name": "Badminton",
+		"gameModes": [
+		  {
+			"modeNames": "1V1",
+			"requiredPlayers": 2
+		  },
+		  {
+			"modeNames": "2V2",
+			"requiredPlayers": 4
+		  },
+		  {
+			"modeNames": "3V3",
+			"requiredPlayers": 6
+		  },
+		  {
+			"modeNames": "4V4",
+			"requiredPlayers": 8
+		  },
+		  {
+			  "modeNames": "5V5",
+			  "requiredPlayers": 10
+		  }
+		]
+	  }
   ]
   

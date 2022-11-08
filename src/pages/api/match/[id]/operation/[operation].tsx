@@ -159,7 +159,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (operation === "finish") {
             const homeScore = match.teams[0].score;
             const awayScore = match.teams[1].score;
-            
 
             //update match status and team scores, status
             const updatedMatch = await updateMatchFields(id, {
