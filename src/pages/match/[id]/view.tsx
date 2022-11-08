@@ -4,6 +4,10 @@ import router from "next/router";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+//https://popupsmart.com/blog/react-popup
+import Popup from "reactjs-popup";
+import "reactjs-popup/dist/index.css";
+
 //local-import
 import styles from "@/styles/MatchView.module.sass";
 import { getMatchById } from "@/lib/actions/match";
@@ -126,6 +130,7 @@ export default function MatchView({ data }: Props) {
 
     // Function to handle get direction click event
     async function getDirectionsClicked() {
+        console.log("hello");
 
         // fetch mapbox api using directions services
         try {
@@ -161,15 +166,6 @@ export default function MatchView({ data }: Props) {
 
     return (
         <div className={styles.container}>
-            {/* Sidebar to get step-by-step instructions */}
-            {steps ? <p>
-                <strong>Trip duration: {duration} min 🚴</strong>
-            </p> : <p></p>}
-            <ol>
-                {steps && steps.map((step: any, index: any) => {
-                    return (<li key={index}>{step.maneuver.instruction}</li>);
-                })}
-            </ol>
             {/* Header for Sport */}
             <button
                 className={styles.edit}
@@ -185,12 +181,24 @@ export default function MatchView({ data }: Props) {
                 <p>{data.matchType}</p>
             </div>
             <div>
-                <button
+                {/* Sidebar to get step-by-step instructions */}
+
+                <Popup trigger={<button
                     className={styles.directions}
-                    onClick={() => getDirectionsClicked()}
-                >
-          Get Directions
-                </button>
+                >Get Directions</button>} onOpen={(e) => {getDirectionsClicked();}} position="right center">
+                    {steps &&
+                    <div className={styles.popupContent}>
+                        <p>
+                            <strong>Trip duration: {duration} min 🚴</strong>
+                        </p>
+                        <ol>
+                            {steps.map((step: any, index: any) => {
+                                return (<li className={styles.list} key={index}>{step.maneuver.instruction}</li>);
+                            })}
+                        </ol>
+                    </div>}
+                </Popup>
+
                 {/* Sub Header for Match Type */}
                 <h3>Address</h3>
                 {/* Data for match type */}
