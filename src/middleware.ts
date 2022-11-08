@@ -20,7 +20,7 @@ export async function middleware(req: NextRequest) {
     // If there is no token meaning no session, redirect to login page
     if (!token) {
         if (req.nextUrl.pathname !== "/login") {
-            return NextResponse.redirect(new URL("/login", req.url));
+            return NextResponse.rewrite(new URL("/login", req.url));
         }
 
         return;
@@ -28,7 +28,7 @@ export async function middleware(req: NextRequest) {
 
     // If user is not finished signing up then redirect to register page
     if (!token.user.isFinishedSignup) {
-        return NextResponse.redirect(new URL("/register", req.url));
+        return NextResponse.rewrite(new URL("/register", req.url));
     }
 }
 
