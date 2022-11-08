@@ -10,5 +10,9 @@ const config = {
 export default config;
 
 export const PrimaryButtonStory = () => (
-    <PrimaryButton/>
+    <PrimaryButton
+        type="button"
+        className="bg-red-300"
+        onClick={() => console.log("clicked")}
+    />
 );
