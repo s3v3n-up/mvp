@@ -87,12 +87,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             transaction.startTransaction();
 
             //remove player from match
-            const { teamIndex, userName } = req.body;
-            if ( typeof userName !== "string" ||
-                isNaN(parseInt(teamIndex)) ||
-                parseInt(teamIndex) < 0 ||
-                parseInt(teamIndex) > 1
-            ) {
+            const { userName } = req.body;
+            if ( typeof userName !== "string") {
                 throw {
                     code: 400,
                     message: "Invalid request",

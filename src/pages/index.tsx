@@ -311,6 +311,6 @@ export async function getServerSideProps() {
             quickMatches,
             regMatches,
             users,
-        },
+        }
     };
 }

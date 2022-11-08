@@ -59,6 +59,7 @@ export default function Player(props: PlayerProps) {
 
     const router = useRouter();
 
+    //function for the user to leave the match
     async function onLeave() {
         const teamIndex = props.variant === "home" ? 0 : 1;
         const userName= props.userName;

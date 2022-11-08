@@ -40,6 +40,57 @@ MVP is a web app specially designed to connect sports lovers in seconds through 
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+<!-- TECH STACK -->
+### :space_invader: Tech Stack
+- react
+- next
+- sass
+- mongodb
+- moongoose
+- tailwind
+- cloudinary
+- mapbox
+
+<!-- FEATURES -->
+### :dart: Features
+- [x] Ability to quickjoin a match with the click of a button
+- [x] Ability to search through matches by sport and username
+- [x] Ability to create matches and input scores
+
+<!-- UI REFERENCES -->
+### :art: User Interface Reference
+**Color**
+| Color     | Hex |
+| :----------------| :----------- |
+| Primary Color       | [#FC5C3E](https://www.colorcodehex.com/fc5c3e.html) |
+| Background Color   | [#F6F6F6](https://www.colorcodehex.com/f6f6f6.html) |
+| Secondary Color     | [#7A7A7A](https://www.colorcodehex.com/7a7a7a.html) |
+| Tertiary Color | [#A4A4A4](https://www.colorcodehex.com/a4a4a4.html) |
+| Dark        | [#172123](https://www.colorcodehex.com/172123.html) |
+| Font                | [#F6F6F6](https://www.colorcodehex.com/f6f6f6.html) |
+
+**Font Family**
+| Font    | Description |
+| :----------------| :----------- |
+| Charm | Google Font |
+
+<!-- FOLDER STRUCTURE -->
+### :file_folder: Folder Structure
+1. **public** - icons and images go here
+ 
+2. **src**
+  - components
+  - context
+  - hooks
+  - lib
+  - pages
+  - shared
+  - stories
+  - styles
+  - types
+  
+
+
 ## Getting Started
 
 First, run the development server:
