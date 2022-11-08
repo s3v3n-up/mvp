@@ -19,7 +19,7 @@
   </div> 
 
 <!-- TABLE OF CONTENTS -->
-## Table of Contents
+## :notebook_with_decorative_cover: Table of Contents
 - [About the Project](#about-the-project)
   * [Tech Stack](#tech-stack)
   * [Features](#features)
