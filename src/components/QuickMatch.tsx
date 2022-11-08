@@ -1,7 +1,7 @@
 // Local imports
 import Input from "./Input";
 import SelectOption from "./SelectOption";
-import { Location, SportsOptions, Modes } from "@/lib/types/General";
+import { Location, SportsOptions, Modes, Address } from "@/lib/types/General";
 import { Sport } from "@/lib/types/Sport";
 
 // Third party imports
@@ -38,7 +38,7 @@ export default function QuickMatch({ props }: Props) {
     const [location, setLocation] = useState<Location>();
 
     // Stores and sets address
-    const [address, setAddress] = useState("");
+    const [address, setAddress] = useState<any>();
 
     // useEffect to get user current location then set location to be saved in database
     useEffect(() => {
@@ -71,9 +71,13 @@ export default function QuickMatch({ props }: Props) {
 
     // useEffect to set address for it to display as a string since we are storing location as longitude and latitude in the database
     useEffect(() => {
-        axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${location?.lng},${location?.lat}.json?types=address&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`).then(({ data }) => {
-            setAddress(data.features[0].place_name);
-        });
+        axios
+            .get(
+                `https://api.mapbox.com/geocoding/v5/mapbox.places/${location?.lng},${location?.lat}.json?types=address&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`
+            )
+            .then(({ data }) => {
+                setAddress(data);
+            });
     }, [location]);
 
     // Stores and Sets the sportname
@@ -126,7 +130,16 @@ export default function QuickMatch({ props }: Props) {
             // Axios fetch post to access create match api
             const res = await axios.post("/api/match/create", {
                 matchHost: session!.user.id,
-                location: location,
+                location: {
+                    lng: address?.query[0],
+                    lat: address?.query[1],
+                    address: {
+                        fullAddress: address?.features[0].place_name,
+                        pointOfInterest: address?.features[0].context[0].text,
+                        city: address?.features[0].context[2].text,
+                        country: address?.features[0].context[5].text,
+                    }
+                },
                 sport: sportname,
                 gameMode: { modeName: mode, requiredPlayers: computeReqPlayers(mode) },
                 matchStart: new Date(Date.now()),
@@ -196,7 +209,7 @@ export default function QuickMatch({ props }: Props) {
                     {loading && <AlertMessage message="Loading..." type="loading" />}
                     <Input
                         label="Location"
-                        value={address}
+                        value={address ? address.features[0].place_name : ""}
                         name="location"
                         readonly
                     >

@@ -9,7 +9,7 @@ import styled from "styled-components";
 // Local imports
 import Input from "./Input";
 import SelectOption from "./SelectOption";
-import { Location, SportsOptions, Modes } from "@/lib/types/General";
+import { SportsOptions, Modes } from "@/lib/types/General";
 import { Sport } from "@/lib/types/Sport";
 
 //dynamic imports
@@ -36,7 +36,7 @@ export default function CreateMatch({ props }: Props) {
     const { data: session } = useSession();
 
     // Location useState
-    const [location, setLocation] = useState<Location>();
+    const [location, setLocation] = useState<any>();
 
     // Address useState
     const [address, setAddress] = useState("");
@@ -110,10 +110,7 @@ export default function CreateMatch({ props }: Props) {
         try {
             const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${val}.json?&limit=3&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`;
             await axios.get(endpoint).then(({ data }) => {
-                setLocation({
-                    lat: data.features[0].geometry.coordinates[1],
-                    lng: data.features[0].geometry.coordinates[0],
-                });
+                setLocation(data);
                 setSuggestions(data?.features);
             });
         } catch (error) {
@@ -154,7 +151,16 @@ export default function CreateMatch({ props }: Props) {
             // Axios fetch post to access create match api
             const res = await axios.post("/api/match/create", {
                 matchHost: session!.user.id,
-                location: location,
+                location: {
+                    lng: location?.features[0].geometry.coordinates[0],
+                    lat: location?.features[0].geometry.coordinates[1],
+                    address: {
+                        fullAddress: location?.features[0].place_name,
+                        pointOfInterest: location?.features[0].context[0].text,
+                        city: location?.features[0].context[2].text,
+                        country: location?.features[0].context[5].text,
+                    }
+                },
                 sport: sportname,
                 gameMode: { modeName: mode, requiredPlayers: computeReqPlayers(mode) },
                 matchStart: date,
