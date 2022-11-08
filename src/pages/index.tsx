@@ -137,7 +137,9 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                         <button>
                             <Search fontSize="medium" />
                         </button>
-=======
+                    </div>
+                </div>
+            </div>
         <div className={styles.matches}>
             {/* search container */}
             <div className={styles.search}>
@@ -313,6 +315,6 @@ export async function getServerSideProps() {
             quickMatches,
             regMatches,
             users,
-        },
+        }
     };
 }
