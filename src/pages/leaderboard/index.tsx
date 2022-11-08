@@ -45,7 +45,9 @@ export async function getStaticProps() {
         };
     } catch {
         return {
-            notFound: true
+            props: {
+                sports: []
+            }
         };
     }
 }

@@ -79,6 +79,9 @@ export default function Leaderboard({ leaderboard }: Props) {
  * get all paths for dynamically static generate leaderboard page
  */
 export async function getStaticPaths() {
+
+    //setup database connection
+    await Database.setup();
     const sports = await getAllSports();
     const paths = sports.map((sport) => ({
         params: { sportname: sport.name }
