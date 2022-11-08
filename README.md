@@ -20,15 +20,18 @@
 
 <!-- TABLE OF CONTENTS -->
 ## :notebook_with_decorative_cover: Table of Contents
-- [About the Project](#about-the-project)
-  * [Tech Stack](#tech-stack)
-  * [Features](#features)
-  * [Folders Structure](#folder-structure)
-- [Getting Started](#getting-started)
-  * [Requirements](#crequirements)
-  * [Run Locally](#run-locally)
-- [Contributing](#contributing)
-- [License](#license)
+- [About the Project](#star2-about-the-project)
+  * [Screenshots](#camera-screenshots)
+  * [Tech Stack](#space_invader-tech-stack)
+  * [Features](#dart-features)
+  * [User Interface Reference](#art-user-interface-reference)
+  * [Folders Structure](#file_folder-folder-structure)
+- [Getting Started](#memo-getting-started)
+  * [Requirements](#computer-requirements)
+  * [Run Locally](#running-run-locally)
+- [Contributing](#busts_in_silhouette-contributing)
+- [License](#copyright-license)
+- [References](#pushpin-references)
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
