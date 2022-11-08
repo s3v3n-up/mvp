@@ -192,7 +192,7 @@ export default function Scoreboard({ match, players }: Props) {
                 }
 
                 //checks if the match is paused
-                if(currMatch.matchPause){
+                if(currMatch.matchPause) {
 
                     //get pause time
                     const pauseTimer = new Date(new Date(currMatch.matchPause).toUTCString()).getTime();
@@ -204,10 +204,10 @@ export default function Scoreboard({ match, players }: Props) {
                     if(currMatch.status === "INPROGRESS") {
                         gameTimer = setInterval(async()=> {
                             const now = new Date(new Date().toUTCString()).getTime();
-                            const timeDiff = timePassed + Math.floor((now - pauseTimer) / 1000);
+                            const timeDiff = Math.floor((now - pauseTimer)/1000) + timePassed;
                             setMatchTimer(timeDiff);
                         }, 1000);
-                    } else{
+                    } else {
                         setMatchTimer(timePassed);
                         clearInterval(gameTimer as NodeJS.Timeout);
                     }
@@ -236,7 +236,7 @@ export default function Scoreboard({ match, players }: Props) {
         try{
             if(currMatch.status === "PAUSED") return;
             await axios.put(`/api/match/${currMatch._id?.toString()}/operation/pause`, {
-                pauseTime: new Date().toString()
+                pauseTime: new Date(Date.now()).toUTCString()
             });
         } catch(err: any){
             alert(err.response.data.message);
