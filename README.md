@@ -1,35 +1,42 @@
 <!-- LOGO -->
 <div align="center">
   <a href="https://github.com/github_username/repo_name">
-    <img src="logo.png" alt="Logo" width="200" height="200">
+    <img src="public/logo.png" alt="Logo" width="200" height="200">
   </a>
-  
+
   # Internet Programming and Web Apps - MVP Project
 
 <!-- TEAM MEMBERS -->
 ## Authors
-[Abbe Azale]() •
+[Abbe Azale](https://github.com/abbeazale) •
 [Karla Barrera](https://github.com/karla-bot) •
-[Yifei Chen]() •
-[Angelo Guerra]() •
-[Emil Sangil]() •
+[Yifei Chen](https://github.com/MelodyC823) •
+[Angelo Guerra](https://github.com/RazielGelo) •
+[Emil Sangil](https://github.com/emilsangil) •
 [Son Minh Nguyen](https://github.com/SonMinhNguyen2000) •
-[Ryan Urbien](https://github.com/dmncrynn) •
-
-[Harman Tiwana](https://github.com/HarmanTiwana901)
-</div> 
+[Ryan Urbien](https://github.com/dmncrynn)
+  
+  </div> 
 
 <!-- TABLE OF CONTENTS -->
-## Table of Contents
-- [About the Project](#about-the-project)
-  * [Tech Stack](#tech-stack)
-  * [Features](#features)
-  * [Folders Structure](#folder-structure)
-- [Getting Started](#getting-started)
-  * [Requirements](#crequirements)
-  * [Run Locally](#run-locally)
-- [Contributing](#contributing)
-- [License](#license)
+## :notebook_with_decorative_cover: Table of Contents
+- [About the Project](#star2-about-the-project)
+  * [Screenshots](#camera-screenshots)
+  * [Tech Stack](#space_invader-tech-stack)
+  * [Features](#dart-features)
+  * [User Interface Reference](#art-user-interface-reference)
+  * [Folders Structure](#file_folder-folder-structure)
+- [Getting Started](#memo-getting-started)
+  * [Requirements](#computer-requirements)
+  * [Run Locally](#running-run-locally)
+- [Contributing](#busts_in_silhouette-contributing)
+- [License](#copyright-license)
+- [References](#pushpin-references)
+
+<!-- ABOUT THE PROJECT -->
+## :star2: About the Project
+MVP is a web app specially designed to connect sports lovers in seconds through fun, competitive matches. With a streamlined design to simplify the game process and the ability to input users' team wins, they can work their way to the top of our leaderboard.
+
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
