@@ -10,11 +10,11 @@
 ## Authors
 [Abbe Azale](https://github.com/abbeazale) •
 [Karla Barrera](https://github.com/karla-bot) •
-[Yifei Chen]() •
+[Yifei Chen](https://github.com/MelodyC823) •
 [Angelo Guerra]() •
 [Emil Sangil](https://github.com/emilsangil) •
 [Son Minh Nguyen](https://github.com/SonMinhNguyen2000) •
-[Ryan Urbien](https://github.com/dmncrynn) •
+[Ryan Urbien](https://github.com/dmncrynn)
   
   </div> 
 
