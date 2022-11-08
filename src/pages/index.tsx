@@ -1,4 +1,5 @@
 //third-party import
+import Image from "next/image";
 import { useState, ChangeEvent, useEffect } from "react";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useSession } from "next-auth/react";
@@ -88,6 +89,12 @@ export default function Home({ regMatches, quickMatches, users }: any) {
         return router.push(`/match/${id}/view`);
     }
 
+    function hostAvatar(id: string) {
+        const host = users.filter((user: any) => user._id === id);
+
+        return host[0].image;
+    }
+
     function lookUser(id: string) {
         const userFound = users.filter((user: any) => user._id === id);
 
@@ -154,6 +161,13 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                             </div>
                             <p>{quick.location.address.pointOfInterest}</p>
                             <p>{(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: quick.location.lat as number, longitude: quick.location.lng as number }) / 1000).toFixed(2)}km away</p>
+                            <Image
+                                src={hostAvatar(quick.matchHost)}
+                                alt="avatar"
+                                className={Cardstyles.avatar}
+                                width={45}
+                                height={45}
+                            />
                         </div>
                     </div>
                 ))}
@@ -215,6 +229,13 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                             </div>
                             <p>{reg.location.address.pointOfInterest}</p>
                             <p>{(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: reg.location.lat as number, longitude: reg.location.lng as number }) / 1000).toFixed(2)}km away</p>
+                            <Image
+                                src={hostAvatar(reg.matchHost)}
+                                alt="avatar"
+                                className={Cardstyles.avatar}
+                                width={45}
+                                height={45}
+                            />
                         </div>
                     </div>
                 ))}
