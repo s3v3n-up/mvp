@@ -134,7 +134,7 @@ export default function Scoreboard({ match, players }: Props) {
             const isMemberFull = currMemberNumbers === maxPlayer;
 
             //if match is full, set match start queue time
-            if (isMemberFull && !currMatch.matchQueueStart && !currMatch.matchStart && currMatch.matchType === "REGULAR") {
+            if (isMemberFull && !currMatch.matchQueueStart && !currMatch.matchStart && currMatch.matchType !== "REGULAR") {
                 await axios.put(`/api/match/${currMatch._id?.toString()}/time/queue`, {
                     queueStartTime: new Date().toString()
                 });
