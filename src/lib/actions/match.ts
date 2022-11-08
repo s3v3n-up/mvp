@@ -156,11 +156,9 @@ export async function addMembersToTeam(
             throw new Error("match not found");
         }
 
+        //guard against extra members being added to team
         const maxPlayerPerTeam = match.gameMode.requiredPlayers / 2;
-        if (
-            match.teams[teamIdx].members.length + userNames.length >
-      maxPlayerPerTeam
-        ) {
+        if (match.teams[teamIdx].members.length + userNames.length > maxPlayerPerTeam) {
             throw new Error("team is full");
         }
 
@@ -341,6 +339,23 @@ export async function updateMatch(matchId: string, match: Match) {
         return updatedMatch;
     } catch (error: any) {
         throw new Error("error updating match", { cause: error });
+    }
+}
+
+/**
+ * update fields of a match
+ * @param matchId id of match to update
+ * @param fields fields to update
+ * @returns {Promise<Match>} promise that resolves to updated match
+ * @throws {Error} if some thing went wrong
+ */
+export async function updateMatchFields(matchId: string,fields: Partial<Match>) {
+    try {
+        const updatedMatch = await MatchModel.findByIdAndUpdate(matchId, fields, { new: true });
+
+        return updatedMatch;
+    } catch (error: any) {
+        throw new Error("error updating match fields", { cause: error });
     }
 }
 

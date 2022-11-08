@@ -214,79 +214,43 @@ export async function findUserByUsername(userName: string): Promise<UserProfile[
 }
 
 /**
- * @description This function will calculate the win/lose/draw of a specific user v1
- * @param {string} username the username of the user
- * @returns The stats(win/lose/draw) of a user
+ * remove match from user history
  */
-export async function calculateStats(userName: string) {
+export async function removeMatchFromUserMatches(userName: string, matchId: string) {
     try {
 
-        // Sets up database connection
+        // Sets up Database connection
         await Database.setup();
 
-        // Stores and look for a specific user in the database
-        const userFound = await UserModel.findOne({ userName });
+        // Stores and looks for a specific user by username
+        const user = await UserModel.findOne({ userName });
 
-        // Stores and look for all matches of the user
-        const userMatches = await MatchModel.find({ matches: userFound?.matches });
+        // Checks if user exist
+        if (!user) {
+            throw new Error("username not exist");
+        }
 
-        // Created a stats object to store win/lose/draw of the user
-        let stats = {
-            win: 0,
-            lose: 0,
-            draw: 0
-        };
+        //update user matches
+        const matches = user.matches;
+        const newMatches = matches.filter((match) => match._id !== matchId);
+        user.matches = newMatches;
+        await user.save();
 
-        // Checks all the matches of the user when he is on team A
-        userMatches.map((e) => {
-            if (e.teams[0].members.includes(userName)) {
+        // Returns the user
+        return user;
 
-                // win Increments by 1 if they Win
-                if (e.teams[0].status === "WIN") {
-                    stats.win++;
-
-                // lose Increments by 1 if they Lose
-                } else if (e.teams[0].status === "LOSE") {
-                    stats.lose++;
-
-                // draw Increments by 1 if they Draw
-                } else if (e.teams[0].status === "DRAW") {
-                    stats.draw++;
-                }
-
-            // Checks all the matches of the user when he is on team B
-            } else if (e.teams[1].members.includes(userName)) {
-
-                // win Increments by 1 if they Win
-                if (e.teams[1].status === "WIN") {
-                    stats.win++;
-
-                // lose Increments by 1 if they Lose
-                } else if (e.teams[1].status === "LOSE") {
-                    stats.lose++;
-
-                // draw Increments by 1 if they Draw
-                } else if (e.teams[1].status === "DRAW") {
-                    stats.draw++;
-                }
-            }
-        });
-
-        // Returns the stats (win/lose/draw) of the user
-        return stats;
-
-    // Catches and throws error
+        // Catches any errors and throws it
     } catch (error: any) {
-        throw new Error("Error Cannot Calculate win/lose/draw", error);
+        throw new Error("Error updating the user", error.message);
     }
 }
 
 /**
- * calculate the win/lose/draw of a specific user v2
+ * calculate the win/lose/draw of a specific user
  * @param {string} username the username of the user
  * @return {{win: number, lose: number, draw: number}} stats win/lose/draw of a user
  */
-export async function calculateStatsAggregate(userName: string): Promise<{win: number, lose: number, draw: number}> {
+export async function calculateStats(userName: string): Promise<{win: number, lose: number, draw: number}> {
     try {
         await Database.setup();
 

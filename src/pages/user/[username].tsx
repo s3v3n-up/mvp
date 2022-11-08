@@ -1,5 +1,5 @@
 import ViewUserProfile from "@/components/user/ViewUserProfile";
-import { getUsers, calculateStats, calculateStatsAggregate } from "@/lib/actions/user";
+import { getUsers, calculateStats } from "@/lib/actions/user";
 import { getUserByUserName } from "@/lib/actions/user";
 import { GetStaticPropsContext } from "next";
 import type { UserProfile } from "@/lib/types/User";
@@ -78,7 +78,7 @@ export async function getStaticProps(context: GetStaticPropsContext ) {
 
         //get user data and stats
         const user = await getUserByUserName(username as string);
-        const stats = await calculateStatsAggregate(user.userName);
+        const stats = await calculateStats(user.userName);
 
         return {
             props: {

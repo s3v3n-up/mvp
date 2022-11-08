@@ -63,7 +63,10 @@ export default function Player(props: PlayerProps) {
         const teamIndex = props.variant === "home" ? 0 : 1;
         const userName= props.userName;
         try {
-            await axios.put(`/api/match/${props.matchId}/team`,{ teamIndex, userName, operation: "remove" });
+            await axios.put(`/api/match/${props.matchId}/operation/remove`, {
+                teamIndex,
+                userName
+            });
             router.push("/");
         } catch(error) {
             alert("Error leaving match");

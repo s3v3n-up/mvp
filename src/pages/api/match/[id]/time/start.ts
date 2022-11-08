@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next/types";
 import Database from "@/lib/resources/database";
 import { updateMatchStartTime } from "@/lib/actions/match";
-import { Match } from "@/lib/types/Match";
 
 //function to update the start time of the match
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -33,7 +32,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             //update matchStartTime
             await updateMatchStartTime(id as string, !isNaN(Date.parse(startTime)) ? new Date(startTime) : null);
-
             res.status(200).json({ message: "Match start time updated" });
         }
     } catch (error: any) {
