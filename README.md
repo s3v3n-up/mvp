@@ -3,19 +3,20 @@
   <a href="https://github.com/github_username/repo_name">
     <img src="logo.png" alt="Logo" width="200" height="200">
   </a>
- </div> 
-  
+
   # Internet Programming and Web Apps - MVP Project
 
 <!-- TEAM MEMBERS -->
 ## Authors
-[Abbe Azale]() •
+[Abbe Azale](https://github.com/abbeazale) •
 [Karla Barrera](https://github.com/karla-bot) •
 [Yifei Chen]() •
 [Angelo Guerra]() •
 [Emil Sangil](https://github.com/emilsangil) •
 [Son Minh Nguyen](https://github.com/SonMinhNguyen2000) •
 [Ryan Urbien](https://github.com/dmncrynn) •
+  
+  </div> 
 
 <!-- TABLE OF CONTENTS -->
 ## Table of Contents
