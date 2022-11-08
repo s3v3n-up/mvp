@@ -6,6 +6,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import dynamic from "next/dynamic";
+
 // eslint-disable-next-line camelcase
 import { unstable_getServerSession } from "next-auth";
 import { GetServerSidePropsContext } from "next";
@@ -75,6 +76,7 @@ export default function Login() {
 
     return (
         <div className={styles.container}>
+            {/* container for about */}
             <div className={styles.box}>
                 <div className={styles.about}>
                     <h2>Are YOU the MVP?</h2>
@@ -86,14 +88,17 @@ export default function Login() {
                     <h2>Can you be #1?</h2>
                 </div>
             </div>
+            {/* displays logo */}
             <div className="flex flex-col items-center flex-auto">
                 <div className={styles.imgwrapper}>
                     <Image src={"/img/logo.png"} alt="logo" width={263} height={184} priority/>
                 </div>
+                {/* inputs for login */}
                 <div className={styles.input}>
                     <div className="w-full">
                         <form onSubmit={handleEmailSubmit} className="w-full">
                             {error && <AlertMessage message={error} type="error"/>}
+                            {/* input field for email */}
                             <Input
                                 type="email"
                                 placeholder="enter your email"
@@ -102,6 +107,7 @@ export default function Login() {
                             >
                                 <EmailIcon />
                             </Input>
+                            {/* button for login */}
                             <Button type="submit" className={styles.login}>
                                 Log in
                             </Button>
@@ -111,6 +117,7 @@ export default function Login() {
                             <p className="flex-none text-white">OR</p>
                             <hr className="flex-1"/>
                         </div>
+                        {/* OAuth for discord */}
                         <button
                             className={ styles.discord }
                             type="button"
@@ -128,6 +135,7 @@ export default function Login() {
                             </IconComponent>
                             <p>Continue with Discord</p>
                         </button>
+                        {/* OAuth for google */}
                         <button
                             className={styles.google}
                             type="button"

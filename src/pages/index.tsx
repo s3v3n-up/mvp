@@ -82,33 +82,30 @@ export default function Home({ regMatches, quickMatches, users }: any) {
         setSearch(e.target.value);
     }
 
-    /**
-   * handle clicked for cards
-   */
+    //handles card clicked
     function cardClicked(id: string) {
         return router.push(`/match/${id}/view`);
     }
 
+    //handles the avatar inside the card
     function hostAvatar(id: string) {
         const host = users.filter((user: any) => user._id === id);
 
         return host[0].image;
     }
 
+    //handles filtering user
     function lookUser(id: string) {
         const userFound = users.filter((user: any) => user._id === id);
 
         return userFound[0].userName;
     }
 
+    //handles image clicked
     function imageClick(id: string) {
         const user = lookUser(id);
 
         return router.push(`/user/${user}`);
-    }
-
-    function join(id: string){
-
     }
 
     return (
@@ -133,15 +130,15 @@ export default function Home({ regMatches, quickMatches, users }: any) {
             <div>
                 {/* Subtitle for quick matches */}
                 <p>Quick Matches</p>
-                {/* Scroll container for quick matches */}
                 {quickMatches.length === 0 && (
                     <p className="text-2xl text-white text-center">
                         {" "}
             ⚠️ There is no quick match found
                     </p>
                 )}
+                {/* horizontal sroll for created matches */}
                 <ScrollContainer className="flex w-full" horizontal hideScrollbars>
-                    {/* //add comments */}
+                    {/*filters through quick matches including lower case letters in text input*/}
                     {quickMatches.length > 0 &&
                         quickMatches
                             .filter(
@@ -153,24 +150,28 @@ export default function Home({ regMatches, quickMatches, users }: any) {
 
                                 // card container
                                 <div className={Cardstyles.container} key={idx}>
+                                    {/* displays day/date/time */}
                                     <div className={Cardstyles.time}>
                                         <div className={Cardstyles.detail}>
                                             <p>Now</p>
                                         </div>
+                                        {/* button for user join a match */}
                                         <div>
                                             <button className={Cardstyles.join}>join</button>
                                         </div>
                                     </div>
-
+                                    {/* displays the type of sports */}
                                     <div className={Cardstyles.sport}>
                                         <p>{quick.sport}</p>
                                     </div>
+                                    {/* displays the point of interest and how far is the user away from the specific location in km */}
                                     <div className={Cardstyles.location}>
                                         <div>
                                             <LocationOnIcon />
                                         </div>
                                         <p>{quick.location.address.pointOfInterest}</p>
                                         <p>{Math.ceil(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: quick.location.lat as number, longitude: quick.location.lng as number }) / 1000)}km away</p>
+                                        {/* displays user avatar that create the match */}
                                         <Image
                                             src={hostAvatar(quick.matchHost)}
                                             alt="avatar"
@@ -186,13 +187,13 @@ export default function Home({ regMatches, quickMatches, users }: any) {
             <div className="sm:mt-4 mt-10">
                 {/*  Subtitle for regular matches */}
                 <p>Regular Matches</p>
-                {/* Scroll container for regular matches */}
                 {regMatches.length === 0 && (
                     <p className="text-2xl text-white text-center">
                         {" "}
             ⚠️ There is no regular match found
                     </p>
                 )}
+                {/* horizontal scroll for created matches */}
                 <ScrollContainer className="flex w-full" horizontal hideScrollbars>
                     {/*filters through regular matches including lower case letters in text input*/}
                     {regMatches.length > 0 &&
@@ -223,23 +224,25 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                                         )}
                                 </p>
                             </div>
+                            {/* button for user join a match */}
                             <div>
                                 <button className={Cardstyles.join}>join</button>
                             </div>
                         </div>
-
+                        {/* displays the type of sports */}
                         <div className={Cardstyles.sport} onClick={() => cardClicked(reg._id as string)}>
                             <p>{reg.sport}</p>
                         </div>
-
+                        {/* displays the point of interest and how far is the user away from the specific location in km */}
                         <div className={Cardstyles.location}>
                             <div>
                                 <LocationOnIcon />
                             </div>
                             <p>{reg.location.address.pointOfInterest}</p>
                             <p>{Math.ceil(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: reg.location.lat as number, longitude: reg.location.lng as number }) / 1000)}km away</p>
+                            {/* displays user that create the match */}
                             <Image
-                                onClick={(e) => {imageClick(reg.matchHost)}}
+                                onClick={(e) => {imageClick(reg.matchHost);}}
                                 src={hostAvatar(reg.matchHost)}
                                 alt="avatar"
                                 className={Cardstyles.avatar}

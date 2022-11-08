@@ -148,6 +148,7 @@ export default function Register() {
 
     return (
         <div className={styles.container}>
+            {/* container for about */}
             <div className={styles.box}>
                 <div className={styles.about}>
                     <h2>Are YOU the MVP?</h2>
@@ -159,12 +160,15 @@ export default function Register() {
                     <h2>Can you be #1?</h2>
                 </div>
             </div>
+            {/* displays logo */}
             <div className="flex flex-col items-center flex-auto">
                 <div className={styles.imgwrapper}>
                     <Image src={"/img/logo.png"} alt={"logo"} width={263} height={184} priority/>
                 </div>
+                {/* inputs for register */}
                 <div className={styles.input}>
                     <form className={styles.info} onSubmit={handleFormSubmit}>
+                        {/* input field for file upload */}
                         <ImagePicker
                             onChange={handleImageChange}
                             onRemove={handleRemoveSelectedImage}
@@ -172,6 +176,7 @@ export default function Register() {
                         />
                         { error && <AlertMessage message={error} type="error"/> }
                         { loading && <AlertMessage message="Loading..." type="loading"/> }
+                        {/* input field for first name */}
                         <Input
                             type="text"
                             placeholder="Enter your first name"
@@ -181,6 +186,7 @@ export default function Register() {
                         >
                             <Person fontSize="medium"/>
                         </Input>
+                        {/* input field for last name */}
                         <Input
                             type="text"
                             placeholder="Enter your last name"
@@ -190,6 +196,7 @@ export default function Register() {
                         >
                             <Person fontSize="medium"/>
                         </Input>
+                        {/* input field for username */}
                         <Input
                             type="text"
                             placeholder="Enter your username"
@@ -199,6 +206,7 @@ export default function Register() {
                         >
                             <Badge fontSize="medium"/>
                         </Input>
+                        {/* input field for phone number */}
                         <Input
                             type="tel"
                             placeholder="Enter your phone number"
@@ -208,6 +216,7 @@ export default function Register() {
                         >
                             <Phone fontSize="medium"/>
                         </Input>
+                        {/* button for signup */}
                         <Button type="submit" className={styles.signup}>
                             Sign up
                         </Button>
