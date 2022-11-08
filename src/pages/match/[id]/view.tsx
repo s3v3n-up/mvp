@@ -205,10 +205,10 @@ export default function MatchView({ data }: Props) {
                 <h3>Date and Time</h3>
                 {/* Data for match type */}
                 <p>
-                    {new Date(data.matchStart!)
+                    {new Date(data.matchStart)
                         .toDateString()
                         .concat(
-                            " " + new Date(data.matchStart!).toLocaleTimeString("en-US")
+                            " " + new Date(data.matchStart).toLocaleTimeString("en-US")
                         )}
                 </p>
             </div>

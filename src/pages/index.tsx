@@ -101,6 +101,16 @@ export default function Home({ regMatches, quickMatches, users }: any) {
         return userFound[0].userName;
     }
 
+    function imageClick(id: string) {
+        const user = lookUser(id);
+
+        return router.push(`/user/${user}`);
+    }
+
+    function join(id: string){
+
+    }
+
     return (
         <div className={styles.matches}>
             {/* search container */}
@@ -198,7 +208,6 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                     <div
                         className={Cardstyles.container}
                         key={idx}
-                        onClick={() => cardClicked(reg._id as string)}
                     >
                         <div className={Cardstyles.time}>
                             <div className={Cardstyles.detail}>
@@ -219,7 +228,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                             </div>
                         </div>
 
-                        <div className={Cardstyles.sport}>
+                        <div className={Cardstyles.sport} onClick={() => cardClicked(reg._id as string)}>
                             <p>{reg.sport}</p>
                         </div>
 
@@ -230,6 +239,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                             <p>{reg.location.address.pointOfInterest}</p>
                             <p>{Math.ceil(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: reg.location.lat as number, longitude: reg.location.lng as number }) / 1000)}km away</p>
                             <Image
+                                onClick={(e) => {imageClick(reg.matchHost)}}
                                 src={hostAvatar(reg.matchHost)}
                                 alt="avatar"
                                 className={Cardstyles.avatar}
