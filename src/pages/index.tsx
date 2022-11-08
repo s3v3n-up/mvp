@@ -106,7 +106,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
             {/* search container */}
             <div className={styles.search}>
                 {/* title for the page */}
-                <h1>Matches</h1>
+                <h1 className="px-2 py-3">Matches</h1>
                 <div className={styles.searchitem}>
                     {/* search input field */}
                     <Input
