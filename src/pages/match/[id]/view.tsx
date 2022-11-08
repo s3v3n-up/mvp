@@ -182,7 +182,7 @@ export default function MatchView({ data }: Props) {
             </div>
             <div>
                 {/* Sidebar to get step-by-step instructions */}
-
+                {/* https://popupsmart.com/blog/react-popup */}
                 <Popup trigger={<button
                     className={styles.directions}
                 >Get Directions</button>} onOpen={(e) => {getDirectionsClicked();}} position="right center">
