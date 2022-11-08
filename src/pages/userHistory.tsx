@@ -6,8 +6,8 @@ import { useState } from "react";
 import { getMatches } from "@/lib/actions/match";
 import { useSession } from "next-auth/react";
 import router from "next/router";
-import Head from "next/head";
 import axios from "axios";
+import Head from "next/head";
 
 // History function for page
 export default function History({ pastMatches, activeMatches }: any) {
@@ -122,8 +122,7 @@ export default function History({ pastMatches, activeMatches }: any) {
                     rel="icon"
                     type="image/png"
                     sizes="16x16"
-                    href="/favicon.ico"
-                ></link>
+                    href="/favicon.ico"/>
             </Head>
             <div className={styles.baseContainer}>
                 <div className={styles.historyContainer}>
