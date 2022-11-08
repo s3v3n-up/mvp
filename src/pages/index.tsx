@@ -174,7 +174,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                                         </div>
                                         {/* button for user join a match */}
                                         {quick.matchHost !== session?.user.id && <div>
-                                            <button className={Cardstyles.join} onClick={() => joinReg(quick._id)}>join</button>
+                                            <button className={Cardstyles.join} onClick={() => joinQuick(quick._id)}>join</button>
                                         </div>}
                                     </div>
                                     {/* displays the type of sports */}
