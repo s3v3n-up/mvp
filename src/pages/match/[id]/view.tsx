@@ -30,7 +30,7 @@ interface Config {
   name: string;
   startDate: string;
   endDate: string;
-  options: string[];
+  options: ["Apple", "Google", "iCal", "Microsoft365", "Outlook.com", "Yahoo"];
   timeZone: string;
   iCalFileName: string;
   description: string;
@@ -96,7 +96,7 @@ export default function MatchView({ data }: Props) {
     // Configuration to be pass in the atcb_action
     // https://www.npmjs.com/package/add-to-calendar-button
     const config: Config = {
-        name: data.sport,
+        name: data.sport && data.sport,
         startDate: startTime && startTime,
         endDate: endTime && endTime,
         options: [
@@ -109,7 +109,7 @@ export default function MatchView({ data }: Props) {
         ],
         timeZone: "America/Los_Angeles",
         iCalFileName: "Reminder-Event",
-        description: data.description,
+        description: data.description && data.description,
     };
 
     // Function to redirect by matchid
@@ -206,7 +206,7 @@ export default function MatchView({ data }: Props) {
                 {/* Add to your local calendar button */}
                 <button
                     className={styles.calendar}
-                    onClick={() => atcb_action(config as Config as any)}
+                    onClick={() => atcb_action(config as Config)}
                 >
           Add to Calendar
                 </button>
