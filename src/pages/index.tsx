@@ -130,7 +130,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                         {/* search input field */}
                         <Input
                             type="text"
-                            placeholder="Enter username or location"
+                            placeholder="Enter username or sport"
                             value={search}
                             onChange={handleSearchChange}
                         />
