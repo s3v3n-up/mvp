@@ -97,13 +97,6 @@ export default function Home({ regMatches, quickMatches, users }: any) {
         return userFound[0].userName;
     }
 
-    //handles image clicked
-    function imageClick(id: string) {
-        const user = lookUser(id);
-
-        return router.push(`/user/${user}`);
-    }
-
     // Function to join the regular match
     async function joinReg(id: string) {
         try {
