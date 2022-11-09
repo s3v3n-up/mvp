@@ -11,11 +11,21 @@ import { UserProfile } from "@/lib/types/User";
 import { PHONE_REGEX } from "@/lib/helpers/validation";
 
 //dynamic imports
-const Person = dynamic(() => import("@mui/icons-material/Person"), { ssr: false });
-const FolderSharedOutlined = dynamic(() => import("@mui/icons-material/FolderSharedOutlined"), { ssr: false });
-const Email = dynamic(() => import("@mui/icons-material/Email"), { ssr: false });
-const Phone = dynamic(() => import("@mui/icons-material/Phone"), { ssr: false });
-const ImagePicker = dynamic(()=>import("@/components/imagepicker"), { ssr: false });
+const Person = dynamic(
+    () => import("@mui/icons-material/Person"), { ssr: false }
+);
+const FolderSharedOutlined = dynamic(
+    () => import("@mui/icons-material/FolderSharedOutlined"), { ssr: false }
+);
+const Email = dynamic(
+    () => import("@mui/icons-material/Email"), { ssr: false }
+);
+const Phone = dynamic(
+    () => import("@mui/icons-material/Phone"), { ssr: false }
+);
+const ImagePicker = dynamic(
+    ()=>import("@/components/imagepicker"), { ssr: false }
+);
 
 /**
  * interface for type of user data
