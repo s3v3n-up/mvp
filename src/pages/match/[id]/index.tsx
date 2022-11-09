@@ -48,6 +48,7 @@ export default function MatchView({ data }: Props) {
     // Stores and Sets the location
     const [startLocation, setstartLocation] = useState<Location>();
 
+    // Stores and set data from the mapbox
     const [result, setResult] = useState<any>();
 
     // useEffect to get user current location then set location to be saved in database
