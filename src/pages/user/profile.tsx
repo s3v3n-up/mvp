@@ -27,12 +27,12 @@ export default function Profile({ profile, userStats }: Props) {
     //guard page from unauthenticated user from client side
     const { status } = useSession();
     const router = useRouter();
-    useEffect(()=>{
-        if(status === "loading") return;
+    useEffect(() => {
+        if (status === "loading") return;
         if (status === "unauthenticated") {
             router.push("/login");
         }
-    },[status, router]);
+    }, [status, router]);
 
     return(
         <div>

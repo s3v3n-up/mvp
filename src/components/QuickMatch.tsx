@@ -142,9 +142,10 @@ export default function QuickMatch({ props }: Props) {
                 },
                 sport: sportname,
                 gameMode: { modeName: mode, requiredPlayers: computeReqPlayers(mode) },
-                matchStart: new Date(Date.now()),
                 matchType: "QUICK",
                 status: "UPCOMING",
+                teams: [{ members: [session!.user.userName], score: 0, status: "UNSET" }, { members: [], score: 0, status: "UNSET" }]
+
             });
 
             // Checks if no successful post response

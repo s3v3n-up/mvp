@@ -1,6 +1,7 @@
 import MatchModel from "../resources/models/Match";
 import type { Match, Matches } from "@/lib/types/Match";
 import Database from "../resources/database";
+import { findUserByUsername, getUserByUserName } from "./user";
 
 /**
  * add a new match to the database
@@ -282,6 +283,42 @@ export async function removeMemberFromTeam(
 }
 
 /**
+ * remove user from match
+ * @param matchId id of match to remove user from
+ * @param username username of user to remove from match
+ */
+export async function removeUserFromMatch(matchId: string, username: string) {
+    try {
+        const match = await MatchModel.findById(matchId);
+        const user = await getUserByUserName(username);
+
+        //if user is host, they cannot leave match
+        if (user._id! === match?.matchHost) {
+            throw new Error("host cannot leave match");
+        }
+
+        //if match is not found, throw error
+        if (!match) {
+            throw new Error("match not found");
+        }
+
+        //remove user from both teams
+        match.teams[0].members = match.teams[0].members.filter(
+            (member) => member !== username
+        );
+        match.teams[1].members = match.teams[1].members.filter(
+            (member) => member !== username
+        );
+
+        await match.save();
+
+        return match;
+    } catch (error: any) {
+        throw new Error("error removing user from match", { cause: error });
+    }
+}
+
+/**
  * join user to a match
  */
 export async function joinMatch(matchId: string, userName: string) {
@@ -296,7 +333,7 @@ export async function joinMatch(matchId: string, userName: string) {
         //if user already joined match, return
         if (
             match.teams[0].members.includes(userName) ||
-      match.teams[1].members.includes(userName)
+            match.teams[1].members.includes(userName)
         ) {
             return;
         }

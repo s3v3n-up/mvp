@@ -1,7 +1,7 @@
 import { UserProfile } from "@/lib/types/User";
 import { createContext, ReactNode, useMemo } from "react";
 import useLocalStorage from "@/hooks/useLocalStorage";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import axios from "axios";
 import { useState } from "react";
 
@@ -28,6 +28,7 @@ export default function AvatarProvider ({ children }: {children: ReactNode}) {
 
     //fetch user profile and set it's image as current avatar
     useMemo(async () => {
+        await getSession();
         if (session && session.user.isFinishedSignup && !currAvatar && !isAvatarLoaded) {
             const { data } = await axios.get(`/api/user/${session.user.userName}`);
             setCurrAvatar(data.image);

@@ -43,8 +43,8 @@ export default async function handler(
                     is: ((matchType: any) => matchType==="REGULAR"),
                     then: date().min(
                         new Date(Date.now() + 3600000),
-                        "You cannot set a date or time less than 1 hour from now.").required(),
-                    otherwise: date().min(new Date(Date.now() - 60000), "You cannot set a date or time in the past").required()
+                        "You cannot set a date or time less than 1 hour from now."),
+                    otherwise: date().min(new Date(Date.now() - 60000), "You cannot set a date or time in the past")
                 }),
                 matchEnd: date(),
                 description: string(),
@@ -98,8 +98,8 @@ export default async function handler(
                 gameMode,
                 matchType,
                 location,
-                matchStart,
-                matchEnd,
+                matchStart: matchType === "REGULAR" ? matchStart : null,
+                matchEnd: null,
                 description,
                 teams,
                 status,

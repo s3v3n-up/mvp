@@ -221,4 +221,3 @@ export default function Profile({ profile, userStats }: Props) {
         </div>
     );
 };
-

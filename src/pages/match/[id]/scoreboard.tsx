@@ -89,7 +89,7 @@ export default function Scoreboard({ match, players }: Props) {
 
     //refetch match data every 1 seconds
     const { data, error } = useSWR<{match: Match}>(`/api/match/${match._id?.toString()}`,fetcher, {
-        refreshInterval: 1000,
+        refreshInterval: 100,
         revalidateOnFocus: false,
         revalidateOnReconnect: false,
         fallback: match
@@ -109,6 +109,8 @@ export default function Scoreboard({ match, players }: Props) {
                     setHomeScore(data.match.teams[0].score);
                     setAwayScore(data.match.teams[1].score);
                 }
+            } else {
+                console.log(error);
             }
         })();
     },[data, error, isMatchHost, currMatch]);
@@ -134,7 +136,7 @@ export default function Scoreboard({ match, players }: Props) {
             const isMemberFull = currMemberNumbers === maxPlayer;
 
             //if match is full, set match start queue time
-            if (isMemberFull && !currMatch.matchQueueStart && !currMatch.matchStart && currMatch.matchType === "REGULAR") {
+            if (isMemberFull && !currMatch.matchQueueStart && !currMatch.matchStart && currMatch.matchType !== "REGULAR") {
                 await axios.put(`/api/match/${currMatch._id?.toString()}/time/queue`, {
                     queueStartTime: new Date().toString()
                 });
@@ -173,7 +175,7 @@ export default function Scoreboard({ match, players }: Props) {
             }
 
             //match progress timer(timer after queue timer is finished)
-            if(currMatch.matchStart) {
+            if (currMatch.status === "INPROGRESS" && currMatch.matchStart) {
                 setIsLeavable(false);
                 const startTimer = new Date(new Date(currMatch.matchStart).toUTCString()).getTime();
                 clearInterval(queuingTimer as NodeJS.Timeout);
@@ -192,7 +194,7 @@ export default function Scoreboard({ match, players }: Props) {
                 }
 
                 //checks if the match is paused
-                if(currMatch.matchPause) {
+                if(currMatch.matchPause){
 
                     //get pause time
                     const pauseTimer = new Date(new Date(currMatch.matchPause).toUTCString()).getTime();
@@ -201,16 +203,11 @@ export default function Scoreboard({ match, players }: Props) {
                     const timePassed = Math.floor((pauseTimer - startTimer) / 1000);
 
                     //if match is in progress, start the timer from the time difference else stop timer, clear the interval
-                    if(currMatch.status === "INPROGRESS") {
-                        gameTimer = setInterval(async()=> {
-                            const now = new Date(new Date().toUTCString()).getTime();
-                            const timeDiff = Math.floor((now - pauseTimer)/1000) + timePassed;
-                            setMatchTimer(timeDiff);
-                        }, 1000);
-                    } else {
-                        setMatchTimer(timePassed);
-                        clearInterval(gameTimer as NodeJS.Timeout);
-                    }
+                    gameTimer = setInterval(async()=> {
+                        const now = new Date(new Date().toUTCString()).getTime();
+                        const timeDiff = Math.floor((now - pauseTimer)/1000) + timePassed;
+                        setMatchTimer(timeDiff);
+                    }, 1000);
                 } else {
 
                     //timer start from start time
@@ -220,6 +217,20 @@ export default function Scoreboard({ match, players }: Props) {
                         setMatchTimer(timeDiff);
                     }, 1000);
                 }
+            } else if (currMatch.status === "PAUSED" && currMatch.matchPause) {
+
+                //match start time
+                const startTimer = new Date(new Date(currMatch.matchStart!).toUTCString()).getTime();
+
+                //get pause time
+                const pauseTimer = new Date(new Date(currMatch.matchPause).toUTCString()).getTime();
+
+                //get time difference start and pause time in seconds
+                const timePassed = Math.floor((pauseTimer - startTimer) / 1000);
+
+                //set timer to the point user hit click pause
+                setMatchTimer(timePassed);
+                clearInterval(gameTimer as NodeJS.Timeout);
             }
         }
         updateTimer();
@@ -236,7 +247,7 @@ export default function Scoreboard({ match, players }: Props) {
         try{
             if(currMatch.status === "PAUSED") return;
             await axios.put(`/api/match/${currMatch._id?.toString()}/operation/pause`, {
-                pauseTime: new Date(Date.now()).toUTCString()
+                pauseTime: new Date().toString()
             });
         } catch(err: any){
             alert(err.response.data.message);
@@ -490,7 +501,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                 players: JSON.parse(JSON.stringify(players))
             }
         };
-    } catch {
+    } catch(error) {
         return {
             notFound: true
         };
