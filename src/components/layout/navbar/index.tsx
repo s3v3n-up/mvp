@@ -29,6 +29,24 @@ export default function Navbar() {
     //user profile image
     const [avatar, setAvatar] = useState("/img/logo.png");
 
+    //navbar color state
+    const [navbarColor, setNavbarColor] = useState("bg-transparent");
+
+    useEffect(()=>{
+        function handleScroll() {
+            if (window.scrollY > 0) {
+                setNavbarColor("bg-[#1a1a1a] bg-opacity-90");
+            } else {
+                setNavbarColor("bg-transparent");
+            }
+        }
+        if (window) {
+            window.addEventListener("scroll", handleScroll);
+        }
+
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
     //set user profile image
     useEffect(() => {
         if (avatarContext && avatarContext.currAvatar) {
@@ -48,7 +66,7 @@ export default function Navbar() {
     }
 
     return (
-        <header className="z-50">
+        <header className={`z-50 sticky top-0 ${navbarColor} flex items-center justify-center`}>
             <nav className={styles.nav}>
                 <button className="relative w-32 h-12" onClick={()=>router.push("/")}>
                     <Image

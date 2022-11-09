@@ -163,8 +163,8 @@ export default function CreateMatch({ props }: Props) {
                 },
                 sport: sportname,
                 gameMode: { modeName: mode, requiredPlayers: computeReqPlayers(mode) },
-                matchStart: date,
                 description: description,
+                matchStart: date,
                 matchType: "REGULAR",
                 status: "UPCOMING",
                 teams: [{ members: [session!.user.userName], score: 0, status: "UNSET" }, { members: [], score: 0, status: "UNSET" }]

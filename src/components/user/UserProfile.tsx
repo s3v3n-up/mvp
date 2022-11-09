@@ -12,6 +12,7 @@ import { AvatarContext } from "@/context/avatar";
 import AlertMessage from "../alertMessage";
 import { UserProfile } from "@/lib/types/User";
 import { PHONE_REGEX } from "@/lib/helpers/validation";
+import { ConstructionOutlined } from "@mui/icons-material";
 
 //dynamic imports
 const Person = dynamic(() => import("@mui/icons-material/Person"));
@@ -43,7 +44,7 @@ interface Data {
 export default function Profile() {
 
     //get the session
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
 
     //get the user data
     const avatarContext = useContext(AvatarContext);
@@ -78,9 +79,9 @@ export default function Profile() {
                 setEmail(userData.email);
                 setImage(userData.image);
                 setStats(userStats);
-                setIsDataLoaded(true);
-            }
-            ).catch(error=>console.log(error));
+            })
+                .then(()=>{setIsDataLoaded(true);})
+                .catch(error=>console.log(error));
         }
 
         //when isDataloaded state and session change, useEffect executes.
@@ -118,10 +119,15 @@ export default function Profile() {
     };
 
     //get the user phone input value, update it in the db through axios put api
-    const phoneHandle = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
+    const phoneHandle = async (event: React.ChangeEvent<HTMLInputElement>) =>{
         const value = event.target.value;
         setPhone(value);
-        if (!PHONE_REGEX.test(value)) return;
+        if (!PHONE_REGEX.test(value)) {
+            console.log("failed");
+
+            return;
+        };
+        console.log(value);
         debounce(async () => {
             await axios.put(`/api/user/${userName}`, {
                 firstName,
@@ -165,10 +171,13 @@ export default function Profile() {
         setUpdatedImage(null);
     }, 500);
 
+    if (isDataLoaded || status === "loading") {
+        return <AlertMessage message="Loading..." type="loading" />;
+    }
+
     return (
         <div className="flex justify-evenly pt-10">
             <div className="flex lg:w-1/4 w-4/5 flex-col space-y-3">
-                {isDataLoaded === false && "...Loading"}
                 <ImagePicker
                     imageUrl={image}
                     image={updatedImage}
@@ -236,4 +245,3 @@ export default function Profile() {
         </div>
     );
 };
-
