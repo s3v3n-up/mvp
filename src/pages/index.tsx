@@ -185,7 +185,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                                                         className={Cardstyles.join}
                                                         onClick={() => joinQuick(quick._id)}
                                                     >
-                                            join
+                                                        join
                                                     </button>
                                                 </div>
                                             )}
