@@ -90,6 +90,8 @@ export default async function handler(
             res.status(200).json({
                 updatedMatch,
             });
+
+        // If the HTTP method is Delete
         } else if (req.method == "DELETE") {
             await deleteMatch(id);
         }
