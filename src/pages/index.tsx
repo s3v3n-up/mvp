@@ -94,7 +94,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
     function lookUser(id: string) {
         const userFound = users.filter((user: any) => user._id === id);
 
-        return userFound[0].userName;
+        return userFound && userFound.length > 0? userFound[0].userName:"";
     }
 
     // Function to join the regular match
