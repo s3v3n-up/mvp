@@ -9,7 +9,7 @@ import styled from "styled-components";
 // Local imports
 import Input from "./Input";
 import SelectOption from "./SelectOption";
-import { SportsOptions, Modes } from "@/lib/types/General";
+import { SportsOptions, Modes, FullLocation } from "@/lib/types/General";
 import { Sport } from "@/lib/types/Sport";
 
 //dynamic imports
@@ -36,7 +36,7 @@ export default function CreateMatch({ props }: Props) {
     const { data: session } = useSession();
 
     // Location useState
-    const [location, setLocation] = useState<any>();
+    const [location, setLocation] = useState<FullLocation>();
 
     // Address useState
     const [address, setAddress] = useState("");
