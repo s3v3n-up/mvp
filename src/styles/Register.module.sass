@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Aldrich&display=swap')
+@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap')
+
+// This the styles for register page 
+.container
+  @apply grid grid-cols-2
+  user-select: none
+
+// This the styles for left container shown in the browser
+.box
+  background-color: rgba(#fc5c3e, 0.8)
+  width: 100%
+  min-height: 100vh
+  user-select: none
+
+.about
+  display: flex
+  flex-direction: column
+  gap: 2.5rem
+  word-spacing: 10px
+  margin-top: 200px
+  font-family: 'Aldrich', sans-serif
+  font-weight: 400
+  text-align: center
+  text-align: center
+  color: #FFFF
+  h2 
+    font-size: 2rem
+    display: block
+  p
+    font-size: 1.75rem
+
+// This the styles for right container shown in the browser
+.background
+  height: 100vh
+  user-select: none
+
+// This the styles for logo 
+.imgwrapper
+  display: flex
+  justify-content: center
+  margin-top: 20px
+
+// This the styles for input components 
+.input
+  display: flex
+  justify-content: center
+  margin-top: 0.75rem
+  width: 100%
+  .info
+    display: flex
+    flex-direction: column
+    gap: 0.5rem
+    width: 50%
+
+.imgupload
+  display: flex
+  justify-content: center
+
+.imgupload input
+  display: none
+
+.imgupload button
+  width: 100px
+  height: 100px
+  background: #FC5C3E
+  color: white
+  border-radius: 60px
+  border: none
+
+.signup
+  display: flex
+  justify-content: center
+  align-items: center
+  background-color: #fc5c3e
+  color: white
+  font-family: 'Inter', sans-serif
+  font-weight: bold
+  font-size: 17pxx
+  text-align: center
+  letter-spacing: 5px
+  text-transform: uppercase
+  width: 100%
+  height: 55px
+  margin-top: 25px
+  margin-bottom: 25px
+  filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.25))
+
+// This uses media query where when its max-width is below 1000 it changes styles to be responsive 
+@media screen and (max-width: 1000px)
+  .container
+    display: flex
+    flex-direction: column
+
+  .background
+    background-image: url("/img/mobile.png")
+    background-position: 50%
+    background-size: cover
+    background-repeat: no-repeat
+    width: 100%
+    height: 100vh
+
+  .box
+    display: none

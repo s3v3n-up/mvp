@@ -1,0 +1,146 @@
+//styles for card container
+.container
+    display: flex
+    flex-direction: column
+    background: white
+    overflow: hidden
+    height: auto
+    width: 739px
+    margin: 50px auto
+    border-radius: 10px
+    user-select: none
+    padding-bottom: 60px
+    font-family: 'Inter'
+    font-style: normal
+
+    div
+        display: flex
+        justify-content: space-between
+
+    h1
+        display: flex
+        justify-content: center
+        margin-bottom: 50px
+        font-family: 'Inter'
+        font-style: normal
+        font-weight: 700
+        font-size: 30px
+        line-height: 77px
+        color: #FC5C3E
+    h3
+        font-family: 'Inter'
+        font-style: normal
+        font-weight: 700
+        font-size: 24px
+        margin-left: 17px
+        margin-bottom: 40px
+        color: #FC5C3E
+    p
+        font-family: 'Inter'
+        font-style: normal
+        font-weight: 700
+        font-size: 20px
+        line-height: 60px
+        color: #A4A4A4
+        margin-left: 17px
+
+//styles for location input container
+
+.location
+    display: flex
+    flex-direction: column
+
+.address
+    margin-right: 10px
+    font-size: 17px
+    padding: 10px
+    width: 376px
+    height: 45px
+    background: #FFFFFF
+    border: 1px solid #000000
+    border-radius: 10px
+
+    div
+        padding-left: 0
+
+.inputaddress
+    width: 330px
+
+.suggest
+    display: flex
+    flex-direction: column
+    margin-bottom: 10px
+    border: 1px solid #000000
+    width: 376px
+    border-radius: 10px
+
+    p
+        font-size: 17px
+        line-height: 30px
+        color: black
+
+//styles for date and time container
+.date
+    margin: 0px 17px 0 17px
+    font-size: 17px
+    padding: 10px
+    width: 376px
+    height: 45px
+    background: #FFFFFF
+    border: 1px solid #000000
+    border-radius: 10px
+
+//styles for description
+.description
+    margin: 0px 17px 0 17px
+    display: flex
+    width: 375px
+    height: 138px
+    background: #FFFFFF
+    border: 1px solid #000000
+    border-radius: 10px
+
+//styles for save button
+.save
+    font-size: 24px
+    margin: 17px
+    background: #FC5C3E
+    color: #f6f6f6
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)
+    border-radius: 10px
+    width: 329px
+    height: 55.21px
+
+//styles for delete button
+.delete
+    font-size: 24px
+    margin: 17px
+    background: #FC5C3E
+    color: #f6f6f6
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)
+    border-radius: 10px
+    width: 329px
+    height: 55.21px
+
+//using media query for mobile view
+@media screen and (max-width: 900px)
+    .container
+        width: 500px
+        height: auto
+
+    .inputaddress
+        width: 250px
+
+    .suggest
+        margin-left: 50px
+        width: 320px
+    .address
+        width: 320px
+        margin-left: 50px
+
+    .date
+        font-size: 17px
+
+    .description
+        font-size: 17px
+        width: 320px

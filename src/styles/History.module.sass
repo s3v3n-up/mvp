@@ -1,0 +1,210 @@
+// Base container for user history page contents
+.baseContainer
+    display: flex
+    align-items: center
+    width: 100vw
+    background-color: transparent
+    justify-content: center
+
+// Main container for tabs and cards
+.historyContainer
+    display: flex
+    justify-content: center
+    height: 70vh
+    width: 45em
+    background-color: transparent
+
+// Background for tab component
+.background
+    background-color: transparent
+    width: 40em
+    height: 25em
+    border-radius: 10px
+
+// Container for tabs
+.titleContainer
+    margin-top: 7vh
+    display: flex
+    flex-direction: row
+    justify-content: space-around
+    align-items: center
+    font-family: sans-serif
+    font-weight: bold
+    background-color: #fc5c3e
+    padding: 0
+    border-radius: 10px
+    height: 8vh
+
+//Tab contents
+.tabContent
+    height: 55vh
+    width: 70vw
+    display: flexbox
+    flex-direction: column
+    overflow-x: hidden
+    overflow-y: auto
+    background-color: transparent
+
+// Removes scroll-bar visibility
+.tabContent::-webkit-scrollbar
+    opacity: 0
+
+//Selected tab
+.selectedTab
+    color: white
+    background-color: #fc5c3e
+    height: 85%
+    width: 49%
+    text-align: center
+    line-height: 10px
+    elevation: 3
+    box-shadow: none
+    border: 0
+    font-size: 1.3rem
+
+//Unselected tab
+.unselectedTab
+    color: #fc5c3e
+    background-color: #001011
+    height: 93%
+    width: 50%
+    text-align: center
+    line-height: 10px
+    elevation: 3
+    box-shadow: none
+    border: black 1px
+    border-radius: 9px
+    font-size: 1.3rem
+
+// Card base 
+.cardContainer
+    background-color: white
+    width: 35rem
+    height: 10rem
+    border-radius: 10px
+    position: relative
+    font-family: sans-serif
+    margin-top: 2em
+    padding: 10px 0px
+
+// Information
+.cardInfo
+    padding-top: 0.1rem
+
+// Match time info
+.time
+    color: black
+    font-weight: bold
+    margin-left: 1rem
+
+// Match sport type info
+.sportType
+    font-weight: bold
+    color: gray
+    margin-left: 1rem
+
+// Container for location and button
+.miniContainer
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+    background-color: #fc5c3e
+    position: absolute
+    bottom: 0
+    border-radius: 0 0 10px 10px
+    width: 100%
+    height: 35%
+    margin: auto
+
+// location icon
+.location p:before
+    content: ""
+    display: block
+    background: url("/icons/location.png") no-repeat
+    width: 20px
+    height: 20px
+    float: left
+    
+// Match location info
+.location
+    color: white
+    padding: 4px 8px
+
+// button for user to leave match or delete
+.cancelButton
+    background-color: #fff
+    border: solid 1px white
+    border-radius: 7px
+    color: #fc5c3e
+    margin-right: 1rem
+    padding: 1px 3px
+    height: 35px
+    margin: 8px
+
+    // This uses media query where when its max-width is below 1000 it changes styles to be responsive 
+@media screen and (max-width: 815px)
+
+    // Base container for user history page contents
+    .baseContainer
+        display: flex
+        align-items: center
+        width: 100vw
+        height: 35rem
+        background-color: transparent
+        justify-content: center
+        overflow: hidden
+
+    // Main container for tabs and cards
+    .historyContainer
+        display: flex
+        justify-content: center
+        min-width: 40rem
+        min-height: 30rem
+        background-color: transparent
+        overflow: hidden
+        margin-top: 1rem
+
+    //Background for tab component
+    .background
+        background-color: transparent
+        min-width: 33rem
+        min-height: 40rem
+        border-radius: 10px
+        margin-top: 1rem
+        overflow: hidden
+
+    //Container for tabs
+    .titleContainer
+        margin-top: 1vh
+        display: flex
+        flex-direction: row
+        justify-content: space-around
+        align-items: center
+        font-family: sans-serif
+        font-weight: bold
+        background-color: #fc5c3e
+        padding: 0
+        border-radius: 10px
+        height: 8vh
+
+        //Tab contents
+    .tabContent
+        max-height: 23rem
+        min-width: 35rem
+        display: flexbox
+        flex-direction: column
+        overflow-x: hidden
+        overflow-y: auto
+        background-color: transparent
+
+    .tabContent::-webkit-scrollbar
+        opacity: 0
+
+        // Card base 
+    .cardContainer
+        background-color: white
+        max-width: 33rem
+        min-height: 10rem
+        border-radius: 10px
+        font-family: sans-serif
+        margin-top: 2em
