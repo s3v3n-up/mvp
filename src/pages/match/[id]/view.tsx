@@ -82,12 +82,12 @@ export default function MatchView({ data }: Props) {
     let allTeams: string[] = data.teams[1] ? data.teams[0].members.concat(data.teams[1].members) : data.teams[0].members;
 
     // Converts the date type(mm/dd/yyyy) to string format ("yyyy-dd-mm")
-    const startTime = new Date(data.matchStart)
+    const startTime = data.matchStart && new Date(data.matchStart)
         .toLocaleDateString("en-GB")
         .split("/")
         .reverse()
         .join("-");
-    const endTime = new Date(data.matchEnd)
+    const endTime = data.matchEnd && new Date(data.matchEnd)
         .toLocaleDateString("en-GB")
         .split("/")
         .reverse()
@@ -97,8 +97,8 @@ export default function MatchView({ data }: Props) {
     // https://www.npmjs.com/package/add-to-calendar-button
     const config: Config = {
         name: data.sport,
-        startDate: startTime,
-        endDate: endTime ? endTime : startTime,
+        startDate: startTime && startTime,
+        endDate: endTime && endTime,
         options: [
             "Apple",
             "Google",
