@@ -335,13 +335,13 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             };
         }
 
+        //guard against regular match already start,
         //update match status and redirect to scoreboard if start time is passed
         if (
             match.matchType === "REGULAR" &&
             new Date(match.matchStart!.toLocaleString()).getTime() <= new Date(new Date(Date.now()).toLocaleString()).getTime()
         ) {
-            const alreadyStartedMatchStatus = ["INPROGRESS", "PAUSED", "RESUMED", "FINISHED", "CANCELLED"];
-            if (!alreadyStartedMatchStatus.includes(match.status)) {
+            if (match.status === "UPCOMING") {
                 await updateMatchStatus(id as string, "INPROGRESS");
             }
 
