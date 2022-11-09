@@ -32,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         //all available operations
-        const operations = ["pause", "start", "queue", "cancel", "remove", "finish"];
+        const operations = ["pause", "start", "queue", "cancel", "remove", "finish", "resume"];
 
         //destructure request params to get id and operation name
         const { id, operation } = req.query;
@@ -144,10 +144,40 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             });
         }
 
+        if (operation === "resume") {
+            const { resumeTime } = req.body;
+
+            //validate resumeTime
+            if (isNaN(Date.parse(resumeTime))) {
+                throw {
+                    code: 400,
+                    message: "bad request"
+                };
+            }
+
+            //update matchResume
+            await updateMatchFields(id, {
+                matchResume: resumeTime,
+                status: "RESUMED",
+            });
+        }
+
         //operation happens when the host cancel the match
         if (operation === "cancel") {
+            const { cancelTime } = req.body;
+
+            //validate cancelTime
+            if (isNaN(Date.parse(cancelTime))) {
+                throw {
+                    code: 400,
+                    message: "bad request"
+                };
+            }
+
+            //cancel match
             await updateMatchFields(id, {
                 status: "CANCELLED",
+                matchEnd: cancelTime,
             });
         }
 

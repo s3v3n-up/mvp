@@ -5,7 +5,7 @@
  */
 interface Props {
     message: string;
-    type: "success" | "error" | "loading";
+    type: "success" | "error" | "loading" | "default";
 }
 
 /**
@@ -19,6 +19,7 @@ export default function AlertMessage(props: Props) {
         success: "bg-green-100 border-green-400 text-green-700",
         error: "bg-red-100 border-red-400 text-red-700",
         loading: "bg-blue-100 border-blue-400 text-blue-700",
+        default: "bg-black text-white bg-opacity-100",
     };
 
     return (

@@ -3,6 +3,8 @@ import { GetServerSidePropsContext } from "next";
 import router from "next/router";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import dynamic from "next/dynamic";
+import useSWR from "swr";
 
 //https://popupsmart.com/blog/react-popup
 import Popup from "reactjs-popup";
@@ -10,16 +12,18 @@ import "reactjs-popup/dist/index.css";
 
 //local-import
 import styles from "@/styles/MatchView.module.sass";
-import { getMatchById } from "@/lib/actions/match";
+import { getMatchById, updateMatchStatus } from "@/lib/actions/match";
 import Database from "@/lib/resources/database";
 import { Location } from "@/lib/types/General";
 import { Match } from "@/lib/types/Match";
 
 // https://www.npmjs.com/package/add-to-calendar-button
 // eslint-disable-next-line camelcase
-import { atcb_action } from "add-to-calendar-button";
 import "add-to-calendar-button/assets/css/atcb.css";
 import { useSession } from "next-auth/react";
+
+//dynamic imports
+const Snackbar = dynamic(()=> import("@mui/material/Snackbar"), { ssr: false });
 
 // Interface for passed props
 interface Props {
@@ -77,7 +81,8 @@ export default function MatchView({ data }: Props) {
     // Stores and set data from the mapbox
     const [result, setResult] = useState<Result>();
 
-    console.log(result);
+    //error state
+    const [error, setError] = useState<string>("");
 
     // useEffect to get user current location then set location to be saved in database
     useEffect(() => {
@@ -103,7 +108,7 @@ export default function MatchView({ data }: Props) {
 
         // Error parameter for currentPosition function
         function error(err: any) {
-            console.warn(`ERROR(${err.code}): ${err.message}`);
+            setError(`ERROR(${err.code}): ${err.message}. Error getting your location`);
         }
         navigator.geolocation.getCurrentPosition(success, error, options);
     }, []);
@@ -146,16 +151,17 @@ export default function MatchView({ data }: Props) {
     };
 
     // function to check if there is an error in the config
-    function addToCal(): void {
+    async function addToCal() {
         try {
 
             //// https://www.npmjs.com/package/add-to-calendar-button
-            atcb_action(config);
+            await (import("add-to-calendar-button")).then((atcb) => {
+                atcb.atcb_action(config);
+            });
 
         // Catches Error and displays an alert
         }catch(error: any) {
-
-            alert("Adding to calendar failed, try again later");
+            setError("Adding to calendar failed, try again later");
         }
     }
 
@@ -181,7 +187,7 @@ export default function MatchView({ data }: Props) {
                 setResult(data);
             });
         } catch (error) {
-            console.log("Error fetching data, ", error);
+            setError("Error getting directions, please try again later");
         }
     }
 
@@ -200,13 +206,13 @@ export default function MatchView({ data }: Props) {
     }
 
     return (
-        <div className={styles.container}>
+        <article className={styles.container}>
             {/* Header for Sport */}
             {session?.user.id === data.matchHost && <button
                 className={styles.edit}
                 onClick={() => editClicked(data._id as string)}
             >
-        Edit
+                Edit
             </button>}
             <h1>{data.sport}</h1>
             <div>
@@ -246,18 +252,24 @@ export default function MatchView({ data }: Props) {
                     className={styles.calendar}
                     onClick={() => addToCal()}
                 >
-          Add to Calendar
+                    Add to Calendar
                 </button>
                 {/* Sub Header for Date and Time */}
                 <h3>Date and Time</h3>
                 {/* Data for match type */}
-                {data.matchStart && <p>
-                    {new Date(data.matchStart)
-                        .toDateString()
-                        .concat(
-                            " " + new Date(data.matchStart).toLocaleTimeString("en-US")
-                        )}
-                </p>}
+                {data.matchStart &&
+                    <p>
+                        {new Date(data.matchStart).toLocaleString("en-GB", {
+                            weekday: "long",
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                            hour: "numeric",
+                            minute: "numeric",
+                            hour12: true,
+                        })}
+                    </p>
+                }
             </div>
             <div>
                 {/* Sub Header for Description */}
@@ -282,7 +294,22 @@ export default function MatchView({ data }: Props) {
                     ))}
                 </div>
             </div>
-        </div>
+            <Snackbar
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                open={error.length > 0}
+                autoHideDuration={3000}
+                onClose={() => setError("")}
+            >
+                <p className={
+                    `w-full bg-red-100 
+                    px-5 py-3 
+                    drop-shadow-lg z-50 
+                    rounded-lg text-center`
+                }>
+                    <span className="text-red-700">{error}</span>
+                </p>
+            </Snackbar>
+        </article>
     );
 }
 
@@ -302,8 +329,27 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         if (match.matchType === "QUICK" || !match) {
             return {
                 redirect: {
-                    destination: "/",
+                    destination: `/match/${id}/scoreboard`,
+                    permanent: false,
                 },
+            };
+        }
+
+        //update match status and redirect to scoreboard if start time is passed
+        if (
+            match.matchType === "REGULAR" &&
+            new Date(match.matchStart!.toLocaleString()).getTime() <= new Date(new Date(Date.now()).toLocaleString()).getTime()
+        ) {
+            const alreadyStartedMatchStatus = ["INPROGRESS", "PAUSED", "RESUMED", "FINISHED", "CANCELLED"];
+            if (!alreadyStartedMatchStatus.includes(match.status)) {
+                await updateMatchStatus(id as string, "INPROGRESS");
+            }
+
+            return {
+                redirect: {
+                    destination: `/match/${id}/scoreboard`,
+                    permanent: false,
+                }
             };
         }
 
