@@ -82,23 +82,23 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
  
 2. **src** - source folder where below folders are contained
 
-3. **components**
+3. **components** - resuable components for buttons and nav, etc.
   
-4. **context**
+4. **context** - 
 
-5. **hooks**
+5. **hooks** - react hooks
 
-6. **lib**
+6. **lib** - libraries
 
-7. **pages**
+7. **pages** - the pages our the app
 
-8. **shared**
+8. **shared** - 
 
-9. **stories**
+9. **stories** - 
 
-10. **styles**
+10. **styles** - the style modules for pages and components
 
-11. **types**
+11. **types** - 
   
 
 <!-- GETTING STARTED -->
@@ -149,7 +149,7 @@ to run the development server!
 
 <!-- CONTRIBUTING -->
 ## :busts_in_silhouette: Contributing
-Contributions are always welcme and appreciated. Please ensure to always make a new branch for your additions.
+Contributions are always welcome and appreciated. Please ensure to always make a new branch for your additions.
 
 <!-- LICENSE -->
 ## :copyright: License
