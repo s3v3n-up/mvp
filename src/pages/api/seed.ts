@@ -28,6 +28,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Await the function to be executed
     await seedAll();
 
-    // Return Success
+    // Return Success message
     res.status(200).send("Success");
 }
