@@ -22,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return;
     }
 
-    // Sets up the database
+    // Sets up the database connection
     await Database.setup();
 
     // Await the function to be executed
