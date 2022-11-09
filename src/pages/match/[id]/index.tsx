@@ -37,6 +37,32 @@ interface Config {
   description: string;
 }
 
+interface Pos {
+    coords: {
+        latitude: number,
+        longitude: number
+    }
+}
+
+interface Result {
+    routes: [
+        {
+            legs: [
+                {steps: Steps[]}
+            ],
+            duration: number
+        }
+    ]
+}
+
+interface Steps {
+    maneuver: {
+        instruction: string;
+    }
+}
+
+// interface Steps
+
 /**
  * @description displays MatchView page
  */
@@ -49,7 +75,9 @@ export default function MatchView({ data }: Props) {
     const [startLocation, setstartLocation] = useState<Location>();
 
     // Stores and set data from the mapbox
-    const [result, setResult] = useState<any>();
+    const [result, setResult] = useState<Result>();
+
+    console.log(result);
 
     // useEffect to get user current location then set location to be saved in database
     useEffect(() => {
@@ -62,7 +90,7 @@ export default function MatchView({ data }: Props) {
         };
 
         // Success parameter for currentPosition function
-        const success = (pos: any) => {
+        const success = (pos: Pos) => {
 
             // access position coordinates
             const crd = pos.coords;
@@ -80,16 +108,8 @@ export default function MatchView({ data }: Props) {
         navigator.geolocation.getCurrentPosition(success, error, options);
     }, []);
 
-    // Combine team1 and team2 if team 2 exist
-    let allTeams: string[];
-    if(data.teams[1]) {
-        allTeams = data.teams[0].members.concat(data.teams[1].members);
-    } else {
-        allTeams = data.teams[0].members;
-    }
-
     // Combine team1 and team2
-    // let allTeams: string[] = data.teams[1] ? data.teams[0].members.concat(data.teams[1].members) : data.teams[0].members;
+    let allTeams: string[] = data.teams[0].members.concat(data.teams[1].members) ?? data.teams[0].members;
 
     // A function that converts dates to string format ("yyyy-dd-mm")
     function dateConverter(date: Date): string {
@@ -105,7 +125,6 @@ export default function MatchView({ data }: Props) {
     // stores the string format ("yyyy-dd-mm")
     const startTime = data.matchStart && dateConverter(data.matchStart);
     const endTime = data.matchEnd && dateConverter(data.matchEnd);
-
 
     // Configuration to be pass in the atcb_action
     // https://www.npmjs.com/package/add-to-calendar-button
@@ -143,15 +162,6 @@ export default function MatchView({ data }: Props) {
         return router.push(`/match/${id}/edit`);
     }
 
-    // async function leave(id: string, teamIdx: any) {
-    //     await axios.put(`api/match/${id}/operation/remove`, {
-    //         teamIdx,
-    //         UserName: session?.user.userName
-    //     });
-
-    //     return router.push("/").then(() => router.reload());
-    // }
-
     // Function to handle get direction click event
     async function getDirectionsClicked() {
 
@@ -174,10 +184,10 @@ export default function MatchView({ data }: Props) {
     }
 
     // Contains steps, maneuver and instruction data
-    let steps;
+    let steps: Steps[] = [];
 
     // Stores trip duration for when you get directions
-    let duration;
+    let duration: number = 0;
 
     // Guard to check if result from api fetch contains data
     if (result) {
@@ -215,7 +225,7 @@ export default function MatchView({ data }: Props) {
                             <strong>Trip duration: {duration} min 🚴</strong>
                         </p>
                         <ol>
-                            {steps.map((step: any, index: any) => {
+                            {steps.map((step: Steps, index: number) => {
                                 return (<li className={styles.list} key={index}>{step.maneuver.instruction}</li>);
                             })}
                         </ol>
@@ -246,7 +256,6 @@ export default function MatchView({ data }: Props) {
                             " " + new Date(data.matchStart).toLocaleTimeString("en-US")
                         )}
                 </p>}
-
             </div>
             <div>
                 {/* Sub Header for Description */}
@@ -260,7 +269,7 @@ export default function MatchView({ data }: Props) {
                 <h3>Joined Players</h3>
                 <div>
                     {/* Displays all joined players */}
-                    {allTeams.map((name: any, idx: number) => (
+                    {allTeams.map((name: string, idx: number) => (
                         <div className={styles.players} key={idx}>
                             {name}
                             <div>
