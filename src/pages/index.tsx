@@ -181,7 +181,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                                                 <LocationOnIcon />
                                             </div>
                                             <p>{quick.location.address.pointOfInterest}</p>
-                                            <p>{ isNaN(distance) && `${ distance }km away` || "No Location" }</p>
+                                            <p>{ !isNaN(distance) && `${ distance }km away` || "No Location" }</p>
                                             {/* displays user avatar that create the match */}
                                         </div>
                                     </div>
@@ -246,7 +246,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                                     <LocationOnIcon />
                                 </div>
                                 <p>{reg.location.address.pointOfInterest}</p>
-                                <p>{ isNaN(distance) && `${ distance }km away` || "No Location" }</p>
+                                <p>{ !isNaN(distance) && `${ distance }km away` || "No Location" }</p>
                                 {/* displays user that create the match */}
                             </div>
                         </div>
