@@ -8,7 +8,7 @@ import { GetServerSidePropsContext } from "next";
 import { getUserByUserName, calculateStats } from "@/lib/actions/user";
 import Database from "@/lib/resources/database";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
-import type {UserProfile as Profile} from "@/lib/types/User";
+import type { UserProfile as Profile } from "@/lib/types/User";
 
 interface Props {
     profile: Profile;
