@@ -14,7 +14,8 @@ export default function NavTab({ href, pageName, children }: {href: string, page
                 `${isActive? "text-orange-500": "text-white"}
                 flex flex-col 
                 items-center font-bold
-                cursor-pointer uppercase`
+                cursor-pointer uppercase
+                justify-center`
             }>
                 {children}
                 {pageName}

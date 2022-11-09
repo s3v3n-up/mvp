@@ -12,6 +12,7 @@ import { AvatarContext } from "@/context/avatar";
 import AlertMessage from "../alertMessage";
 import { UserProfile } from "@/lib/types/User";
 import { PHONE_REGEX } from "@/lib/helpers/validation";
+import { ConstructionOutlined } from "@mui/icons-material";
 
 //dynamic imports
 const Person = dynamic(() => import("@mui/icons-material/Person"));
@@ -118,10 +119,15 @@ export default function Profile() {
     };
 
     //get the user phone input value, update it in the db through axios put api
-    const phoneHandle = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
+    const phoneHandle = async (event: React.ChangeEvent<HTMLInputElement>) =>{
         const value = event.target.value;
         setPhone(value);
-        if (!PHONE_REGEX.test(value)) return;
+        if (!PHONE_REGEX.test(value)) {
+            console.log("failed");
+
+            return;
+        };
+        console.log(value);
         debounce(async () => {
             await axios.put(`/api/user/${userName}`, {
                 firstName,
