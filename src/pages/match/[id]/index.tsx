@@ -13,6 +13,7 @@ import styles from "@/styles/MatchView.module.sass";
 import { getMatchById } from "@/lib/actions/match";
 import Database from "@/lib/resources/database";
 import { Location } from "@/lib/types/General";
+import { Match } from "@/lib/types/Match";
 
 // https://www.npmjs.com/package/add-to-calendar-button
 // eslint-disable-next-line camelcase
@@ -22,14 +23,14 @@ import { useSession } from "next-auth/react";
 
 // Interface for passed props
 interface Props {
-  data: any;
+  data: Match;
 }
 
 // Interface for the config used in add to calendar
 interface Config {
   name: string;
-  startDate: string;
-  endDate: string;
+  startDate?: string;
+  endDate?: string;
   options: ["Apple", "Google", "iCal", "Microsoft365", "Outlook.com", "Yahoo"];
   timeZone: string;
   iCalFileName: string;
@@ -78,27 +79,39 @@ export default function MatchView({ data }: Props) {
         navigator.geolocation.getCurrentPosition(success, error, options);
     }, []);
 
-    // Combine team1 and team2
-    let allTeams: string[] = data.teams[1] ? data.teams[0].members.concat(data.teams[1].members) : data.teams[0].members;
+    // Combine team1 and team2 if team 2 exist
+    let allTeams: string[];
+    if(data.teams[1]) {
+        allTeams = data.teams[0].members.concat(data.teams[1].members);
+    } else {
+        allTeams = data.teams[0].members;
+    }
 
-    // Converts the date type(mm/dd/yyyy) to string format ("yyyy-dd-mm")
-    const startTime = data.matchStart && new Date(data.matchStart)
-        .toLocaleDateString("en-GB")
-        .split("/")
-        .reverse()
-        .join("-");
-    const endTime = data.matchEnd && new Date(data.matchEnd)
-        .toLocaleDateString("en-GB")
-        .split("/")
-        .reverse()
-        .join("-");
+    // Combine team1 and team2
+    // let allTeams: string[] = data.teams[1] ? data.teams[0].members.concat(data.teams[1].members) : data.teams[0].members;
+
+    // A function that converts dates to string format ("yyyy-dd-mm")
+    function dateConverter(date: Date): string {
+        const convertedDate = new Date(date)
+            .toLocaleDateString("en-GB")
+            .split("/")
+            .reverse()
+            .join("-");
+
+        return convertedDate;
+    }
+
+    // stores the string format ("yyyy-dd-mm")
+    const startTime = data.matchStart && dateConverter(data.matchStart);
+    const endTime = data.matchEnd && dateConverter(data.matchEnd);
+
 
     // Configuration to be pass in the atcb_action
     // https://www.npmjs.com/package/add-to-calendar-button
     const config: Config = {
-        name: data.sport && data.sport,
-        startDate: startTime && startTime,
-        endDate: endTime && endTime,
+        name: data.sport ?? "No Sport",
+        startDate: startTime? startTime : undefined,
+        endDate: endTime? endTime : undefined,
         options: [
             "Apple",
             "Google",
@@ -109,22 +122,34 @@ export default function MatchView({ data }: Props) {
         ],
         timeZone: "America/Los_Angeles",
         iCalFileName: "Reminder-Event",
-        description: data.description && data.description,
+        description: data.description ?? "",
     };
+
+    // function to check if there is an error in the config
+    function addToCal() {
+        try {
+
+            atcb_action(config);
+
+        }catch(error: any) {
+
+            alert("Adding to calendar failed, try again later");
+        }
+    }
 
     // Function to redirect by matchid
     function editClicked(id: string) {
         return router.push(`/match/${id}/edit`);
     }
 
-    async function leave(id: string, teamIdx: any) {
-        await axios.put(`api/match/${id}/operation/remove`, {
-            teamIdx,
-            UserName: session?.user.userName
-        });
+    // async function leave(id: string, teamIdx: any) {
+    //     await axios.put(`api/match/${id}/operation/remove`, {
+    //         teamIdx,
+    //         UserName: session?.user.userName
+    //     });
 
-        return router.push("/").then(() => router.reload());
-    }
+    //     return router.push("/").then(() => router.reload());
+    // }
 
     // Function to handle get direction click event
     async function getDirectionsClicked() {
@@ -206,20 +231,21 @@ export default function MatchView({ data }: Props) {
                 {/* Add to your local calendar button */}
                 <button
                     className={styles.calendar}
-                    onClick={() => atcb_action(config as Config)}
+                    onClick={() => addToCal()}
                 >
           Add to Calendar
                 </button>
                 {/* Sub Header for Date and Time */}
                 <h3>Date and Time</h3>
                 {/* Data for match type */}
-                <p>
+                {data.matchStart && <p>
                     {new Date(data.matchStart)
                         .toDateString()
                         .concat(
                             " " + new Date(data.matchStart).toLocaleTimeString("en-US")
                         )}
-                </p>
+                </p>}
+
             </div>
             <div>
                 {/* Sub Header for Description */}
