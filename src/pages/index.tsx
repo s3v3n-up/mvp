@@ -155,7 +155,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                                     lookUser(quick.matchHost).includes(search.toLowerCase())
                             )
                             .map((quick: any, idx: any) => {
-                                const distance = Math.ceil(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: reg.location.lat as number, longitude: reg.location.lng as number }) / 1000);
+                                const distance = Math.ceil(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: quick.location.lat as number, longitude: quick.location.lng as number }) / 1000);
 
                                 return (
 
