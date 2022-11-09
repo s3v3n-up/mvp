@@ -1,6 +1,6 @@
 //third-party import
 import { GetServerSidePropsContext } from "next";
-import router from "next/router";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import dynamic from "next/dynamic";
@@ -12,10 +12,11 @@ import "reactjs-popup/dist/index.css";
 
 //local-import
 import styles from "@/styles/MatchView.module.sass";
-import { getMatchById, updateMatchStatus } from "@/lib/actions/match";
+import { getMatchById, updateMatchFields } from "@/lib/actions/match";
 import Database from "@/lib/resources/database";
 import { Location, Pos } from "@/lib/types/General";
 import { Match } from "@/lib/types/Match";
+import dateConverter from "@/lib/helpers/date";
 
 // https://www.npmjs.com/package/add-to-calendar-button
 // eslint-disable-next-line camelcase
@@ -27,7 +28,7 @@ const Snackbar = dynamic(()=> import("@mui/material/Snackbar"), { ssr: false });
 
 // Interface for passed props
 interface Props {
-  data: Match;
+  matchData: Match;
 }
 
 // Interface for the config used in add to calendar
@@ -63,10 +64,13 @@ interface Steps {
 /**
  * @description displays MatchView page
  */
-export default function MatchView({ data }: Props) {
+export default function MatchView({ matchData }: Props) {
 
     // Access session
     const { data: session } = useSession();
+
+    //current match state
+    const [match, setMatch] = useState<Match>(matchData);
 
     // Stores and Sets the location
     const [startLocation, setstartLocation] = useState<Location>();
@@ -75,7 +79,64 @@ export default function MatchView({ data }: Props) {
     const [result, setResult] = useState<Result>();
 
     //error state
-    const [error, setError] = useState<string>("");
+    const [errorMessage, setErrorMessage] = useState<string>("");
+
+    //start time
+    const [matchStartTime, setMatchStartTime] = useState<string>(
+        dateConverter(matchData.matchStart!, true)
+    );
+
+    //guard page against match already started
+    const router = useRouter();
+    useEffect(()=> {
+
+        //cancel match if match is already start and member is not full
+        (async() => {
+
+            //boolean check if match teams are full
+            const isMemberFull = match.teams[0].members.concat(match.teams[1].members).length === match.gameMode.requiredPlayers;
+
+            //boolean check if match is alredy started
+            const isMatchStarted = new Date(match.matchStart!.toLocaleString()).getTime() <= new Date().getTime();
+
+            //if match is started
+            if (isMatchStarted) {
+
+                //if member is not full, cancel the match
+                if (!isMemberFull && match.status !== "CANCELLED") {
+                    await axios.put(`/api/match/${match._id}/operation/cancel`,{
+                        cancelTime: new Date().toString()
+                    });
+                }
+
+                //if status is still upcoming, update it to in progress
+                else if (match.status === "UPCOMING") {
+                    await axios.put(`/api/match/${match._id}/status`,{
+                        status: "INPROGRESS"
+                    });
+                }
+
+                //navigate to scoreboard
+                router.push(`/match/${match._id}/scoreboard`);
+            }
+        })();
+    }, [match, router]);
+
+    //refetch match every 1 seconds
+    const { data, error } = useSWR<{match: Match}>(`/api/match/${matchData._id}`, {
+        refreshInterval: 1000,
+        fallback: match
+    });
+
+    //update match with new info
+    useEffect(()=> {
+        if (data && !error) {
+            setMatch(data.match);
+            setMatchStartTime(dateConverter(data.match.matchStart!));
+        } if (error) {
+            setErrorMessage("failed to fetch lastest info");
+        }
+    }, [data, error]);
 
     // useEffect to get user current location then set location to be saved in database
     useEffect(() => {
@@ -101,35 +162,18 @@ export default function MatchView({ data }: Props) {
 
         // Error parameter for currentPosition function
         function error(err: any) {
-            setError(`ERROR(${err.code}): ${err.message}. Error getting your location`);
+            setErrorMessage(`ERROR(${err.code}): ${err.message}. Error getting your location`);
         }
         navigator.geolocation.getCurrentPosition(success, error, options);
     }, []);
 
-    // Combine team1 and team2
-    let allTeams: string[] = data.teams[0].members.concat(data.teams[1].members) ?? data.teams[0].members;
-
-    // A function that converts dates to string format ("yyyy-dd-mm")
-    function dateConverter(date: Date): string {
-        const convertedDate = new Date(date)
-            .toLocaleDateString("en-GB")
-            .split("/")
-            .reverse()
-            .join("-");
-
-        return convertedDate;
-    }
-
-    // stores the string format ("yyyy-dd-mm")
-    const startTime = data.matchStart && dateConverter(data.matchStart);
-    const endTime = data.matchEnd && dateConverter(data.matchEnd);
-
     // Configuration to be pass in the atcb_action
     // https://www.npmjs.com/package/add-to-calendar-button
     const config: Config = {
-        name: data.sport ?? "No Sport",
-        startDate: startTime? startTime : undefined,
-        endDate: endTime? endTime : undefined,
+        name: match.sport?? "No Sport",
+        startDate: dateConverter(match.matchStart!)?? undefined,
+        endDate: match.matchEnd?
+            dateConverter(match.matchEnd) : undefined,
         options: [
             "Apple",
             "Google",
@@ -140,10 +184,10 @@ export default function MatchView({ data }: Props) {
         ],
         timeZone: "America/Los_Angeles",
         iCalFileName: "Reminder-Event",
-        description: data.description ?? "",
+        description: match.description ?? "",
     };
 
-    // function to check if there is an error in the config
+    // function to add to calendar
     async function addToCal() {
         try {
 
@@ -153,14 +197,9 @@ export default function MatchView({ data }: Props) {
             });
 
         // Catches Error and displays an alert
-        }catch(error: any) {
-            setError("Adding to calendar failed, try again later");
+        }catch {
+            setErrorMessage("Adding to calendar failed, try again later");
         }
-    }
-
-    // Function to redirect by matchid
-    function editClicked(id: string): Promise<boolean> {
-        return router.push(`/match/${id}/edit`);
     }
 
     // Function to handle get direction click event
@@ -169,9 +208,9 @@ export default function MatchView({ data }: Props) {
         // fetch mapbox api using directions services
         try {
             const endpoint = `https://api.mapbox.com/directions/v5/mapbox/driving/${
-        startLocation!.lng
-            },${startLocation!.lat};${data.location.lng},${
-                data.location.lat
+            startLocation!.lng
+            },${startLocation!.lat};${match.location.lng},${
+                match.location.lat
             }?steps=true&geometries=geojson&access_token=${
                 process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
             }`;
@@ -179,8 +218,8 @@ export default function MatchView({ data }: Props) {
             await axios.get(endpoint).then(({ data }) => {
                 setResult(data);
             });
-        } catch (error) {
-            setError("Error getting directions, please try again later");
+        } catch {
+            setErrorMessage("Error getting directions, please try again later");
         }
     }
 
@@ -201,18 +240,19 @@ export default function MatchView({ data }: Props) {
     return (
         <article className={styles.container}>
             {/* Header for Sport */}
-            {session?.user.id === data.matchHost && <button
+            {session?.user.id === match.matchHost &&
+            <button
                 className={styles.edit}
-                onClick={() => editClicked(data._id as string)}
+                onClick={() => router.push(`/match/${match._id}/edit`)}
             >
                 Edit
             </button>}
-            <h1>{data.sport}</h1>
+            <h1>{match.sport}</h1>
             <div>
                 {/* Sub Header for Match Type */}
                 <h3>Match Type</h3>
                 {/* Data for match type */}
-                <p>{data.matchType}</p>
+                <p>{match.matchType}</p>
             </div>
             <div>
                 {/* Sidebar to get step-by-step instructions */}
@@ -236,7 +276,7 @@ export default function MatchView({ data }: Props) {
                 {/* Sub Header for Match Type */}
                 <h3>Address</h3>
                 {/* Data for match type */}
-                <p>{data.location.address.fullAddress}</p>
+                <p>{match.location.address.fullAddress}</p>
             </div>
             <div>
                 {/* https://www.npmjs.com/package/add-to-calendar-button */}
@@ -249,49 +289,43 @@ export default function MatchView({ data }: Props) {
                 </button>
                 {/* Sub Header for Date and Time */}
                 <h3>Date and Time</h3>
-                {/* Data for match type */}
-                {data.matchStart &&
-                    <p>
-                        {new Date(data.matchStart).toLocaleString("en-GB", {
-                            weekday: "long",
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                            hour: "numeric",
-                            minute: "numeric",
-                            hour12: true,
-                        })}
-                    </p>
-                }
+                <p>
+                    {matchStartTime}
+                </p>
             </div>
             <div>
                 {/* Sub Header for Description */}
                 <h3>Description</h3>
                 {/* Data for match type */}
-                <p>{data.description}</p>
+                <p>{match.description}</p>
             </div>
             <div>
                 {/* Sub Header for Joined Players */}
-                {session?.user.id !== data.matchHost && <button className={styles.directions}>Join</button>}
+                {session?.user.id !== match.matchHost &&
+                    <button className={styles.directions}>
+                        Join
+                    </button>
+                }
                 <h3>Joined Players</h3>
                 <div>
                     {/* Displays all joined players */}
-                    {allTeams.map((name: string, idx: number) => (
-                        <div className={styles.players} key={idx}>
-                            {name}
-                            <div>
-                                {/* Leave the match button */}
-                                <button>Leave</button>
+                    {match.teams[0].members.concat(match.teams[1].members)
+                        .map((name: string, idx: number) => (
+                            <div className={styles.players} key={idx}>
+                                {name}
+                                <div>
+                                    {/* Leave the match button */}
+                                    <button>Leave</button>
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
                 </div>
             </div>
             <Snackbar
                 anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                open={error.length > 0}
+                open={errorMessage.length > 0}
                 autoHideDuration={3000}
-                onClose={() => setError("")}
+                onClose={() => setErrorMessage("")}
             >
                 <p className={
                     `w-full bg-red-100 
@@ -299,7 +333,7 @@ export default function MatchView({ data }: Props) {
                     drop-shadow-lg z-50 
                     rounded-lg text-center`
                 }>
-                    <span className="text-red-700">{error}</span>
+                    <span className="text-red-700">{errorMessage}</span>
                 </p>
             </Snackbar>
         </article>
@@ -317,6 +351,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
         // Get the specific match that you want to view
         const match = await getMatchById(id as string);
+        const isMemberFull = (match.teams[0].members.concat(match.teams[1].members)).length === match.gameMode.requiredPlayers;
+        console.log(isMemberFull);
 
         // Redirect them to index if the match type is not REGULAR
         if (match.matchType === "QUICK" || !match) {
@@ -332,10 +368,22 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         //update match status and redirect to scoreboard if start time is passed
         if (
             match.matchType === "REGULAR" &&
-            new Date(match.matchStart!.toLocaleString()).getTime() <= new Date(new Date(Date.now()).toLocaleString()).getTime()
+            new Date(match.matchStart!.toUTCString()).getTime() <= new Date(new Date(Date.now()).toUTCString()).getTime()
         ) {
-            if (match.status === "UPCOMING") {
-                await updateMatchStatus(id as string, "INPROGRESS");
+
+            //if members is not full, cancel the match
+            if (!isMemberFull && match.status !== "CANCELLED") {
+                await updateMatchFields(id as string, {
+                    status: "CANCELLED",
+                    matchEnd: new Date(),
+                });
+            }
+
+            //if status is still upcoming, update it to in progress
+            else if (match.status === "UPCOMING") {
+                await updateMatchFields(id as string, {
+                    status: "INPROGRESS",
+                });
             }
 
             return {
@@ -349,7 +397,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         // Returns the data as props
         return {
             props: {
-                data: JSON.parse(JSON.stringify(match)),
+                matchData: JSON.parse(JSON.stringify(match)),
             },
         };
     } catch (error: any) {

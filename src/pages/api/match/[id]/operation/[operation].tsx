@@ -49,15 +49,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         await Database.setup();
         const match = await getMatchById(id);
 
-        //guard against unauthorized access
+        //guard against unauthorized access for pause and finish operation
         if ((operation === "pause" ||
-            operation === "finish" ||
-            operation === "cancel") &&
+            operation === "finish") &&
             session.user.id !== match.matchHost) {
             throw {
                 code: 401,
                 message: "Unauthorized",
             };
+        }
+
+        //guard against unauthorized access for cancel operation
+        if (operation === "cancel") {
+            const amountOfPlayers = match.teams[0].members.concat(match.teams[1].members).length;
+            const isFullMember = amountOfPlayers === match.gameMode.requiredPlayers;
+            if (session.user.id !== match.matchHost) {
+                if (isFullMember && match.matchType === "REGULAR") {
+                    throw {
+                        code: 401,
+                        message: "Unauthorized",
+                    };
+                }
+            }
         }
 
         //this operation happen when match has enough players to start or when a player leaves the match
