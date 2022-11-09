@@ -1,7 +1,7 @@
 // Local imports
 import Input from "./Input";
 import SelectOption from "./SelectOption";
-import { Location, SportsOptions, Modes, Address } from "@/lib/types/General";
+import { Location, SportsOptions, Modes, Pos, FullLocation, GameModes } from "@/lib/types/General";
 import { Sport } from "@/lib/types/Sport";
 
 // Third party imports
@@ -38,7 +38,7 @@ export default function QuickMatch({ props }: Props) {
     const [location, setLocation] = useState<Location>();
 
     // Stores and sets address
-    const [address, setAddress] = useState<any>();
+    const [address, setAddress] = useState<FullLocation>();
 
     // useEffect to get user current location then set location to be saved in database
     useEffect(() => {
@@ -51,7 +51,7 @@ export default function QuickMatch({ props }: Props) {
         };
 
         // Success parameter for currentPosition function
-        const success = (pos: any) => {
+        const success = (pos: Pos) => {
 
             // access position coordinates
             const crd = pos.coords;
@@ -81,10 +81,10 @@ export default function QuickMatch({ props }: Props) {
     }, [location]);
 
     // Stores and Sets the sportname
-    const [sportname, setSportname] = useState("Basketball");
+    const [sportname, setSportname] = useState<string>("Basketball");
 
     // Stores and Sets the mode
-    const [mode, setMode] = useState("1V1");
+    const [mode, setMode] = useState<string>("1V1");
 
     /**
    * This splits the mode string then turns into a number to compute for required players
@@ -106,8 +106,8 @@ export default function QuickMatch({ props }: Props) {
     }
 
     //Form submission state
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string>("");
+    const [loading, setLoading] = useState<boolean>(false);
 
     // Function to handle sport change event
     function handleSportChange(e: ChangeEvent<HTMLSelectElement>) {

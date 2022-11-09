@@ -87,7 +87,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
 
     //handles card clicked
     function cardClicked(id: string) {
-        return router.push(`/match/${id}/view`);
+        return router.push(`/match/${id}`);
     }
 
     //handles filtering user
@@ -107,7 +107,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
             return;
         }
 
-        return router.push(`/match/${id}/view`).then(() => router.reload());
+        return router.push(`/match/${id}`).then(() => router.reload());
     }
 
     // Functrion to join the quick match
