@@ -44,7 +44,7 @@ interface Data {
 export default function Profile() {
 
     //get the session
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
 
     //get the user data
     const avatarContext = useContext(AvatarContext);
@@ -79,9 +79,9 @@ export default function Profile() {
                 setEmail(userData.email);
                 setImage(userData.image);
                 setStats(userStats);
-                setIsDataLoaded(true);
-            }
-            ).catch(error=>console.log(error));
+            })
+                .then(()=>{setIsDataLoaded(true);})
+                .catch(error=>console.log(error));
         }
 
         //when isDataloaded state and session change, useEffect executes.
@@ -171,10 +171,13 @@ export default function Profile() {
         setUpdatedImage(null);
     }, 500);
 
+    if (isDataLoaded || status === "loading") {
+        return <AlertMessage message="Loading..." type="loading" />;
+    }
+
     return (
         <div className="flex justify-evenly pt-10">
             <div className="flex lg:w-1/4 w-4/5 flex-col space-y-3">
-                {isDataLoaded === false && "...Loading"}
                 <ImagePicker
                     imageUrl={image}
                     image={updatedImage}
@@ -242,4 +245,3 @@ export default function Profile() {
         </div>
     );
 };
-
