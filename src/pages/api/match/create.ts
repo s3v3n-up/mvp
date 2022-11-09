@@ -39,13 +39,14 @@ export default async function handler(
                 gameMode: object().required(),
                 matchType: string().required(),
                 location: object(),
-                matchStart: date().when("matchType", {
-                    is: ((matchType: any) => matchType==="REGULAR"),
-                    then: date().min(
-                        new Date(Date.now() + 3600000),
-                        "You cannot set a date or time less than 1 hour from now."),
-                    otherwise: date().min(new Date(Date.now() - 60000), "You cannot set a date or time in the past")
-                }),
+
+                // matchStart: date().when("matchType", {
+                //     is: ((matchType: any) => matchType==="REGULAR"),
+                //     then: date().min(
+                //         new Date(Date.now() + 3600000),
+                //         "You cannot set a date or time less than 1 hour from now."),
+                //     otherwise: date().min(new Date(Date.now() - 60000), "You cannot set a date or time in the past")
+                // }),
                 matchEnd: date(),
                 description: string(),
                 teams: array(),

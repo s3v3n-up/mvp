@@ -8,8 +8,11 @@ import styles from "@/styles/MatchEdit.module.sass";
 import { AccessTime, AddLocationAlt } from "@mui/icons-material";
 import axios from "axios";
 import { GetServerSidePropsContext } from "next";
+import dynamic from "next/dynamic";
 import router from "next/router";
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
+
+const AlertMessage = dynamic(() => import("@/components/alertMessage"));
 
 // interface for props
 interface Props {
@@ -144,6 +147,8 @@ export default function MatchEdit({ data }: Props) {
 
     return (
         <div className={styles.container}>
+            {error && <AlertMessage message={error} type="error" />}
+            {loading && <AlertMessage message="Loading..." type="loading" />}
             <form onSubmit={handleFormSubmit}>
                 {/* Header for Sport */}
                 <h1>{data.sport}</h1>

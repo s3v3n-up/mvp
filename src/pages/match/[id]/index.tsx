@@ -44,7 +44,7 @@ interface Pos {
     }
 }
 
-interface Result {
+interface GeocodeResult {
     routes: [
         {
             legs: [
@@ -75,9 +75,8 @@ export default function MatchView({ data }: Props) {
     const [startLocation, setstartLocation] = useState<Location>();
 
     // Stores and set data from the mapbox
-    const [result, setResult] = useState<Result>();
+    const [geocodeResult, setGeocodeResult] = useState<GeocodeResult>();
 
-    console.log(result);
 
     // useEffect to get user current location then set location to be saved in database
     useEffect(() => {
@@ -178,7 +177,7 @@ export default function MatchView({ data }: Props) {
             }`;
 
             await axios.get(endpoint).then(({ data }) => {
-                setResult(data);
+                setGeocodeResult(data);
             });
         } catch (error) {
             console.log("Error fetching data, ", error);
@@ -191,12 +190,12 @@ export default function MatchView({ data }: Props) {
     // Stores trip duration for when you get directions
     let duration: number = 0;
 
-    // Guard to check if result from api fetch contains data
-    if (result) {
-        steps = result.routes[0].legs[0].steps;
+    // Guard to check if GeocodeResult from api fetch contains data
+    if (geocodeResult) {
+        steps = geocodeResult.routes[0].legs[0].steps;
 
         // calculation to get trip duration in minutes
-        duration = Math.floor(result.routes[0].duration / 60);
+        duration = Math.floor(geocodeResult.routes[0].duration / 60);
     }
 
     return (
@@ -267,7 +266,9 @@ export default function MatchView({ data }: Props) {
             </div>
             <div>
                 {/* Sub Header for Joined Players */}
-                {session?.user.id !== data.matchHost && <button className={styles.directions}>Join</button>}
+                {session?.user.id !== data.matchHost ?
+                    <button className={styles.directions}>Join</button> :
+                    <button className={styles.directions}>Start</button>}
                 <h3>Joined Players</h3>
                 <div>
                     {/* Displays all joined players */}

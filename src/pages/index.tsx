@@ -46,8 +46,6 @@ export default function Home({ regMatches, quickMatches, users }: any) {
     // Location useState
     const [currentLocation, setCurrentLocation] = useState<Location>();
 
-    // Address useState
-    const [address, setAddress] = useState<Location>();
 
     // useEffect to get user current location then set location to be saved in database
     useEffect(() => {
@@ -73,6 +71,8 @@ export default function Home({ regMatches, quickMatches, users }: any) {
 
         // Error parameter for currentPosition function
         function error(err: any) {
+
+            //TODO: don't use console log
             console.warn(`ERROR(${err.code}): ${err.message}`);
         }
         navigator.geolocation.getCurrentPosition(success, error, options);
@@ -87,7 +87,11 @@ export default function Home({ regMatches, quickMatches, users }: any) {
 
     //handles card clicked
     function cardClicked(id: string) {
-        return router.push(`/match/${id}/view`);
+        return router.push(`/match/${id}/scoreboard`);
+    }
+
+    function cardClickedQuick(id: string) {
+        return router.push(`/match/${id}/scoreboard`);
     }
 
     //handles filtering user
@@ -107,7 +111,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
             return;
         }
 
-        return router.push(`/match/${id}/view`).then(() => router.reload());
+        return router.push(`/match/${id}/scoreboard`);
     }
 
     // Functrion to join the quick match
@@ -116,7 +120,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
             userName: session?.user.userName,
         });
 
-        return router.push(`/match/${id}/scoreboard`).then(() => router.reload());
+        return router.push(`/match/${id}/scoreboard`);
     }
 
     return (
@@ -174,7 +178,9 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                                     // card container
                                     <div className={Cardstyles.container} key={idx}>
                                         {/* displays day/date/time */}
-                                        <div className={Cardstyles.time}>
+                                        <div
+                                            className={Cardstyles.time}
+                                            onClick={() => cardClickedQuick(quick._id as string)}>
                                             <div className={Cardstyles.detail}>
                                                 <p>Now</p>
                                             </div>
@@ -246,7 +252,9 @@ export default function Home({ regMatches, quickMatches, users }: any) {
 
                                     // card container
                                     <div className={Cardstyles.container} key={idx}>
-                                        <div className={Cardstyles.time}>
+                                        <div
+                                            className={Cardstyles.time}
+                                            onClick={() => cardClicked(reg._id as string)}>
                                             <div className={Cardstyles.detail}>
                                                 {/* custom format for match that includes date, day of the week and time */}
                                                 <p>
@@ -261,20 +269,17 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                                             </div>
                                             {/* button for user join a match */}
                                             {reg.matchHost !== session?.user.id && (
-                                                <div>
-                                                    <button
-                                                        className={Cardstyles.join}
-                                                        onClick={() => joinReg(reg._id)}
-                                                    >
+                                                <button
+                                                    className={Cardstyles.join}
+                                                    onClick={() => joinReg(reg._id)}
+                                                >
                                                         join
-                                                    </button>
-                                                </div>
+                                                </button>
                                             )}
                                         </div>
                                         {/* displays the type of sports */}
                                         <div
                                             className={Cardstyles.sport}
-                                            onClick={() => cardClicked(reg._id as string)}
                                         >
                                             <p>{reg.sport}</p>
                                         </div>
