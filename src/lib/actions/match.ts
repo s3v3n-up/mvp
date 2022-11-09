@@ -18,7 +18,7 @@ export async function createMatch(match: Match): Promise<Match> {
         //return created match
         return createdMatch;
     } catch (error: any) {
-        throw new Error("error creating match", { cause: error });
+        throw new Error("Error creating match", { cause: error });
     }
 }
 

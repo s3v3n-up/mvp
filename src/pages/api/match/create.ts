@@ -1,6 +1,6 @@
 // Third-party imports
 import { NextApiRequest, NextApiResponse } from "next";
-import { object, string, date, array } from "yup";
+import { object, string, date, array, setLocale } from "yup";
 
 // Local imports
 import { Match } from "@/lib/types/Match";
@@ -40,14 +40,14 @@ export default async function handler(
                 matchType: string().required(),
                 location: object(),
                 matchStart: date().when("matchType", {
-                    is: ((matchType: any) => matchType==="REGULAR"),
+                    is: ((matchType: string) => matchType==="REGULAR"),
                     then: date().min(
                         new Date(Date.now() + 3600000),
-                        "You cannot set a date or time less than 1 hour from now."),
+                        "You cannot set a date or time less than 1 hour from now.").typeError("Please set a date and time for the regular match"),
                     otherwise: date().min(new Date(Date.now() - 60000), "You cannot set a date or time in the past")
                 }),
                 matchEnd: date(),
-                description: string(),
+                description: string().required("Please enter a description"),
                 teams: array(),
                 status: string().required(),
             });

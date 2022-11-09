@@ -12,7 +12,7 @@ import "reactjs-popup/dist/index.css";
 import styles from "@/styles/MatchView.module.sass";
 import { getMatchById } from "@/lib/actions/match";
 import Database from "@/lib/resources/database";
-import { Location } from "@/lib/types/General";
+import { Location, Pos } from "@/lib/types/General";
 import { Match } from "@/lib/types/Match";
 
 // https://www.npmjs.com/package/add-to-calendar-button
@@ -35,13 +35,6 @@ interface Config {
   timeZone: string;
   iCalFileName: string;
   description: string;
-}
-
-interface Pos {
-    coords: {
-        latitude: number,
-        longitude: number
-    }
 }
 
 interface Result {
@@ -76,8 +69,6 @@ export default function MatchView({ data }: Props) {
 
     // Stores and set data from the mapbox
     const [result, setResult] = useState<Result>();
-
-    console.log(result);
 
     // useEffect to get user current location then set location to be saved in database
     useEffect(() => {
