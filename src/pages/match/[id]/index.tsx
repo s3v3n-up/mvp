@@ -13,6 +13,7 @@ import styles from "@/styles/MatchView.module.sass";
 import { getMatchById } from "@/lib/actions/match";
 import Database from "@/lib/resources/database";
 import { Location } from "@/lib/types/General";
+import { Match } from "@/lib/types/Match";
 
 // https://www.npmjs.com/package/add-to-calendar-button
 // eslint-disable-next-line camelcase
@@ -22,19 +23,45 @@ import { useSession } from "next-auth/react";
 
 // Interface for passed props
 interface Props {
-  data: any;
+  data: Match;
 }
 
 // Interface for the config used in add to calendar
 interface Config {
   name: string;
-  startDate: string;
-  endDate: string;
-  options: string[];
+  startDate?: string;
+  endDate?: string;
+  options: ["Apple", "Google", "iCal", "Microsoft365", "Outlook.com", "Yahoo"];
   timeZone: string;
   iCalFileName: string;
   description: string;
 }
+
+interface Pos {
+    coords: {
+        latitude: number,
+        longitude: number
+    }
+}
+
+interface Result {
+    routes: [
+        {
+            legs: [
+                {steps: Steps[]}
+            ],
+            duration: number
+        }
+    ]
+}
+
+interface Steps {
+    maneuver: {
+        instruction: string;
+    }
+}
+
+// interface Steps
 
 /**
  * @description displays MatchView page
@@ -47,7 +74,10 @@ export default function MatchView({ data }: Props) {
     // Stores and Sets the location
     const [startLocation, setstartLocation] = useState<Location>();
 
-    const [result, setResult] = useState<any>();
+    // Stores and set data from the mapbox
+    const [result, setResult] = useState<Result>();
+
+    console.log(result);
 
     // useEffect to get user current location then set location to be saved in database
     useEffect(() => {
@@ -60,7 +90,7 @@ export default function MatchView({ data }: Props) {
         };
 
         // Success parameter for currentPosition function
-        const success = (pos: any) => {
+        const success = (pos: Pos) => {
 
             // access position coordinates
             const crd = pos.coords;
@@ -79,26 +109,29 @@ export default function MatchView({ data }: Props) {
     }, []);
 
     // Combine team1 and team2
-    let allTeams: string[] = data.teams[1] ? data.teams[0].members.concat(data.teams[1].members) : data.teams[0].members;
+    let allTeams: string[] = data.teams[0].members.concat(data.teams[1].members) ?? data.teams[0].members;
 
-    // Converts the date type(mm/dd/yyyy) to string format ("yyyy-dd-mm")
-    const startTime = new Date(data.matchStart)
-        .toLocaleDateString("en-GB")
-        .split("/")
-        .reverse()
-        .join("-");
-    const endTime = new Date(data.matchEnd)
-        .toLocaleDateString("en-GB")
-        .split("/")
-        .reverse()
-        .join("-");
+    // A function that converts dates to string format ("yyyy-dd-mm")
+    function dateConverter(date: Date): string {
+        const convertedDate = new Date(date)
+            .toLocaleDateString("en-GB")
+            .split("/")
+            .reverse()
+            .join("-");
+
+        return convertedDate;
+    }
+
+    // stores the string format ("yyyy-dd-mm")
+    const startTime = data.matchStart && dateConverter(data.matchStart);
+    const endTime = data.matchEnd && dateConverter(data.matchEnd);
 
     // Configuration to be pass in the atcb_action
     // https://www.npmjs.com/package/add-to-calendar-button
     const config: Config = {
-        name: data.sport,
-        startDate: startTime,
-        endDate: endTime ? endTime : startTime,
+        name: data.sport ?? "No Sport",
+        startDate: startTime? startTime : undefined,
+        endDate: endTime? endTime : undefined,
         options: [
             "Apple",
             "Google",
@@ -109,21 +142,26 @@ export default function MatchView({ data }: Props) {
         ],
         timeZone: "America/Los_Angeles",
         iCalFileName: "Reminder-Event",
-        description: data.description,
+        description: data.description ?? "",
     };
 
-    // Function to redirect by matchid
-    function editClicked(id: string) {
-        return router.push(`/match/${id}/edit`);
+    // function to check if there is an error in the config
+    function addToCal(): void {
+        try {
+
+            //// https://www.npmjs.com/package/add-to-calendar-button
+            atcb_action(config);
+
+        // Catches Error and displays an alert
+        }catch(error: any) {
+
+            alert("Adding to calendar failed, try again later");
+        }
     }
 
-    async function leave(id: string, teamIdx: any) {
-        await axios.put(`api/match/${id}/operation/remove`, {
-            teamIdx,
-            UserName: session?.user.userName
-        });
-
-        return router.push("/").then(() => router.reload());
+    // Function to redirect by matchid
+    function editClicked(id: string): Promise<boolean> {
+        return router.push(`/match/${id}/edit`);
     }
 
     // Function to handle get direction click event
@@ -148,10 +186,10 @@ export default function MatchView({ data }: Props) {
     }
 
     // Contains steps, maneuver and instruction data
-    let steps;
+    let steps: Steps[] = [];
 
     // Stores trip duration for when you get directions
-    let duration;
+    let duration: number = 0;
 
     // Guard to check if result from api fetch contains data
     if (result) {
@@ -189,7 +227,7 @@ export default function MatchView({ data }: Props) {
                             <strong>Trip duration: {duration} min 🚴</strong>
                         </p>
                         <ol>
-                            {steps.map((step: any, index: any) => {
+                            {steps.map((step: Steps, index: number) => {
                                 return (<li className={styles.list} key={index}>{step.maneuver.instruction}</li>);
                             })}
                         </ol>
@@ -206,20 +244,20 @@ export default function MatchView({ data }: Props) {
                 {/* Add to your local calendar button */}
                 <button
                     className={styles.calendar}
-                    onClick={() => atcb_action(config as Config as any)}
+                    onClick={() => addToCal()}
                 >
           Add to Calendar
                 </button>
                 {/* Sub Header for Date and Time */}
                 <h3>Date and Time</h3>
                 {/* Data for match type */}
-                <p>
+                {data.matchStart && <p>
                     {new Date(data.matchStart)
                         .toDateString()
                         .concat(
                             " " + new Date(data.matchStart).toLocaleTimeString("en-US")
                         )}
-                </p>
+                </p>}
             </div>
             <div>
                 {/* Sub Header for Description */}
@@ -233,7 +271,7 @@ export default function MatchView({ data }: Props) {
                 <h3>Joined Players</h3>
                 <div>
                     {/* Displays all joined players */}
-                    {allTeams.map((name: any, idx: number) => (
+                    {allTeams.map((name: string, idx: number) => (
                         <div className={styles.players} key={idx}>
                             {name}
                             <div>
