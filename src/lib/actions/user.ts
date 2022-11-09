@@ -84,7 +84,7 @@ export async function updateUser(userName: string, firstName: string, lastName: 
             userName,
             firstName,
             lastName,
-            phonenumber,
+            phoneNumber: phonenumber,
             image
         }, {
             new: true
