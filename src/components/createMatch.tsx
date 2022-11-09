@@ -219,7 +219,7 @@ export default function CreateMatch({ props }: Props) {
                 <div className="mt-5">
                     {/* Header for Create Match */}
                     <h1 className="text-[#f3f2ef] text-3xl text-center pt-3">
-            Create a Match
+                        Create a Match
                     </h1>
                 </div>
                 {/* Form to be submitted */}
