@@ -90,13 +90,6 @@ export default function Home({ regMatches, quickMatches, users }: any) {
         return router.push(`/match/${id}/view`);
     }
 
-    //handles the avatar inside the card
-    function hostAvatar(id: string) {
-        const host = users.filter((user: any) => user._id === id);
-
-        return host[0].image;
-    }
-
     //handles filtering user
     function lookUser(id: string) {
         const userFound = users.filter((user: any) => user._id === id);
@@ -193,13 +186,6 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                                         <p>{quick.location.address.pointOfInterest}</p>
                                         <p>{Math.ceil(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: quick.location.lat as number, longitude: quick.location.lng as number }) / 1000)}km away</p>
                                         {/* displays user avatar that create the match */}
-                                        <Image
-                                            src={hostAvatar(quick.matchHost)}
-                                            alt="avatar"
-                                            className={Cardstyles.avatar}
-                                            width={45}
-                                            height={45}
-                                        />
                                     </div>
                                 </div>
                             ))}
@@ -262,14 +248,6 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                             <p>{reg.location.address.pointOfInterest}</p>
                             <p>{Math.ceil(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: reg.location.lat as number, longitude: reg.location.lng as number }) / 1000)}km away</p>
                             {/* displays user that create the match */}
-                            <Image
-                                onClick={(e) => {imageClick(reg.matchHost);}}
-                                src={hostAvatar(reg.matchHost)}
-                                alt="avatar"
-                                className={Cardstyles.avatar}
-                                width={45}
-                                height={45}
-                            />
                         </div>
                     </div>
                 ))}
