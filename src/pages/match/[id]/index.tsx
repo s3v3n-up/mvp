@@ -146,11 +146,13 @@ export default function MatchView({ data }: Props) {
     };
 
     // function to check if there is an error in the config
-    function addToCal() {
+    function addToCal(): void {
         try {
 
+            //// https://www.npmjs.com/package/add-to-calendar-button
             atcb_action(config);
 
+        // Catches Error and displays an alert
         }catch(error: any) {
 
             alert("Adding to calendar failed, try again later");
@@ -158,7 +160,7 @@ export default function MatchView({ data }: Props) {
     }
 
     // Function to redirect by matchid
-    function editClicked(id: string) {
+    function editClicked(id: string): Promise<boolean> {
         return router.push(`/match/${id}/edit`);
     }
 
