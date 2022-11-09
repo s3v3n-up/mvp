@@ -1,7 +1,5 @@
 //third party imports
-import Image from "next/image";
-import { useState, useEffect, ChangeEvent, useContext } from "react";
-import { useSession } from "next-auth/react";
+import { useState, ChangeEvent, useContext } from "react";
 import axios from "axios";
 import dynamic from "next/dynamic";
 import debounce from "lodash.debounce";
@@ -9,27 +7,22 @@ import debounce from "lodash.debounce";
 //local imports
 import Input from "@/components/Input";
 import { AvatarContext } from "@/context/avatar";
-import AlertMessage from "../alertMessage";
 import { UserProfile } from "@/lib/types/User";
 import { PHONE_REGEX } from "@/lib/helpers/validation";
 
 //dynamic imports
-const Person = dynamic(() => import("@mui/icons-material/Person"));
-const FolderSharedOutlined = dynamic(() => import("@mui/icons-material/FolderSharedOutlined"));
-const Email = dynamic(() => import("@mui/icons-material/Email"));
-const Phone = dynamic(() => import("@mui/icons-material/Phone"));
-const ImagePicker = dynamic(()=>import("@/components/imagepicker"));
+const Person = dynamic(() => import("@mui/icons-material/Person"), { ssr: false });
+const FolderSharedOutlined = dynamic(() => import("@mui/icons-material/FolderSharedOutlined"), { ssr: false });
+const Email = dynamic(() => import("@mui/icons-material/Email"), { ssr: false });
+const Phone = dynamic(() => import("@mui/icons-material/Phone"), { ssr: false });
+const ImagePicker = dynamic(()=>import("@/components/imagepicker"), { ssr: false });
 
 /**
  * interface for type of user data
  */
-interface Data {
-  firstName: string;
-  lastName: string;
-  userName: string;
-  email: string;
-  image: string;
-  stats: {
+interface Props {
+  profile: UserProfile,
+  userStats: {
     win: number;
     lose: number;
     draw: number;
@@ -40,57 +33,34 @@ interface Data {
  * this component is used in profile page, which shows user's firstname, lastname, username, phone, email and avatar.
  *  user also can edit their profile(firstname, lastname and phone)
  */
-export default function Profile() {
-
-    //get the session
-    const { data: session } = useSession();
+export default function Profile({ profile, userStats }: Props) {
 
     //get the user data
     const avatarContext = useContext(AvatarContext);
 
     //set the initial state and setState using useState
-    const [firstName,setFirstName] = useState("");
-    const [lastName,setLastName] = useState("");
-    const [userName,setUserName] = useState("");
-    const [email,setEmail] = useState("");
-    const [phone,setPhone] = useState("");
+    const [firstName,setFirstName] = useState(profile.firstName);
+    const [lastName,setLastName] = useState(profile.lastName);
+    const [userName,setUserName] = useState(profile.userName);
+    const [email,setEmail] = useState(profile.email);
+    const [phone,setPhone] = useState(profile.phoneNumber);
 
     //set initial image as logo if user didn't upload their avatar
-    const [image,setImage] = useState("/img/logo.png");
+    const [image,setImage] = useState(profile.image);
     const [updatedImage, setUpdatedImage] = useState<File | null>(null);
-    const [stats, setStats] = useState({ win:0, lose:0, draw:0 });
-    const [isDataLoaded, setIsDataLoaded] = useState(false);
-
-    //axios to get the userdata and stats from api
-    useEffect(() => {
-        if (session && session.user && isDataLoaded === false) {
-            Promise.all([
-                axios.get(`/api/user/${session.user.userName}`),
-                axios.get(`/api/user/${session.user.userName}/stats`)
-            ]).then(data => {
-
-                //destructure the object to userData and userStats
-                const [{ data:userData },{ data:userStats }] = data as unknown as [{data:UserProfile}, {data:{win:number,lose:number,draw:number}}];
-                setFirstName(userData.firstName);
-                setLastName(userData.lastName);
-                setUserName(userData.userName);
-                setPhone(userData.phoneNumber);
-                setEmail(userData.email);
-                setImage(userData.image);
-                setStats(userStats);
-                setIsDataLoaded(true);
-            }
-            ).catch(error=>console.log(error));
-        }
-
-        //when isDataloaded state and session change, useEffect executes.
-    }, [isDataLoaded, session]);
+    const [stats, setStats] = useState(userStats);
 
     //get the user firstname input value, update it in the db through axios put api
-    const fNameHandle = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
+    const fNameHandle = async (event: React.ChangeEvent<HTMLInputElement>) =>{
+
+        //get and set the user firstname state
         const value = event.target.value;
         setFirstName(value);
+
+        //validate the user firstname
         if (value.length <= 2) return;
+
+        //update the user firstname in the db
         debounce(async () => {
             await axios.put(`/api/user/${userName}`, {
                 firstName: value,
@@ -103,9 +73,13 @@ export default function Profile() {
     };
 
     //get the user lastname input value, update it in the db through axios put api
-    const lNameHandle = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
+    const lNameHandle = async (event: React.ChangeEvent<HTMLInputElement>) =>{
+
+        //get and set the lastname state
         const value = event.target.value;
         setLastName(value);
+
+        //validate the lastname
         if (value.length <= 2) return;
         debounce(async () => {
             await axios.put(`/api/user/${userName}`, {
@@ -118,10 +92,16 @@ export default function Profile() {
     };
 
     //get the user phone input value, update it in the db through axios put api
-    const phoneHandle = async (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>{
+    const phoneHandle = async (event: React.ChangeEvent<HTMLInputElement>) =>{
+
+        //get and set the phone state
         const value = event.target.value;
         setPhone(value);
+
+        //validate the phone
         if (!PHONE_REGEX.test(value)) return;
+
+        //update the user phonenumber in the db
         debounce(async () => {
             await axios.put(`/api/user/${userName}`, {
                 firstName,
@@ -136,9 +116,15 @@ export default function Profile() {
      * handle update image
      */
     const handleImageChange = debounce(async(e: ChangeEvent<HTMLInputElement>) => {
+
+        //get and set the image updated state
         const file = e.target.files![0];
         setUpdatedImage(file);
+
+        //check if image is valid
         if (!file) return;
+
+        //upload image to cloudinary and update user image in the db
         const data = new FormData();
         data.append("files", file);
         try {
@@ -168,7 +154,6 @@ export default function Profile() {
     return (
         <div className="flex justify-evenly pt-10">
             <div className="flex lg:w-1/4 w-4/5 flex-col space-y-3">
-                {isDataLoaded === false && "...Loading"}
                 <ImagePicker
                     imageUrl={image}
                     image={updatedImage}
