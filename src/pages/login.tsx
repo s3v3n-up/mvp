@@ -48,7 +48,7 @@ export default function Login() {
     useEffect(() => {
         const splitByError = router.asPath.split("error");
         if (splitByError.length > 1) {
-            const err = splitByError[1].substring(1);
+            const err = splitByError[-1].substring(1);
             if (err == "OAuthAccountNotLinked") {
                 setError(
                     "You already login with a different provider, ex: you previously logged in with Google, but now you are trying to log in with email/discord. Please log in with the same provider you used previously."
