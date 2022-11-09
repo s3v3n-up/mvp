@@ -90,7 +90,6 @@ export default function Home({ regMatches, quickMatches, users }: any) {
         return router.push(`/match/${id}/view`);
     }
 
-
     //handles filtering user
     function lookUser(id: string) {
         const userFound = users.filter((user: any) => user._id === id);
