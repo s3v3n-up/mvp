@@ -115,6 +115,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
         return router.push(`/match/${id}/scoreboard`).then(() => router.reload());
     }
 
+
     return (
         <>
             <div className={styles.matches}>
@@ -153,35 +154,38 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                                     quick.sport.toLowerCase().includes(search.toLowerCase()) ||
                                     lookUser(quick.matchHost).includes(search.toLowerCase())
                             )
-                            .map((quick: any, idx: any) => (
+                            .map((quick: any, idx: any) => {
+                                const distance = Math.ceil(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: reg.location.lat as number, longitude: reg.location.lng as number }) / 1000);
+
+                                return (
 
                                 // card container
-                                <div className={Cardstyles.container} key={idx}>
-                                    {/* displays day/date/time */}
-                                    <div className={Cardstyles.time}>
-                                        <div className={Cardstyles.detail}>
-                                            <p>Now</p>
+                                    <div className={Cardstyles.container} key={idx}>
+                                        {/* displays day/date/time */}
+                                        <div className={Cardstyles.time}>
+                                            <div className={Cardstyles.detail}>
+                                                <p>Now</p>
+                                            </div>
+                                            {/* button for user join a match */}
+                                            {quick.matchHost !== session?.user.id && <div>
+                                                <button className={Cardstyles.join} onClick={() => joinQuick(quick._id)}>join</button>
+                                            </div>}
                                         </div>
-                                        {/* button for user join a match */}
-                                        {quick.matchHost !== session?.user.id && <div>
-                                            <button className={Cardstyles.join} onClick={() => joinQuick(quick._id)}>join</button>
-                                        </div>}
-                                    </div>
-                                    {/* displays the type of sports */}
-                                    <div className={Cardstyles.sport}>
-                                        <p>{quick.sport}</p>
-                                    </div>
-                                    {/* displays the point of interest and how far is the user away from the specific location in km */}
-                                    <div className={Cardstyles.location}>
-                                        <div>
-                                            <LocationOnIcon />
+                                        {/* displays the type of sports */}
+                                        <div className={Cardstyles.sport}>
+                                            <p>{quick.sport}</p>
                                         </div>
-                                        <p>{quick.location.address.pointOfInterest}</p>
-                                        <p>{Math.ceil(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: quick.location.lat as number, longitude: quick.location.lng as number }) / 1000)}km away</p>
-                                        {/* displays user avatar that create the match */}
+                                        {/* displays the point of interest and how far is the user away from the specific location in km */}
+                                        <div className={Cardstyles.location}>
+                                            <div>
+                                                <LocationOnIcon />
+                                            </div>
+                                            <p>{quick.location.address.pointOfInterest}</p>
+                                            <p>{ isNaN(distance) && `${ distance }km away` || "No Location" }</p>
+                                            {/* displays user avatar that create the match */}
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                );})}
                     </ScrollContainer>
                 </div>
                 <div className="sm:mt-4 mt-10">
@@ -203,47 +207,51 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                         reg.sport.toLowerCase().includes(search.toLowerCase()) ||
                   lookUser(reg.matchHost).includes(search.toLowerCase())
                 )
-                .map((reg: any, idx: any) => (
+                .map((reg: any, idx: any) => {
+                    const distance = Math.ceil(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: reg.location.lat as number, longitude: reg.location.lng as number }) / 1000);
+
+                    return (
 
                     // card container
-                    <div
-                        className={Cardstyles.container}
-                        key={idx}
-                    >
-                        <div className={Cardstyles.time}>
-                            <div className={Cardstyles.detail}>
-                                {/* custom format for match that includes date, day of the week and time */}
-                                <p>
-                                    {new Date(reg.matchStart)
-                                        .toDateString()
-                                        .concat(
-                                            " " +
+                        <div
+                            className={Cardstyles.container}
+                            key={idx}
+                        >
+                            <div className={Cardstyles.time}>
+                                <div className={Cardstyles.detail}>
+                                    {/* custom format for match that includes date, day of the week and time */}
+                                    <p>
+                                        {new Date(reg.matchStart)
+                                            .toDateString()
+                                            .concat(
+                                                " " +
                               new Date(reg.matchStart).toLocaleTimeString(
                                   "en-US"
                               )
-                                        )}
-                                </p>
+                                            )}
+                                    </p>
+                                </div>
+                                {/* button for user join a match */}
+                                {reg.matchHost !== session?.user.id && <div>
+                                    <button className={Cardstyles.join} onClick={() => joinReg(reg._id)}>join</button>
+                                </div>}
                             </div>
-                            {/* button for user join a match */}
-                            {reg.matchHost !== session?.user.id && <div>
-                                <button className={Cardstyles.join} onClick={() => joinReg(reg._id)}>join</button>
-                            </div>}
-                        </div>
-                        {/* displays the type of sports */}
-                        <div className={Cardstyles.sport} onClick={() => cardClicked(reg._id as string)}>
-                            <p>{reg.sport}</p>
-                        </div>
-                        {/* displays the point of interest and how far is the user away from the specific location in km */}
-                        <div className={Cardstyles.location}>
-                            <div>
-                                <LocationOnIcon />
+                            {/* displays the type of sports */}
+                            <div className={Cardstyles.sport} onClick={() => cardClicked(reg._id as string)}>
+                                <p>{reg.sport}</p>
                             </div>
-                            <p>{reg.location.address.pointOfInterest}</p>
-                            <p>{Math.ceil(haversine({ latitude: currentLocation?.lat as number, longitude: currentLocation?.lng as number },{ latitude: reg.location.lat as number, longitude: reg.location.lng as number }) / 1000)}km away</p>
-                            {/* displays user that create the match */}
+                            {/* displays the point of interest and how far is the user away from the specific location in km */}
+                            <div className={Cardstyles.location}>
+                                <div>
+                                    <LocationOnIcon />
+                                </div>
+                                <p>{reg.location.address.pointOfInterest}</p>
+                                <p>{ isNaN(distance) && `${ distance }km away` || "No Location" }</p>
+                                {/* displays user that create the match */}
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    );}
+                )}
                     </ScrollContainer>
                 </div>
             </div>
