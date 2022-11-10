@@ -5,9 +5,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import dynamic from "next/dynamic";
 import useSWR from "swr";
-
-//https://popupsmart.com/blog/react-popup
-import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 
 //local-import
@@ -22,9 +19,12 @@ import dateConverter from "@/lib/helpers/date";
 // eslint-disable-next-line camelcase
 import "add-to-calendar-button/assets/css/atcb.css";
 import { useSession } from "next-auth/react";
+import fetcher from "@/lib/helpers/fetcher";
+import { checkIfMatchHasStarted } from "@/lib/helpers/match";
 
 //dynamic imports
 const Snackbar = dynamic(()=> import("@mui/material/Snackbar"), { ssr: false });
+const Popup = dynamic(() => import("reactjs-popup"), { ssr: false });
 
 // Interface for passed props
 interface Props {
@@ -82,61 +82,45 @@ export default function MatchView({ matchData }: Props) {
     const [errorMessage, setErrorMessage] = useState<string>("");
 
     //start time
-    const [matchStartTime, setMatchStartTime] = useState<string>(
-        dateConverter(matchData.matchStart!, true)
-    );
+    const [matchStartTime, setMatchStartTime] = useState<string>("loading...");
 
     //guard page against match already started
     const router = useRouter();
-    useEffect(()=> {
-
-        //cancel match if match is already start and member is not full
-        (async() => {
-
-            //boolean check if match teams are full
-            const isMemberFull = match.teams[0].members.concat(match.teams[1].members).length === match.gameMode.requiredPlayers;
-
-            //boolean check if match is alredy started
-            const isMatchStarted = new Date(match.matchStart!.toLocaleString()).getTime() <= new Date().getTime();
-
-            //if match is started
-            if (isMatchStarted) {
-
-                //if member is not full, cancel the match
-                if (!isMemberFull && match.status !== "CANCELLED") {
-                    await axios.put(`/api/match/${match._id}/operation/cancel`,{
-                        cancelTime: new Date().toString()
-                    });
-                }
-
-                //if status is still upcoming, update it to in progress
-                else if (match.status === "UPCOMING") {
-                    await axios.put(`/api/match/${match._id}/status`,{
-                        status: "INPROGRESS"
-                    });
-                }
-
-                //navigate to scoreboard
-                router.push(`/match/${match._id}/scoreboard`);
-            }
-        })();
-    }, [match, router]);
 
     //refetch match every 1 seconds
-    const { data, error } = useSWR<{match: Match}>(`/api/match/${matchData._id}`, {
+    const { data, error } = useSWR<{match: Match}>(`/api/match/${matchData._id}`, fetcher, {
         refreshInterval: 1000,
-        fallback: match
+        fallback: { match }
     });
 
     //update match with new info
     useEffect(()=> {
         if (data && !error) {
             setMatch(data.match);
-            setMatchStartTime(dateConverter(data.match.matchStart!));
+            setMatchStartTime(dateConverter(data.match.matchStart!, true));
         } if (error) {
             setErrorMessage("failed to fetch lastest info");
         }
     }, [data, error]);
+
+    //check if match has started every 1 seconds
+    useEffect(()=> {
+
+        //function to navigate to scoreboard if match has started
+        function onMatchStart() {
+            router.push(`/match/${match._id}/scoreboard`);
+        }
+
+        let recheckInterval = setInterval(async ()=> {
+            await(import("@/lib/helpers/match")).then(module=>{
+                module.checkIfMatchHasStarted(match, onMatchStart);
+            });
+        }, 1000);
+
+        //clean up refetch timer
+        return ()=> clearInterval(recheckInterval);
+    }
+    , [match, router]);
 
     // useEffect to get user current location then set location to be saved in database
     useEffect(() => {
@@ -352,10 +336,15 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         // Get the specific match that you want to view
         const match = await getMatchById(id as string);
         const isMemberFull = (match.teams[0].members.concat(match.teams[1].members)).length === match.gameMode.requiredPlayers;
-        console.log(isMemberFull);
+
+        if (!match) {
+            return {
+                notFound: true,
+            };
+        }
 
         // Redirect them to index if the match type is not REGULAR
-        if (match.matchType === "QUICK" || !match) {
+        if (match.matchType === "QUICK") {
             return {
                 redirect: {
                     destination: `/match/${id}/scoreboard`,

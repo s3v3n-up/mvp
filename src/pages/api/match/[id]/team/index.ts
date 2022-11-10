@@ -6,8 +6,8 @@ import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
 /**
- * api router for add/remove a new member to a team.
- * Team index and username are required from client
+ * api router for add/remove a member to/from a team.
+ * Team index and username are required from request
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {

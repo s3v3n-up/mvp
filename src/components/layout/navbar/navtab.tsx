@@ -13,7 +13,7 @@ export default function NavTab({ href, pageName, children }: {href: string, page
             <li className={
                 `${isActive? "text-orange-500": "text-white"}
                 flex flex-col 
-                items-center font-bold
+                items-center font-semibold
                 cursor-pointer uppercase
                 justify-center`
             }>

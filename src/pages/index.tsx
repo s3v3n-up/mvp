@@ -1,6 +1,4 @@
 //third-party import
-import Image from "next/image";
-import Head from "next/head";
 import { useState, ChangeEvent, useEffect } from "react";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useSession } from "next-auth/react";
@@ -120,37 +118,36 @@ export default function Home({ regMatches, quickMatches, users }: any) {
     }
 
     return (
-        <>
-            <div className={styles.matches}>
-                {/* search container */}
-                <div className={styles.search}>
-                    {/* title for the page */}
-                    <h1 className="px-2 py-3">Matches</h1>
-                    <div className={styles.searchitem}>
-                        {/* search input field */}
-                        <Input
-                            type="text"
-                            placeholder="Enter username or sport"
-                            value={search}
-                            onChange={handleSearchChange}
-                        />
-                        <button>
-                            <Search fontSize="medium" />
-                        </button>
-                    </div>
+        <section className={styles.matches}>
+            {/* search container */}
+            <form className={styles.search}>
+                {/* title for the page */}
+                <h1 className="px-2 py-3">Matches</h1>
+                <div className={styles.searchitem}>
+                    {/* search input field */}
+                    <Input
+                        type="text"
+                        placeholder="Enter username or sport"
+                        value={search}
+                        onChange={handleSearchChange}
+                    />
+                    <button disabled>
+                        <Search fontSize="medium" />
+                    </button>
                 </div>
-                <div>
-                    {/* Subtitle for quick matches */}
-                    <p>Quick Matches</p>
-                    {quickMatches.length === 0 && (
-                        <p className="text-2xl text-white text-center">
+            </form>
+            <section>
+                {/* Subtitle for quick matches */}
+                <p>Quick Matches</p>
+                {quickMatches.length === 0 && (
+                    <p className="text-2xl text-white text-center">
                             ⚠️ There is no quick match found
-                        </p>
-                    )}
-                    {/* horizontal sroll for created matches */}
-                    <ScrollContainer className="flex w-full" horizontal hideScrollbars>
-                        {/*filters through quick matches including lower case letters in text input*/}
-                        {quickMatches.length > 0 &&
+                    </p>
+                )}
+                {/* horizontal sroll for created matches */}
+                <ScrollContainer className="flex w-full" horizontal hideScrollbars>
+                    {/*filters through quick matches including lower case letters in text input*/}
+                    {quickMatches.length > 0 &&
                             quickMatches.filter(
                                 (quick: any) =>
                                     quick.sport.toLowerCase().includes(search.toLowerCase()) ||
@@ -211,20 +208,20 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                                     </div>
                                 );
                             })}
-                    </ScrollContainer>
-                </div>
-                <div className="sm:mt-4 mt-10">
-                    {/*  Subtitle for regular matches */}
-                    <p>Regular Matches</p>
-                    {regMatches.length === 0 && (
-                        <p className="text-2xl text-white text-center">
+                </ScrollContainer>
+            </section>
+            <section className="sm:mt-4 mt-10">
+                {/*  Subtitle for regular matches */}
+                <p>Regular Matches</p>
+                {regMatches.length === 0 && (
+                    <p className="text-2xl text-white text-center">
                             ⚠️ There is no regular match found
-                        </p>
-                    )}
-                    {/* horizontal scroll for created matches */}
-                    <ScrollContainer className="flex w-full" horizontal hideScrollbars>
-                        {/*filters through regular matches including lower case letters in text input*/}
-                        { regMatches.length > 0 &&
+                    </p>
+                )}
+                {/* horizontal scroll for created matches */}
+                <ScrollContainer className="flex w-full" horizontal hideScrollbars>
+                    {/*filters through regular matches including lower case letters in text input*/}
+                    { regMatches.length > 0 &&
                             regMatches.filter((reg: any) =>
                                 reg.sport.toLowerCase().includes(search.toLowerCase()) ||
                                 lookUser(reg.matchHost).includes(search.toLowerCase())
@@ -295,10 +292,9 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                                     </div>
                                 );
                             })}
-                    </ScrollContainer>
-                </div>
-            </div>
-        </>
+                </ScrollContainer>
+            </section>
+        </section>
     );
 }
 

@@ -19,7 +19,6 @@ import styles from "@/styles/Scoreboard.module.sass";
 import fetcher from "@/lib/helpers/fetcher";
 import { UserProfile } from "@/lib/types/User";
 import { mapPlayerToTeam } from "@/lib/helpers/scoreboard";
-import AlertMessage from "@/components/alertMessage";
 
 /**
  * scoreboard props type
@@ -97,7 +96,7 @@ export default function Scoreboard({ match, players }: Props) {
         refreshInterval: 100,
         revalidateOnFocus: false,
         revalidateOnReconnect: false,
-        fallback: match
+        fallback: { match }
     });
 
     //every time match data is updated, update the states
@@ -156,7 +155,7 @@ export default function Scoreboard({ match, players }: Props) {
                 //queue timer
                 queuingTimer = setInterval(async()=> {
                     const now = new Date(new Date().toUTCString()).getTime();
-                    const timeDiff = 35 - Math.floor((now - queueStart) / 1000);
+                    const timeDiff = 32 - Math.floor((now - queueStart) / 1000);
                     setQueueTimer(timeDiff);
 
                     //check if 30 seconds has passed or if match is not full

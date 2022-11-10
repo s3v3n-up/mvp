@@ -8,6 +8,7 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 /**
  * router for joinging a match.
  * Add user to a match, will check(if team full) and compare both teams to add user to the team with less members
+ * No teamIndex required for this, only userName.
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {

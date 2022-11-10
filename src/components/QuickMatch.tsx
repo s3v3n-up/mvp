@@ -144,6 +144,7 @@ export default function QuickMatch({ props }: Props) {
                 gameMode: { modeName: mode, requiredPlayers: computeReqPlayers(mode) },
                 matchType: "QUICK",
                 status: "UPCOMING",
+                description: "no description",
                 teams: [{ members: [session!.user.userName], score: 0, status: "UNSET" }, { members: [], score: 0, status: "UNSET" }]
             });
 

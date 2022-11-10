@@ -76,7 +76,11 @@ export default function Login() {
    */
     function handleEmailSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        signIn("email", { email });
+        try {
+            signIn("email", { email });
+        } catch {
+            setError("Error sending email to your account.");
+        }
     }
 
     return (
