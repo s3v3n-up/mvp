@@ -201,16 +201,21 @@ export default function CreateMatch({ props }: Props) {
 	  display: flex;
 	  flex-direction: column;
 	  background: white;
-	  width: 320px;
-	  padding: 10px 20px;
+	  width: 100%;
 	  border-radius: 0px 0px 10px 10px;
 	  gap: 10px 0px;
+      position: absolute;
+      z-index: 100;
+      top: 5rem;
+      background-color: black;
 	`;
 
     // Custom child wrapper for autofill feature
     const Suggestion = styled.p`
 	  cursor: pointer;
-	  max-width: 320px;
+	  width: 100%;
+      color: white;
+      transition: all 0.2s ease-in-out;
 	`;
 
     return (
@@ -218,43 +223,45 @@ export default function CreateMatch({ props }: Props) {
             <div className="flex flex-col gap-2 lg:justify-end ">
                 <div className="mt-5">
                     {/* Header for Create Match */}
-                    <h1 className="text-[#f3f2ef] text-3xl text-center pt-3">
+                    <h1 className="text-white text-3xl text-center pt-3">
                         Create a Match
                     </h1>
                 </div>
                 {/* Form to be submitted */}
-                <form onSubmit={handleFormSubmit} className="w-full">
+                <form onSubmit={handleFormSubmit} className="w-full text-base">
                     {/* Error and Loading div */}
                     {error && <AlertMessage message={error} type="error" />}
                     {loading && <AlertMessage message="Loading..." type="loading" />}
                     {/* Location Input Box */}
-                    <Input
-                        label="Location"
-                        value={address}
-                        name="location"
-                        onChange={handleLocationChange}
-                    >
-                        <AddLocationAlt />
-                    </Input>
-                    {/* Autofill for address */}
-                    {suggestions?.length > 0 && (
-                        <SuggestionWrapper>
-                            {suggestions.map((suggestion: any, index: any) => {
-                                return (
-                                    <Suggestion
-                                        className="w-full text-[#31302f] text-base"
-                                        key={index}
-                                        onClick={() => {
-                                            setAddress(suggestion.place_name);
-                                            setSuggestions([]);
-                                        }}
-                                    >
-                                        {suggestion.place_name}
-                                    </Suggestion>
-                                );
-                            })}
-                        </SuggestionWrapper>
-                    )}
+                    <div className="flex flex-col gap-2 z-10 relative w-full">
+                        <Input
+                            label="Location"
+                            value={address}
+                            name="location"
+                            onChange={handleLocationChange}
+                        >
+                            <AddLocationAlt />
+                        </Input>
+                        {/* Autofill for address */}
+                        {suggestions?.length > 0 && (
+                            <SuggestionWrapper>
+                                {suggestions.map((suggestion: any, index: any) => {
+                                    return (
+                                        <Suggestion
+                                            className="w-full text-base hover:bg-orange-500 p-5"
+                                            key={index}
+                                            onClick={() => {
+                                                setAddress(suggestion.place_name);
+                                                setSuggestions([]);
+                                            }}
+                                        >
+                                            {suggestion.place_name}
+                                        </Suggestion>
+                                    );
+                                })}
+                            </SuggestionWrapper>
+                        )}
+                    </div>
                     {/* Selection box for Sport */}
                     <SelectOption
                         label="Sport"
