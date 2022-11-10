@@ -218,7 +218,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                     <p>Regular Matches</p>
                     {regMatches.length === 0 && (
                         <p className="text-2xl text-white text-center">
-                            There is no regular match found
+                            ⚠️ There is no regular match found
                         </p>
                     )}
                     {/* horizontal scroll for created matches */}
