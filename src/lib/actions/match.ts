@@ -123,12 +123,14 @@ export async function decreaseMatchScoreOfTeam(
  */
 export async function getMatchesBetweenDates(start: Date, end: Date) {
     try {
-        const matches = await MatchModel.find({
-            startDate: {
-                $gte: start,
-                $lt: end,
-            },
-        });
+        const matches = await MatchModel.find(
+            {
+                startDate: {
+                    $gte: start,
+                    $lt: end,
+                },
+            }
+        );
 
         return matches;
     } catch (error: any) {

@@ -225,9 +225,9 @@ export default function MatchView({ matchData }: Props) {
             <div>
                 {/* Sidebar to get step-by-step instructions */}
                 {/* https://popupsmart.com/blog/react-popup */}
-                <Popup trigger={<button
-                    className={styles.directions}
-                >Get Directions</button>} onOpen={(e) => {getDirectionsClicked();}} position="right center">
+                <Popup trigger={<button className={styles.directions}>Get Directions</button>}
+                    onOpen={(e) => {getDirectionsClicked();}}
+                    position="right center">
                     {steps &&
                     <div className={styles.popupContent}>
                         <p>
@@ -386,8 +386,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
         // When there is an error you will be redirected to the index
         return {
-            redirect: {
-                destination: "/",
+            redirect:
+            {
+                destination: "/"
             },
         };
     }

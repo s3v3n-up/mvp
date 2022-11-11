@@ -14,8 +14,10 @@ export default function History({ pastMatches, activeMatches }: any) {
 
     const { data:session } = useSession();
 
-    const joinActive = activeMatches.filter((match:any) => match.teams[0].members.includes(session?.user.userName) || (match.teams[1] && match.teams[1].members.includes(session?.user.userName)));
-    const pasts = pastMatches.filter((match:any) => match.teams[0].members.includes(session?.user.userName) || (match.teams[1] && match.teams[1].members.includes(session?.user.userName)));
+    const joinActive = activeMatches.filter((match:any) => match.teams[0].members.includes(session?.user.userName)
+                        || (match.teams[1] && match.teams[1].members.includes(session?.user.userName)));
+    const pasts = pastMatches.filter((match:any) => match.teams[0].members.includes(session?.user.userName)
+                        || (match.teams[1] && match.teams[1].members.includes(session?.user.userName)));
 
     // Constants to indicate whether tab is active or not
     const [activeTabIndex, setActiveTabIndex] = useState(0);
@@ -62,8 +64,8 @@ export default function History({ pastMatches, activeMatches }: any) {
                                     {/* The delete or leave button corresponding to whether the match was created or joined*/}
                                     {}
                                     <button className={styles.cancelButton}>Leave</button>
-                                    {created.status === "UPCOMING" && <button className={styles.cancelButton} onClick={(e) => deleteButton(created._id)}>Delete</button>}
-
+                                    {created.status === "UPCOMING" && <button className={styles.cancelButton}
+                                        onClick={(e) => deleteButton(created._id)}>Delete</button>}
                                 </div>
                             </div>
                         </div>

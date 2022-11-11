@@ -42,7 +42,8 @@ export default function Login() {
             const err = splitByError[-1].substring(1);
             if (err == "OAuthAccountNotLinked") {
                 setError(
-                    "You already login with a different provider, ex: you previously logged in with Google, but now you are trying to log in with email/discord. Please log in with the same provider you used previously."
+                    `You already login with a different provider, ex: you previously logged in with Google, 
+                    but now you are trying to log in with email/discord. Please log in with the same provider you used previously.`
                 );
             } else {
                 setError(
@@ -182,16 +183,18 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     if (session) {
         if (session.user.isFinishedSignup) {
             return {
-                redirect: {
+                redirect:
+                {
                     destination: "/",
-                    permanent: false,
+                    permanent: false
                 },
             };
         } else {
             return {
-                redirect: {
+                redirect:
+                {
                     destination: "/register",
-                    permanent: false,
+                    permanent: false
                 },
             };
         }

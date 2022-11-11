@@ -42,6 +42,7 @@ export default function Scoreboard({ match, players }: Props) {
 
     //guard page against unauthenticated users and check if user is host of the match or in the match
     const router = useRouter();
+    const { id } = router.query as { id: string };
     const [isMatchHost, setIsMatchHost] = useState<boolean>(false);
     const { session } = useAuth();
 
@@ -92,7 +93,7 @@ export default function Scoreboard({ match, players }: Props) {
     const [networkError, setNetworkError] = useState<string>("");
 
     //refetch match data every 1 seconds
-    const { data, error } = useSWR<{match: Match}>(`/api/match/${match._id?.toString()}`,fetcher, {
+    const { data, error } = useSWR<{match: Match}>(`/api/match/${id}`,fetcher, {
         refreshInterval: 100,
         fallback: { match: currMatch }
     });
@@ -137,12 +138,16 @@ export default function Scoreboard({ match, players }: Props) {
         const isMemberFull = currMemberNumbers === maxPlayer;
 
         //if match is full, update match queue start time
-        if (isMemberFull && !currMatch.matchQueueStart && !currMatch.matchStart && currMatch.matchType !== "REGULAR") {
-            (async()=>await axios.put(`/api/match/${currMatch._id?.toString()}/operation/queue`, {
-                queueStartTime: new Date().toString()
-            }).catch(()=>{
-                setNetworkError("error setting match queue time");
-            }))();
+        if (isMemberFull &&
+            !currMatch.matchQueueStart &&
+            !currMatch.matchStart &&
+            currMatch.matchType !== "REGULAR") {
+            (async()=>
+                await axios.put(`/api/match/${id}/operation/queue`, {
+                    queueStartTime: new Date().toString()
+                }).catch(()=>{
+                    setNetworkError("error setting match queue time");
+                }))();
         };
 
         //if it's queuing time
@@ -160,7 +165,7 @@ export default function Scoreboard({ match, players }: Props) {
                 if (timeLeft <= 0 || !isMemberFull) {
 
                     //set queue start time to null
-                    await axios.put(`/api/match/${currMatch._id?.toString()}/operation/queue`, {
+                    await axios.put(`/api/match/${id}/operation/queue`, {
                         queueStartTime: null
                     }).catch(()=>{
                         setNetworkError("error unset match queue time");
@@ -168,7 +173,7 @@ export default function Scoreboard({ match, players }: Props) {
 
                     //set start time to now if time has passed 30 seconds
                     if(timeLeft <= 0) {
-                        await axios.put(`/api/match/${currMatch._id?.toString()}/operation/start`, {
+                        await axios.put(`/api/match/${id}/operation/start`, {
                             startTime: new Date().toString()
                         });
                     }
@@ -205,12 +210,12 @@ export default function Scoreboard({ match, players }: Props) {
                         Promise.all([
 
                             //set match start time to null
-                            await axios.put(`/api/match/${currMatch._id?.toString()}/operation/start`, {
+                            await axios.put(`/api/match/${id}/operation/start`, {
                                 startTime: null
                             }),
 
                             //set match status to upcoming
-                            await axios.put(`/api/match/${currMatch._id?.toString()}/status`, {
+                            await axios.put(`/api/match/${id}/status`, {
                                 status: "UPCOMING"
                             })
                         ]).catch(()=>{
@@ -220,7 +225,7 @@ export default function Scoreboard({ match, players }: Props) {
 
                     //if match is regular, cancel it
                     else {
-                        await axios.put(`/api/match/${currMatch._id?.toString()}/status`, {
+                        await axios.put(`/api/match/${id}/status`, {
                             status: "CANCELLED"
                         }).catch(()=>{
                             setNetworkError("error cancelling match");
@@ -257,12 +262,12 @@ export default function Scoreboard({ match, players }: Props) {
             gameTimer();
             queuingTimer();
         };
-    }, [currMatch]);
+    }, [currMatch, id]);
 
     //function for the host to pause the match
     const pauseMatch = debounce(async()=> {
         if(currMatch.status === "PAUSED") return;
-        await axios.put(`/api/match/${currMatch._id?.toString()}/operation/pause`, {
+        await axios.put(`/api/match/${id?.toString()}/operation/pause`, {
             pauseTime: new Date().toString()
         }).catch(()=>{
             setNetworkError("error pausing match");
@@ -271,7 +276,7 @@ export default function Scoreboard({ match, players }: Props) {
 
     //function for host to end the match
     const endMatch = debounce(async()=> {
-        await axios.put(`/api/match/${currMatch._id?.toString()}/operation/finish`)
+        await axios.put(`/api/match/${id?.toString()}/operation/finish`)
             .catch(()=> {
                 setNetworkError("error ending match");
             });
@@ -279,7 +284,7 @@ export default function Scoreboard({ match, players }: Props) {
 
     //function for host to cancel the match
     const cancelMatch = debounce(async()=> {
-        await axios.put(`/api/match/${currMatch._id?.toString()}/operation/cancel`, {
+        await axios.put(`/api/match/${id}/operation/cancel`, {
             cancelTime: new Date().toString()
         }).catch(()=> {
             setNetworkError("error cancelling match");
@@ -289,7 +294,7 @@ export default function Scoreboard({ match, players }: Props) {
     //function for host to resume the match after pausing
     const resumeMatch = debounce(async()=> {
         if(currMatch.status === "INPROGRESS") return;
-        await axios.put(`/api/match/${currMatch._id?.toString()}/operation/resume`, {
+        await axios.put(`/api/match/${id}/operation/resume`, {
             resumeTime: new Date().toString()
         }).catch(()=>{
             setNetworkError("error resuming match");
@@ -302,7 +307,7 @@ export default function Scoreboard({ match, players }: Props) {
         if (type === "increase") {
             if (team === "home") {
                 setHomeScore(prev => prev + 1);
-                await axios.put(`/api/match/${currMatch._id?.toString()}/score`,
+                await axios.put(`/api/match/${id}/score`,
                     {
                         teamIndex: 0,
                         operation: "increase"
@@ -310,7 +315,7 @@ export default function Scoreboard({ match, players }: Props) {
                 );
             } else {
                 setAwayScore(prev => prev + 1);
-                await axios.put(`/api/match/${currMatch._id?.toString()}/score`,
+                await axios.put(`/api/match/${id}/score`,
                     {
                         teamIndex: 1,
                         operation: "increase"
@@ -321,7 +326,7 @@ export default function Scoreboard({ match, players }: Props) {
             if (team === "home") {
                 if (homeScore <= 0) return;
                 setHomeScore(prev => prev - 1);
-                await axios.put(`/api/match/${currMatch._id?.toString()}/score`,
+                await axios.put(`/api/match/${id}/score`,
                     {
                         teamIndex: 0,
                         operation: "decrease"
@@ -330,7 +335,7 @@ export default function Scoreboard({ match, players }: Props) {
             } else {
                 if (awayScore <= 0) return;
                 setAwayScore(prev => prev - 1);
-                await axios.put(`/api/match/${currMatch._id?.toString()}/score`,
+                await axios.put(`/api/match/${id}/score`,
                     {
                         teamIndex: 1,
                         operation: "decrease"

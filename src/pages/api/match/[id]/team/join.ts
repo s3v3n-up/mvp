@@ -4,6 +4,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 // eslint-disable-next-line camelcase
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { APIErr } from "@/lib/types/General";
 
 /**
  * api route for user to join a match.
@@ -44,10 +45,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             await joinMatch(id as string, userName);
 
             // Return a success message
-            res.status(200).json({ message: "success" });
+            res.status(200).json(
+                {
+                    message: "success"
+                }
+            );
         }
-    } catch(error: any) {
-        const { code=500, message="Internal server error", cause="internal error" } = error;
-        res.status(code).json({ message, cause });
+    } catch(error) {
+        const {
+            code = 500,
+            message="internal server error",
+            cause="internal error"
+        } = error as APIErr;
+        res.status(code).json(
+            {
+                code,
+                message,
+                cause
+            }
+        );
     }
 }

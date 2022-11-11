@@ -73,7 +73,8 @@ export default function QuickMatch({ props }: Props) {
     useEffect(() => {
         axios
             .get(
-                `https://api.mapbox.com/geocoding/v5/mapbox.places/${location?.lng},${location?.lat}.json?types=address&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`
+                `https://api.mapbox.com/geocoding/v5/mapbox.places/${location?.lng},${location?.lat}
+                .json?types=address&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`
             )
             .then(({ data }) => {
                 setAddress(data);
@@ -144,8 +145,10 @@ export default function QuickMatch({ props }: Props) {
                 gameMode: { modeName: mode, requiredPlayers: computeReqPlayers(mode) },
                 matchType: "QUICK",
                 status: "UPCOMING",
-                description: "no description",
-                teams: [{ members: [session!.user.userName], score: 0, status: "UNSET" }, { members: [], score: 0, status: "UNSET" }]
+                teams: [
+                    { members: [session!.user.userName], score: 0, status: "UNSET" },
+                    { members: [], score: 0, status: "UNSET" }
+                ]
             });
 
             // Checks if no successful post response

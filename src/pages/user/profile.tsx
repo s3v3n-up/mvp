@@ -41,9 +41,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const session = await unstable_getServerSession(req, res, authOptions);
     if (!session) {
         return {
-            redirect: {
+            redirect:
+            {
                 destination: "/login",
-                permanent: false,
+                permanent: false
             },
         };
     }
@@ -54,7 +55,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const stats = await calculateStats(userData.userName);
 
     return {
-        props: {
+        props:
+        {
             profile: JSON.parse(JSON.stringify(userData)),
             userStats: JSON.parse(JSON.stringify(stats)),
         }

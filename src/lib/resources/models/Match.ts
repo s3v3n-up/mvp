@@ -84,23 +84,19 @@ const matchSchema = new Schema<Match>({
         address: {
             fullAddress: {
                 type: String,
-                required: true,
-                default: ""
+                required: true
             },
             pointOfInterest: {
                 type: String,
-                required: true,
-                default: ""
+                required: true
             },
             city: {
                 type: String,
-                required: true,
-                default: ""
+                required: true
             },
             country: {
                 type: String,
-                required: true,
-                default: ""
+                required: true
             }
         }
     },
