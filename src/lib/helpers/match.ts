@@ -7,6 +7,9 @@ import axios from "axios";
  * @param onMatchStart - callback function to execute when match has started
  */
 export function checkIfMatchHasStarted(match: Match, onMatchStart: ()=> void) {
+    if (match.matchType === "QUICK") {
+        return;
+    }
 
     //boolean check if match teams are full
     const isMemberFull = match.teams[0].members.concat(match.teams[1].members).length === match.gameMode.requiredPlayers;

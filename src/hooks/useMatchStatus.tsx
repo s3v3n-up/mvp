@@ -34,7 +34,8 @@ export default function useMatchNavigate(match: Match) {
             match.status === "PAUSED") &&
             router.pathname === `/match/${match._id}/scoreboard`) ||
             match.status === "FINISHED" ||
-            match.status === "CANCELLED") {
+            match.status === "CANCELLED" ||
+            match.matchType === "QUICK") {
             clearInterval(checkMatchStart);
         }
 
