@@ -1,4 +1,5 @@
-import { ChangeEvent, useEffect, useRef } from "react";
+//third party imports
+import { ChangeEvent, useRef } from "react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 

@@ -7,9 +7,9 @@ import Database from "@/lib/resources/database";
 */
 export default function CreateMatchPage({ data }: any) {
     return (
-        <div>
+        <section>
             <CreateMatch props={data}/>
-        </div>
+        </section>
     );
 }
 

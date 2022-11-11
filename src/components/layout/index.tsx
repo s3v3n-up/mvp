@@ -9,6 +9,7 @@ import { signOut } from "next-auth/react";
 //local import
 import styles from "@/styles/Components.module.sass";
 import { AvatarContext } from "@/context/avatar";
+import NextHead from "@/components/nextHead";
 
 //dynamic import
 const Skeleton = dynamic(() => import("@mui/material/Skeleton"), { ssr: false });
@@ -56,6 +57,24 @@ const Layout = ({ children }: Props) => {
 
     return (
         <section className={styles.container}>
+            <NextHead
+                title="matches"
+                description="See all active matches"
+                keywords={
+                    `mvp, matches, 
+                    game, sport matches, 
+                    mvp-playground, playground, 
+                    mvp playground, playground mvp,
+                    mostvaluableplayger, ranking, 
+                    most valuable player, most value player, 
+                    mv player, most valuable,
+                    compete with friend, find friend,
+                    find teammates, sport competing,
+                    sport compete, sport competition, 
+                    sport game, sport match, 
+                    sport matches, sport matching`
+                }
+            />
             <div className="fixed top-0 bottom-0 right-0 left-0 -z-50 bg-black">
                 <Image
                     src="/bg.svg"
@@ -78,7 +97,10 @@ const Layout = ({ children }: Props) => {
                     />
                 </button>
                 {!isProfilePage ?
-                    <button className="relative h-14 w-14 rounded-full" onClick={()=>router.push("/user/profile")}>
+                    <button
+                        className="relative h-14 w-14 rounded-full"
+                        onClick={()=>router.push("/user/profile")}
+                    >
                         { isAvatarLoaded &&
                                 <Skeleton
                                     variant="circular"

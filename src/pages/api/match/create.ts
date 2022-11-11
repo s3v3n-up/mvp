@@ -106,8 +106,7 @@ export default async function handler(
                 teams,
                 status,
                 matchQueueStart: null,
-                matchPause: null,
-                matchResume: null,
+                matchPause: null
             };
 
             // Call upon the createMatch action to use the values above and create a match model

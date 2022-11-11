@@ -1,7 +1,7 @@
 // Local imports
 import Input from "./Input";
 import SelectOption from "./SelectOption";
-import { Location, SportsOptions, Modes, Pos, FullLocation, GameModes } from "@/lib/types/General";
+import { Location, SportsOptions, Modes, Pos, FullLocation } from "@/lib/types/General";
 import { Sport } from "@/lib/types/Sport";
 
 // Third party imports
@@ -148,7 +148,8 @@ export default function QuickMatch({ props }: Props) {
                 teams: [
                     { members: [session!.user.userName], score: 0, status: "UNSET" },
                     { members: [], score: 0, status: "UNSET" }
-                ]
+                ],
+                description: "no description",
             });
 
             // Checks if no successful post response

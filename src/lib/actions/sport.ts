@@ -16,6 +16,7 @@ export async function getAllSports() {
 
         //returns all existing sports
         return existingSports;
+        console.log(existingSports);
 
         //catches and throws an error
     } catch(error: any) {
