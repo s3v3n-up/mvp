@@ -19,9 +19,15 @@ const AddLocationAlt = dynamic(
 const SportsBasketball = dynamic(
     () => import("@mui/icons-material/SportsBasketball")
 );
-const PeopleAlt = dynamic(() => import("@mui/icons-material/PeopleAlt"));
-const AccessTime = dynamic(() => import("@mui/icons-material/AccessTime"));
-const AlertMessage = dynamic(() => import("@/components/alertMessage"));
+const PeopleAlt = dynamic(
+    () => import("@mui/icons-material/PeopleAlt")
+);
+const AccessTime = dynamic(
+    () => import("@mui/icons-material/AccessTime")
+);
+const AlertMessage = dynamic(
+    () => import("@/components/alertMessage")
+);
 
 interface Props {
   props: Sport[];

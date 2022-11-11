@@ -1,7 +1,7 @@
 //third-party imports
 import Image from "next/image";
-import { useEffect, MouseEvent, FormEvent } from "react";
-import { useSession, getSession } from "next-auth/react";
+import { MouseEvent, FormEvent } from "react";
+import { getSession } from "next-auth/react";
 import { useState, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
@@ -12,6 +12,7 @@ import Head from "next/head";
 import styles from "@/styles/Register.module.sass";
 import Input from "@/components/Input";
 import Button from "@/components/buttons/primaryButton";
+import useAuth from "@/hooks/useAuth";
 
 //dynamic imports
 const Person = dynamic(() => import("@mui/icons-material/Person"));
@@ -46,17 +47,8 @@ interface RegisterData {
 export default function Register() {
 
     //guard page against logged and unauthenticated in users
-    const { data: session } = useSession();
+    const { session } = useAuth();
     const router = useRouter();
-    useEffect(() => {
-        if (session && session.user.isFinishedSignup) {
-            router.push("/");
-        }
-
-        if (!session) {
-            router.push("/login");
-        }
-    }, [session, router]);
 
     //register form data state
     const [formData, setFormData] = useState<RegisterData>({
@@ -167,10 +159,9 @@ export default function Register() {
                     <div className={styles.about}>
                         <h2>Are YOU the MVP?</h2>
                         <p>
-              Create your matches <br />
-              Schedule your face-off
-                            <br />
-              Put your skills to the test.
+                            Create your matches <br />
+                            Schedule your face-off<br />
+                            Put your skills to the test.
                         </p>
                         <h2>Can you be #1?</h2>
                     </div>

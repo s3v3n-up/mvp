@@ -13,14 +13,15 @@ import { getMatchById, updateMatchFields } from "@/lib/actions/match";
 import Database from "@/lib/resources/database";
 import { Location, Pos } from "@/lib/types/General";
 import { Match } from "@/lib/types/Match";
-import dateConverter from "@/lib/helpers/date";
+import { dateConverter } from "@/lib/helpers/time";
+import useAuth from "@/hooks/useAuth";
+import useMatchNavigate from "@/hooks/useMatchStatus";
+import { getUTCTime } from "@/lib/helpers/time";
 
 // https://www.npmjs.com/package/add-to-calendar-button
 // eslint-disable-next-line camelcase
 import "add-to-calendar-button/assets/css/atcb.css";
-import { useSession } from "next-auth/react";
 import fetcher from "@/lib/helpers/fetcher";
-import { checkIfMatchHasStarted } from "@/lib/helpers/match";
 
 //dynamic imports
 const Snackbar = dynamic(()=> import("@mui/material/Snackbar"), { ssr: false });
@@ -67,7 +68,7 @@ interface Steps {
 export default function MatchView({ matchData }: Props) {
 
     // Access session
-    const { data: session } = useSession();
+    const { session } = useAuth();
 
     //current match state
     const [match, setMatch] = useState<Match>(matchData);
@@ -103,24 +104,8 @@ export default function MatchView({ matchData }: Props) {
         }
     }, [data, error]);
 
-    //check if match has started every 1 seconds
-    useEffect(()=> {
-
-        //function to navigate to scoreboard if match has started
-        function onMatchStart() {
-            router.push(`/match/${match._id}/scoreboard`);
-        }
-
-        let recheckInterval = setInterval(async ()=> {
-            await(import("@/lib/helpers/match")).then(module=>{
-                module.checkIfMatchHasStarted(match, onMatchStart);
-            });
-        }, 1000);
-
-        //clean up refetch timer
-        return ()=> clearInterval(recheckInterval);
-    }
-    , [match, router]);
+    //redirect user according to match status and type
+    useMatchNavigate(match);
 
     // useEffect to get user current location then set location to be saved in database
     useEffect(() => {
@@ -191,14 +176,13 @@ export default function MatchView({ matchData }: Props) {
 
         // fetch mapbox api using directions services
         try {
-            const endpoint = `https://api.mapbox.com/directions/v5/mapbox/driving/${
-            startLocation!.lng
-            },${startLocation!.lat};${match.location.lng},${
-                match.location.lat
-            }?steps=true&geometries=geojson&access_token=${
-                process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
-            }`;
-
+            const endpoint = `https://api.mapbox.com/directions/v5/mapbox/driving/
+            ${startLocation!.lng},
+            ${startLocation!.lat};
+            ${match.location.lng},
+            ${match.location.lat}
+            ?steps=true&geometries=geojson&access_token=
+            ${ process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN }`;
             await axios.get(endpoint).then(({ data }) => {
                 setResult(data);
             });
@@ -335,8 +319,17 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
         // Get the specific match that you want to view
         const match = await getMatchById(id as string);
-        const isMemberFull = (match.teams[0].members.concat(match.teams[1].members)).length === match.gameMode.requiredPlayers;
 
+        //get required amount of players
+        const{ requiredPlayers: maxPlayers } = match.gameMode;
+
+        //get current amount of players
+        const totalMembers = (match.teams[0].members.concat(match.teams[1].members)).length;
+
+        //boolean to check if match is full
+        const isMembersFull = totalMembers === maxPlayers;
+
+        //if match not found, redirect to 404 page
         if (!match) {
             return {
                 notFound: true,
@@ -357,11 +350,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         //update match status and redirect to scoreboard if start time is passed
         if (
             match.matchType === "REGULAR" &&
-            new Date(match.matchStart!.toUTCString()).getTime() <= new Date(new Date(Date.now()).toUTCString()).getTime()
+            getUTCTime(match.matchStart!) <= getUTCTime(new Date())
         ) {
 
             //if members is not full, cancel the match
-            if (!isMemberFull && match.status !== "CANCELLED") {
+            if (!isMembersFull && match.status !== "CANCELLED") {
                 await updateMatchFields(id as string, {
                     status: "CANCELLED",
                     matchEnd: new Date(),

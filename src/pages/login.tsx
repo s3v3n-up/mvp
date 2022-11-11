@@ -16,6 +16,7 @@ import Head from "next/head";
 import styles from "@/styles/Login.module.sass";
 import Button from "@/components/buttons/primaryButton";
 import Input from "@/components/Input";
+import useAuth from "@/hooks/useAuth";
 
 //dynamic imports
 const EmailIcon = dynamic(() => import("@mui/icons-material/Email"));
@@ -28,18 +29,8 @@ const AlertMessage = dynamic(() => import("@/components/alertMessage"));
 export default function Login() {
 
     //guard page against unauthenticated users on client side
-    const { data: session, status } = useSession();
+    useAuth();
     const router = useRouter();
-    useEffect(() => {
-        if (status === "loading") return;
-        if (status === "authenticated") {
-            if (session.user.isFinishedSignup) {
-                router.push("/");
-            } else {
-                router.push("/register");
-            }
-        }
-    }, [status, session, router]);
 
     //login error state
     const [error, setError] = useState("");

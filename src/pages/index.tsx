@@ -15,6 +15,7 @@ import { getUsers } from "@/lib/actions/user";
 import { Location } from "@/lib/types/General";
 import axios from "axios";
 import Database from "@/lib/resources/database";
+import useAuth from "@/hooks/useAuth";
 
 //dynamic import
 const Search = dynamic(() => import("@mui/icons-material/Search"), {
@@ -30,14 +31,8 @@ const ScrollContainer = dynamic(() => import("react-indiana-drag-scroll"), {
  *
  */
 export default function Home({ regMatches, quickMatches, users }: any) {
-    const { data: session, status } = useSession();
+    const { session } = useAuth();
     const router = useRouter();
-    useEffect(() => {
-        if (status === "loading") return;
-        if (status === "unauthenticated") {
-            router.push("/login");
-        }
-    }, [status, router]);
 
     const [search, setSearch] = useState("");
 

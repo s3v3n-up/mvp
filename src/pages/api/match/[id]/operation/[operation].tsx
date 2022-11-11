@@ -1,5 +1,4 @@
 import {
-    updateMatchQueueStartTime,
     getMatchById,
     removeUserFromMatch,
     updateMatchFields
@@ -10,6 +9,7 @@ import Database from "@/lib/resources/database";
 // eslint-disable-next-line camelcase
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { getUTCTime } from "@/lib/helpers/time";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
@@ -50,6 +50,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const match = await getMatchById(id);
 
         //guard against unauthorized access for pause and finish operation
+        //only host can pause or end the match
         if ((operation === "pause" ||
             operation === "finish") &&
             session.user.id !== match.matchHost) {
@@ -63,8 +64,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (operation === "cancel") {
             const amountOfPlayers = match.teams[0].members.concat(match.teams[1].members).length;
             const isFullMember = amountOfPlayers === match.gameMode.requiredPlayers;
+
+            //if user is not the match host
             if (session.user.id !== match.matchHost) {
-                if (isFullMember && match.matchType === "REGULAR") {
+
+                //user cannot cancel a regular match if it is full
+                if (isFullMember && match.matchType === "REGULAR" ||
+
+                    //only host can cancel quick match
+                    match.matchType === "QUICK") {
                     throw {
                         code: 401,
                         message: "Unauthorized",
@@ -88,7 +96,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
 
             //update matchQueueStartTime
-            await updateMatchQueueStartTime(id as string, !isNaN(Date.parse(queueStartTime)) ? new Date(queueStartTime) : null);
+            await updateMatchFields(id, {
+                matchQueueStart: queueStartTime
+            });
         }
 
         //this operation happe when user clicks on leave button
@@ -110,7 +120,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             //remove member from match and update queue start time to null
             await removeUserFromMatch(id as string, userName);
-            await updateMatchQueueStartTime(id, null);
+            await updateMatchFields(id, {
+                matchQueueStart: null
+            });
+
+            //remove match from user matches history
             await removeMatchFromUserMatches(userName, id);
 
             //commit and end transaction
@@ -122,27 +136,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (operation === "start") {
             const { startTime } = req.body;
 
-            //validate matchStartTime
-            if (isNaN(Date.parse(startTime))) {
+            //guard against invalid startTime
+            if (isNaN(Date.parse(startTime)) && startTime !== null) {
                 throw {
                     code: 400,
                     message: "bad request"
                 };
             }
 
-            //update matchStartTime
-            await updateMatchFields(id, {
-                matchStart: startTime,
-                matchQueueStart: null,
-                status: "INPROGRESS",
-            });
+            if (startTime === null) {
+                await updateMatchFields(id, {
+                    matchStart: null,
+                    matchQueueStart: null
+                });
+            } else {
+
+                //update matchStartTime
+                await updateMatchFields(id, {
+                    matchStart: startTime,
+                    matchQueueStart: null,
+                    status: "INPROGRESS",
+                });
+            }
         }
 
         //this operation happens when the host pauses the match
         if (operation === "pause") {
             const { pauseTime } = req.body;
 
-            //validate pauseTime
+            //guard against invalid pauseTime
             if (isNaN(Date.parse(pauseTime))) {
                 throw {
                     code: 400,
@@ -168,10 +190,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 };
             }
 
-            //update matchResume
+            //calculate accumulated match pause delta
+            const matchPauseTimeUTC = match.matchPause ? getUTCTime(match.matchPause) : 0;
+            const matchResumeTimeUTC = getUTCTime(resumeTime);
+            const matchPauseDuration = Math.floor((matchResumeTimeUTC - matchPauseTimeUTC) / 1000);
+            const matchPauseDelta = (match.matchPauseDelta??0) + matchPauseDuration;
+
+            //update match
             await updateMatchFields(id, {
-                matchResume: resumeTime,
-                status: "RESUMED",
+                matchPauseDelta,
+                matchPause: null,
+                status: "INPROGRESS"
             });
         }
 
@@ -179,7 +208,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (operation === "cancel") {
             const { cancelTime } = req.body;
 
-            //validate cancelTime
+            //guard against invalid cancelTime
             if (isNaN(Date.parse(cancelTime))) {
                 throw {
                     code: 400,
@@ -196,6 +225,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         //operation happens when the match ends
         if (operation === "finish") {
+
+            //teams scores
             const homeScore = match.teams[0].score;
             const awayScore = match.teams[1].score;
 
@@ -205,10 +236,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 matchEnd: new Date()
             });
 
-            //update the team status
-            updatedMatch!.teams[0].status = homeScore > awayScore ? "WIN" : homeScore < awayScore ? "LOSE" : "DRAW";
-            updatedMatch!.teams[1].status = awayScore > homeScore ? "WIN" : awayScore < homeScore ? "LOSE" : "DRAW";
-            updatedMatch!.save();
+            //guard against non-existing match
+            if (!updatedMatch) {
+                throw {
+                    code: 400,
+                    message: "bad request"
+                };
+            }
+
+            //update the team status based on the match scores
+            if (homeScore === awayScore) {
+                updatedMatch.teams[0].status = "DRAW";
+                updatedMatch.teams[1].status = "DRAW";
+            } else if (homeScore > awayScore) {
+                updatedMatch.teams[0].status = "WIN";
+                updatedMatch.teams[1].status = "LOSE";
+            } else {
+                updatedMatch.teams[0].status = "LOSE";
+                updatedMatch.teams[1].status = "WIN";
+            }
+
+            //save updated match
+            updatedMatch.save();
         }
 
         res.status(200).json({ message: "operation success" });

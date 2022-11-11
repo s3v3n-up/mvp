@@ -1,5 +1,13 @@
 import Head from "next/head";
 
+/**
+ * props of seo header
+ * @property {string} title
+ * @property {string} description
+ * @property {string} image
+ * @property {string} url
+ * @property {string} keywors
+ */
 interface Props {
     title?: string,
     description?: string,
@@ -11,10 +19,10 @@ interface Props {
 /**
  * Header components for SEO
  * @returns {JSX.Element} header element
- * @prop title - page title
- * @prop description - page description
- * @prop image - main image of page
- * @prop url - page url
+ * @prop {string} title - page title
+ * @prop {string} description - page description
+ * @prop {string} image - main image of page
+ * @prop {string} url - page url
  */
 export default function NextHead(props: Props) {
     return (

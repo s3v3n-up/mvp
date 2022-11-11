@@ -12,6 +12,8 @@ import { getLeaderboardOfSport } from "@/lib/actions/match";
 import { getAllSports } from "@/lib/actions/sport";
 import { GetStaticPropsContext } from "next";
 import fetcher from "@/lib/helpers/fetcher";
+import useAuth from "@/hooks/useAuth";
+import NextHead from "@/components/nextHead";
 
 /**
  * Props type for Leaderboard page
@@ -26,6 +28,9 @@ interface Props {
 //Leaderboard page for a specific sport
 export default function Leaderboard({ leaderboard }: Props) {
     const router = useRouter();
+
+    //guard page against unauthenticated users
+    useAuth();
 
     //current leaderboard sportname
     const { sportname } = router.query;
@@ -60,18 +65,25 @@ export default function Leaderboard({ leaderboard }: Props) {
     },[data, error, currMaxRecords]);
 
     return(
-        <div className={styles.container}>
-            <div className={styles.header}>
+        <article className={styles.container}>
+            <NextHead
+                title={ `${ sportname } Leaderboard` }
+                description={
+                    `View the leaderboard for ${ sportname }, 
+                    see the mvps of ${ sportname }`
+                }
+            />
+            <header className={styles.header}>
                 <Image src="/crown.svg" alt="l" width={40} height={60} />
-                <p className={styles.leader}>{`${sportname}'s leaderboard`}</p>
-            </div>
+                <h1 className={styles.leader}>{`${sportname}'s leaderboard`}</h1>
+            </header>
             <Standings standings={standings}/>
             {!maxRecordsReached &&
                 <button className="text-orange-500 w-full text-center mt-5" onClick={() => setPage(page + 1)}>
                     Load more
                 </button>
             }
-        </div>
+        </article>
     );
 }
 

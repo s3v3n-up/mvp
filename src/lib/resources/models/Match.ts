@@ -123,10 +123,10 @@ const matchSchema = new Schema<Match>({
         default: null
     },
 
-    // This is the resume time
-    matchResume: {
-        type: Date,
-        default: null
+    // This is the delta between the match pause and match resume
+    matchPauseDelta: {
+        type: Number,
+        default: 0
     },
 
     // This is the match details, also a place where you can input extra details eg. Discord link, Facebook messenger link etc.
