@@ -119,6 +119,12 @@ const matchSchema = new Schema<Match>({
         default: null
     },
 
+    // This is the resume time
+    matchResume: {
+        type: Date,
+        default: null
+    },
+
     // This is the match details, also a place where you can input extra details eg. Discord link, Facebook messenger link etc.
     description: {
         type: String
@@ -142,7 +148,7 @@ const matchSchema = new Schema<Match>({
     // This is the status of the match
     status: {
         type: String,
-        enum: ["UPCOMING", "INPROGRESS", "FINISHED", "CANCELLED", "PAUSED"],
+        enum: ["UPCOMING", "INPROGRESS", "FINISHED", "CANCELLED", "PAUSED", "RESUMED"],
         required: true,
         default: "UPCOMING"
     },

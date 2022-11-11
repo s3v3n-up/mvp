@@ -94,10 +94,10 @@ export default function Login() {
                     <div className={styles.about}>
                         <h2>Are YOU the MVP?</h2>
                         <p>
-              Create your matches <br />
-              Schedule your face-off
+                            Create your matches <br />
+                            Schedule your face-off
                             <br />
-              Put your skills to the test.
+                            Put your skills to the test.
                         </p>
                         <h2>Can you be #1?</h2>
                     </div>
@@ -125,7 +125,7 @@ export default function Login() {
                                     <EmailIcon />
                                 </Input>
                                 <Button type="submit" className={styles.login}>
-                  Log in
+                                    Log in
                                 </Button>
                             </form>
                             <div className="flex w-full items-center gap-2 my-5">

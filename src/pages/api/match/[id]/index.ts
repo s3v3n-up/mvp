@@ -84,6 +84,7 @@ export default async function handler(
                 status: "UPCOMING",
                 matchPause: null,
                 matchQueueStart: null,
+                matchResume: null
             });
 
             // Then return updateMatch as a json response
