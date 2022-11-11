@@ -1,6 +1,7 @@
 // local import
 import { getMatchById } from "@/lib/actions/match";
 import Database from "@/lib/resources/database";
+import { FullLocation } from "@/lib/types/General";
 import { Match } from "@/lib/types/Match";
 import styles from "@/styles/MatchEdit.module.sass";
 
@@ -25,7 +26,7 @@ interface Props {
 export default function MatchEdit({ data }: Props) {
 
     //location useState
-    const [location, setLocation] = useState<any>();
+    const [location, setLocation] = useState<FullLocation>();
 
     // Address useState
     const [address, setAddress] = useState("");
@@ -102,6 +103,15 @@ export default function MatchEdit({ data }: Props) {
         try {
             setLoading(true);
 
+            if(!address){
+                throw new Error("needed input for location");
+            }
+
+            if(!description){
+                throw new Error("needed input for description");
+            }
+
+
             // Axios fetch post to access create match api
             const res = await axios.put(`/api/match/${data._id}`, {
                 teams: data.teams,
@@ -127,7 +137,7 @@ export default function MatchEdit({ data }: Props) {
             }
 
             // Redirect to index page
-            router.push(`/match/${data._id}/view`);
+            router.push(`/match/${data._id}`);
 
             // Catches and throws the error
         } catch (err: any) {
@@ -149,9 +159,9 @@ export default function MatchEdit({ data }: Props) {
 
     return (
         <div className={styles.container}>
-            {error && <AlertMessage message={error} type="error" />}
-            {loading && <AlertMessage message="Loading..." type="loading" />}
             <form onSubmit={handleFormSubmit}>
+                {error && <AlertMessage message={error} type="error" />}
+                {loading && <AlertMessage message="Loading..." type="loading" />}
                 {/* Header for Sport */}
                 <h1>{data.sport}</h1>
                 <div>
@@ -165,7 +175,6 @@ export default function MatchEdit({ data }: Props) {
                                     className={styles.inputaddress}
                                     value={address}
                                     name="location"
-                                    placeholder="Address"
                                     onChange={handleLocationChange}
                                 />
                             </div>

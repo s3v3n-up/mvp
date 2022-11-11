@@ -14,7 +14,7 @@ export default function Leaderboard({ sports }: { sports: Sport[] }) {
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="initial-scale=1.0, width=device-width" />
                 <title>MVP | Leaderboard</title>
-                <meta name="description" content="Leaderboard page" />
+                <meta name="description" content="View the Top players based on different sports" />
                 <link rel="icon" href="/favicon.ico"></link>
             </Head>
             <section>

@@ -44,6 +44,10 @@ export default function Login() {
     //login error state
     const [error, setError] = useState("");
 
+    //email state
+    const [email, setEmail] = useState("");
+
+
     //catching next-auth login error
     useEffect(() => {
         const splitByError = router.asPath.split("error");
@@ -60,9 +64,6 @@ export default function Login() {
             }
         }
     }, [router]);
-
-    //email state
-    const [email, setEmail] = useState("");
 
     /**
    * handle email input change
@@ -85,7 +86,11 @@ export default function Login() {
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="initial-scale=1.0, width=device-width" />
                 <title>MVP | Login</title>
-                <meta name="description" content="Login page" />
+                <meta
+                    name="description"
+                    content="Welcome! Login to MVP through email, discord, or gmail
+                and start creating, scheduling and compete in matches against strangers"
+                />
                 <link rel="icon" href="/favicon.ico"></link>
             </Head>
             <div className={styles.container}>
@@ -93,10 +98,10 @@ export default function Login() {
                     <div className={styles.about}>
                         <h2>Are YOU the MVP?</h2>
                         <p>
-                            Create your matches <br />
-                            Schedule your face-off
+              Create your matches <br />
+              Schedule your face-off
                             <br />
-                            Put your skills to the test.
+              Put your skills to the test.
                         </p>
                         <h2>Can you be #1?</h2>
                     </div>

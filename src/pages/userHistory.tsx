@@ -117,7 +117,7 @@ export default function History({ pastMatches, activeMatches }: any) {
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="initial-scale=1.0, width=device-width" />
                 <title>MVP | History</title>
-                <meta name="description" content="History page" />
+                <meta name="description" content="Shows recently created and past matches" />
                 <link
                     rel="icon"
                     type="image/png"

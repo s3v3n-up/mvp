@@ -270,7 +270,7 @@ export default function MatchView({ matchData }: Props) {
                     {steps &&
                     <div className={styles.popupContent}>
                         <p>
-                            <strong>Trip duration: {duration} min 🚴</strong>
+                            <strong>Trip duration: {duration} min 🏎️</strong>
                         </p>
                         <ol>
                             {steps.map((step: Steps, index: number) => {

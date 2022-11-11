@@ -46,7 +46,11 @@ export default async function handler(
                     otherwise: date().min(new Date(Date.now() - 60000), "You cannot set a date or time in the past")
                 }),
                 matchEnd: date(),
-                description: string().required("Please enter a description"),
+                description: string().when("matchType", {
+                    is: ((matchType: string) => matchType==="REGULAR"),
+                    then: string().required("Please enter a description"),
+                    otherwise: string()
+                }),
                 teams: array(),
                 status: string().required(),
             });

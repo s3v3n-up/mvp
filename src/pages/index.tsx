@@ -46,7 +46,6 @@ export default function Home({ regMatches, quickMatches, users }: any) {
     // Location useState
     const [currentLocation, setCurrentLocation] = useState<Location>();
 
-
     // useEffect to get user current location then set location to be saved in database
     useEffect(() => {
 
@@ -86,16 +85,12 @@ export default function Home({ regMatches, quickMatches, users }: any) {
     }
 
     //handles card clicked
-    function cardClicked(id: string) {
-        return router.push(`/match/${id}/scoreboard`);
-    }
-
-    function cardClickedQuick(id: string) {
+    function handleCardClicked(id: string) {
         return router.push(`/match/${id}/scoreboard`);
     }
 
     //handles filtering user
-    function lookUser(id: string) {
+    function handleLookUser(id: string) {
         const userFound = users.filter((user: any) => user._id === id);
 
         return userFound && userFound.length > 0 ? userFound[0].userName : "";
@@ -125,6 +120,17 @@ export default function Home({ regMatches, quickMatches, users }: any) {
 
     return (
         <>
+            <Head>
+                <meta charSet="utf-8" />
+                <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+                <title>MVP | Home</title>
+                <meta
+                    name="description"
+                    content="View or create matches and compete with
+                strangers to be number one in your favourite sports"
+                />
+                <link rel="icon" href="/favicon.ico"></link>
+            </Head>
             <div className={styles.matches}>
                 {/* search container */}
                 <div className={styles.search}>
@@ -148,75 +154,78 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                     <p>Quick Matches</p>
                     {quickMatches.length === 0 && (
                         <p className="text-2xl text-white text-center">
-                            ⚠️ There is no quick match found
+              ⚠️ There is no quick match found
                         </p>
                     )}
                     {/* horizontal sroll for created matches */}
                     <ScrollContainer className="flex w-full" horizontal hideScrollbars>
                         {/*filters through quick matches including lower case letters in text input*/}
                         {quickMatches.length > 0 &&
-                            quickMatches.filter(
-                                (quick: any) =>
-                                    quick.sport.toLowerCase().includes(search.toLowerCase()) ||
-                                    lookUser(quick.matchHost).includes(search.toLowerCase())
-                            ).map((quick: any, idx: any) => {
-                                const distance = Math.ceil(
-                                    haversine(
-                                        {
-                                            latitude: currentLocation?.lat as number,
-                                            longitude: currentLocation?.lng as number,
-                                        },
-                                        {
-                                            latitude: quick.location.lat as number,
-                                            longitude: quick.location.lng as number,
-                                        }
-                                    ) / 1000
-                                );
+              quickMatches
+                  .filter(
+                      (quick: any) =>
+                          quick.sport.toLowerCase().includes(search.toLowerCase()) ||
+                    handleLookUser(quick.matchHost).includes(
+                        search.toLowerCase()
+                    )
+                  )
+                  .map((quick: any, idx: any) => {
+                      const distance = Math.ceil(
+                          haversine(
+                              {
+                                  latitude: currentLocation?.lat as number,
+                                  longitude: currentLocation?.lng as number,
+                              },
+                              {
+                                  latitude: quick.location.lat as number,
+                                  longitude: quick.location.lng as number,
+                              }
+                          ) / 1000
+                      );
 
-                                return (
+                      return (
 
-                                    // card container
-                                    <div className={Cardstyles.container} key={idx}>
-                                        {/* displays day/date/time */}
-                                        <div
-                                            className={Cardstyles.time}
-                                            onClick={() => cardClickedQuick(quick._id as string)}>
-                                            <div className={Cardstyles.detail}>
-                                                <p>Now</p>
-                                            </div>
-                                            {/* button for user join a match */}
-                                            {quick.matchHost !== session?.user.id && (
-                                                <div>
-                                                    <button
-                                                        className={Cardstyles.join}
-                                                        onClick={() => joinQuick(quick._id)}
-                                                    >
-                                                        join
-                                                    </button>
-                                                </div>
-                                            )}
-                                        </div>
-                                        {/* displays the type of sports */}
-                                        <div className={Cardstyles.sport}>
-                                            <p>{quick.sport}</p>
-                                        </div>
-                                        {/* displays the point of interest and how far is the user away from the specific location in km */}
-                                        <div className={Cardstyles.location}>
-                                            <div>
-                                                <LocationOnIcon />
-                                            </div>
-                                            <p>{quick.location.address.pointOfInterest}</p>
-                                            <p>
-                                                {
-                                                    (!isNaN(distance) && `${distance}km away`) ||
-                                                    "No Location"
-                                                }
-                                            </p>
-                                            {/* displays user avatar that create the match */}
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                      // card container
+                          <div className={Cardstyles.container} key={idx}>
+                              {/* displays day/date/time */}
+                              <div
+                                  className={Cardstyles.time}
+                                  onClick={() => handleCardClicked(quick._id as string)}
+                              >
+                                  <div className={Cardstyles.detail}>
+                                      <p>Now</p>
+                                  </div>
+                                  {/* button for user join a match */}
+                                  {quick.matchHost !== session?.user.id && (
+                                      <div>
+                                          <button
+                                              className={Cardstyles.join}
+                                              onClick={() => joinQuick(quick._id)}
+                                          >
+                              join
+                                          </button>
+                                      </div>
+                                  )}
+                              </div>
+                              {/* displays the type of sports */}
+                              <div className={Cardstyles.sport}>
+                                  <p>{quick.sport}</p>
+                              </div>
+                              {/* displays the point of interest and how far is the user away from the specific location in km */}
+                              <div className={Cardstyles.location}>
+                                  <div>
+                                      <LocationOnIcon />
+                                  </div>
+                                  <p>{quick.location.address.pointOfInterest}</p>
+                                  <p>
+                                      {(!isNaN(distance) && `${distance}km away`) ||
+                            "No Location"}
+                                  </p>
+                                  {/* displays user avatar that create the match */}
+                              </div>
+                          </div>
+                      );
+                  })}
                     </ScrollContainer>
                 </div>
                 <div className="sm:mt-4 mt-10">
@@ -224,82 +233,83 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                     <p>Regular Matches</p>
                     {regMatches.length === 0 && (
                         <p className="text-2xl text-white text-center">
-                            ⚠️ There is no regular match found
+              ⚠️ There is no regular match found
                         </p>
                     )}
                     {/* horizontal scroll for created matches */}
                     <ScrollContainer className="flex w-full" horizontal hideScrollbars>
                         {/*filters through regular matches including lower case letters in text input*/}
-                        { regMatches.length > 0 &&
-                            regMatches.filter((reg: any) =>
-                                reg.sport.toLowerCase().includes(search.toLowerCase()) ||
-                                lookUser(reg.matchHost).includes(search.toLowerCase())
-                            ).map((reg: any, idx: any) => {
-                                const distance = Math.ceil(
-                                    haversine(
-                                        {
-                                            latitude: currentLocation?.lat as number,
-                                            longitude: currentLocation?.lng as number,
-                                        },
-                                        {
-                                            latitude: reg.location.lat as number,
-                                            longitude: reg.location.lng as number,
-                                        }
-                                    ) / 1000
-                                );
+                        {regMatches.length > 0 &&
+              regMatches
+                  .filter(
+                      (reg: any) =>
+                          reg.sport.toLowerCase().includes(search.toLowerCase()) ||
+                    handleLookUser(reg.matchHost).includes(search.toLowerCase())
+                  )
+                  .map((reg: any, idx: any) => {
+                      const distance = Math.ceil(
+                          haversine(
+                              {
+                                  latitude: currentLocation?.lat as number,
+                                  longitude: currentLocation?.lng as number,
+                              },
+                              {
+                                  latitude: reg.location.lat as number,
+                                  longitude: reg.location.lng as number,
+                              }
+                          ) / 1000
+                      );
 
-                                return (
+                      return (
 
-                                    // card container
-                                    <div className={Cardstyles.container} key={idx}>
-                                        <div
-                                            className={Cardstyles.time}
-                                            onClick={() => cardClicked(reg._id as string)}>
-                                            <div className={Cardstyles.detail}>
-                                                {/* custom format for match that includes date, day of the week and time */}
-                                                <p>
-                                                    { new Date(reg.matchStart)
-                                                        .toDateString()
-                                                        .concat(
-                                                            " " +
-                                                            new Date(reg.matchStart).toLocaleTimeString("en-US")
-                                                        )
-                                                    }
-                                                </p>
-                                            </div>
-                                            {/* button for user join a match */}
-                                            {reg.matchHost !== session?.user.id && (
-                                                <button
-                                                    className={Cardstyles.join}
-                                                    onClick={() => joinReg(reg._id)}
-                                                >
-                                                        join
-                                                </button>
-                                            )}
-                                        </div>
-                                        {/* displays the type of sports */}
-                                        <div
-                                            className={Cardstyles.sport}
-                                        >
-                                            <p>{reg.sport}</p>
-                                        </div>
-                                        {/* displays the point of interest and how far is the user away from the specific location in km */}
-                                        <div className={Cardstyles.location}>
-                                            <div>
-                                                <LocationOnIcon />
-                                            </div>
-                                            <p>{reg.location.address.pointOfInterest}</p>
-                                            <p>
-                                                {
-                                                    (!isNaN(distance) && `${distance}km away`) ||
-                                                    "No Location"
-                                                }
-                                            </p>
-                                            {/* displays user that create the match */}
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                      // card container
+                          <div className={Cardstyles.container} key={idx}>
+                              <div
+                                  className={Cardstyles.time}
+                                  onClick={() => handleCardClicked(reg._id as string)}
+                              >
+                                  <div className={Cardstyles.detail}>
+                                      {/* custom format for match that includes date, day of the week and time */}
+                                      <p>
+                                          {new Date(reg.matchStart)
+                                              .toDateString()
+                                              .concat(
+                                                  " " +
+                                  new Date(reg.matchStart).toLocaleTimeString(
+                                      "en-US"
+                                  )
+                                              )}
+                                      </p>
+                                  </div>
+                                  {/* button for user join a match */}
+                                  {reg.matchHost !== session?.user.id && (
+                                      <button
+                                          className={Cardstyles.join}
+                                          onClick={() => joinReg(reg._id)}
+                                      >
+                            join
+                                      </button>
+                                  )}
+                              </div>
+                              {/* displays the type of sports */}
+                              <div className={Cardstyles.sport}>
+                                  <p>{reg.sport}</p>
+                              </div>
+                              {/* displays the point of interest and how far is the user away from the specific location in km */}
+                              <div className={Cardstyles.location}>
+                                  <div>
+                                      <LocationOnIcon />
+                                  </div>
+                                  <p>{reg.location.address.pointOfInterest}</p>
+                                  <p>
+                                      {(!isNaN(distance) && `${distance}km away`) ||
+                            "No Location"}
+                                  </p>
+                                  {/* displays user that create the match */}
+                              </div>
+                          </div>
+                      );
+                  })}
                     </ScrollContainer>
                 </div>
             </div>
