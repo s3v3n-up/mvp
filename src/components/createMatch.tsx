@@ -72,7 +72,7 @@ export default function CreateMatch({ props }: Props) {
     props.map((sport: Sport) => {
         if (sport.name === sportname) {
             sport.gameModes.map((mode:any) => {
-                allModes.push({ value: mode.modeNames, name: mode.name });
+                allModes.push({ value: mode, name: mode });
             });
         }
     });
