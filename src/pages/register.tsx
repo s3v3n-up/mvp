@@ -167,10 +167,9 @@ export default function Register() {
                     <div className={styles.about}>
                         <h2>Are YOU the MVP?</h2>
                         <p>
-              Create your matches <br />
-              Schedule your face-off
-                            <br />
-              Put your skills to the test.
+                            Create your matches <br />
+                            Schedule your face-off <br />
+                            Put your skills to the test.
                         </p>
                         <h2>Can you be #1?</h2>
                     </div>
@@ -231,7 +230,7 @@ export default function Register() {
                                 <Phone fontSize="medium" />
                             </Input>
                             <Button type="submit" className={styles.signup}>
-                Sign up
+                                Sign up
                             </Button>
                         </form>
                     </div>

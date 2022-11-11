@@ -36,7 +36,10 @@ export default function CreateMatch() {
                     }
                     onClick={() => router.push("/create/regularmatch")}
                 >
-                    <LocalFireDepartmentIcon sx={ { marginBottom: "0.25rem", color: "red", fontSize: "5rem" }}/><br/>
+                    <LocalFireDepartmentIcon
+                        sx={ { marginBottom: "0.25rem", color: "red", fontSize: "5rem" }}
+                    />
+                    <br/>
                     Regular Match
                 </button>
                 <button
@@ -53,7 +56,10 @@ export default function CreateMatch() {
                     }
                     onClick={() => router.push("/create/quickmatch")}
                 >
-                    <ElectricBoltIcon sx={ { marginBottom: "0.25rem", color: "orange", fontSize: "5rem" }}/><br/>
+                    <ElectricBoltIcon
+                        sx={ { marginBottom: "0.25rem", color: "orange", fontSize: "5rem" }}
+                    />
+                    <br/>
                     Quick Match
                 </button>
             </div>

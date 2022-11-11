@@ -10,6 +10,8 @@ import Database from "@/lib/resources/database";
 // eslint-disable-next-line camelcase
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { APIErr } from "@/lib/types/General";
+import { string } from "yup";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
@@ -210,9 +212,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             updatedMatch!.teams[1].status = awayScore > homeScore ? "WIN" : awayScore < homeScore ? "LOSE" : "DRAW";
             updatedMatch!.save();
         }
-
-        res.status(200).json({ message: "operation success" });
-    } catch(error: any) {
-        res.status(error.code || 500).json({ message: error.message, cause: error.cause });
+        res.status(200).json(
+            {
+                code: 200,
+                message: "operation success",
+                cause:""
+            }
+        );
+    } catch(error) {
+        const {
+            code = 500,
+            message="internal server error",
+            cause="internal error"
+        } = error as APIErr;
+        res.status(code).json(
+            {
+                code,
+                message,
+                cause
+            }
+        );
     }
 }
