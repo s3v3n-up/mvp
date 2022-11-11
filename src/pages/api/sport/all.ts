@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 
 //local imports
 import { getAllSports } from "@/lib/actions/sport";
+import { APIErr } from "@/lib/types/General";
 
 /**
  * @description this a function that handles api request for getting all sports
@@ -24,13 +25,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             );
 
             //catches and throws a status code and error message
-        } catch (error: any) {
-
-            const { code = 500, message } = error;
-
+        } catch(error) {
+            const {
+                code = 500,
+                message="internal server error",
+                cause="internal error"
+            } = error as APIErr;
             res.status(code).json(
                 {
-                    message
+                    code,
+                    message,
+                    cause
                 }
             );
 

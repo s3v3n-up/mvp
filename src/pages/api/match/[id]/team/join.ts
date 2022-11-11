@@ -4,6 +4,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 // eslint-disable-next-line camelcase
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { APIErr } from "@/lib/types/General";
 
 /**
  * router for joinging a match.
@@ -49,11 +50,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
             );
         }
-    } catch(error: any) {
-        const { code=500, message="Internal server error", cause="internal error" } = error;
+    } catch(error) {
+        const {
+            code = 500,
+            message="internal server error",
+            cause="internal error"
+        } = error as APIErr;
         res.status(code).json(
             {
-                message, cause
+                code,
+                message,
+                cause
             }
         );
     }

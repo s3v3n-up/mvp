@@ -12,6 +12,7 @@ import { object, string } from "yup";
 
 // Imports PHONE_REGEX
 import { PHONE_REGEX } from "@/lib/helpers/validation";
+import { APIErr } from "@/lib/types/General";
 
 /**
  * api route for updating and getting user by username
@@ -76,11 +77,18 @@ export default async function handler(
         }
 
     // Catches and sends response status 400 and error
-    } catch (error: any) {
-        res.status(400).json(
+    } catch(error) {
+        const {
+            code = 500,
+            message="internal server error",
+            cause="internal error"
+        } = error as APIErr;
+        res.status(code).json(
             {
-                message: "Bad Request",
-                error
-            });
+                code,
+                message,
+                cause
+            }
+        );
     }
 }

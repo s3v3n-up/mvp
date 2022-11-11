@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getUsersByUserName } from "@/lib/actions/user";
+import { APIErr } from "@/lib/types/General";
 
 /**
  * api route for getting users by usernames
@@ -19,11 +20,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         //get all users with username that in the usernames query
         const users = await getUsersByUserName(usernames.split(","));
         res.status(200).json(users);
-    } catch (error: any) {
-        const { code = 500, message = "internal server error" } = error;
+    } catch(error) {
+        const {
+            code = 500,
+            message="internal server error",
+            cause="internal error"
+        } = error as APIErr;
         res.status(code).json(
             {
-                message: message
+                code,
+                message,
+                cause
             }
         );
     }

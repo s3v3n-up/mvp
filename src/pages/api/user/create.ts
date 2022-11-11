@@ -12,6 +12,7 @@ import { PHONE_REGEX, EMAIL_REGEX } from "@/lib/helpers/validation";
 
 // Imports object and string types from yup
 import { object, string } from "yup";
+import { APIErr } from "@/lib/types/General";
 
 /**
  * @description = a function that handles api request for registering user
@@ -91,22 +92,27 @@ export default async function handler(
                         response
                     }
                 );
-            } catch (error: any) {
-                if (error.cause.code === "11000") {
-                    throw {
-                        code: 400,
-                        message: error.message
-                    };
-                }
-                throw error;
+            } catch (error) {
+                const { code = 400, message, cause } = error as APIErr;
+                throw {
+                    code,
+                    message,
+                    cause
+                };
             }
 
             //Catches any error and throws it in message
-        } catch (error: any) {
-            const { code = 500, message } = error;
+        } catch(error) {
+            const {
+                code = 500,
+                message="internal server error",
+                cause="internal error"
+            } = error as APIErr;
             res.status(code).json(
                 {
-                    message
+                    code,
+                    message,
+                    cause
                 }
             );
 
@@ -114,3 +120,4 @@ export default async function handler(
         }
     }
 }
+

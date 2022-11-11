@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next/types";
 import Database from "@/lib/resources/database";
 import { updateMatchQueueStartTime } from "@/lib/actions/match";
+import { APIErr } from "@/lib/types/General";
 
 //function to update the start time of a match in the queue
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -38,10 +39,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 }
             );
         }
-    } catch (error: any) {
-        res.status(error.code || 500).json(
+    } catch(error) {
+        const {
+            code = 500,
+            message="internal server error",
+            cause="internal error"
+        } = error as APIErr;
+        res.status(code).json(
             {
-                message: error.message || "Internal Server Error", cause: error.cause
+                code,
+                message,
+                cause
             }
         );
     }

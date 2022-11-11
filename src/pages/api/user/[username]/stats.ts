@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import Database from "@/lib/resources/database";
 import { calculateStats } from "@/lib/actions/user";
+import { APIErr } from "@/lib/types/General";
 
 /**
  * api route for getting user stats
@@ -19,11 +20,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         await Database.setup();
         const stats = await calculateStats(username);
         res.status(200).json(stats);
-    } catch (error: any) {
-        const { code = 500, message = "internal server error" } = error;
+    } catch(error) {
+        const {
+            code = 500,
+            message="internal server error",
+            cause="internal error"
+        } = error as APIErr;
         res.status(code).json(
             {
-                message: message
+                code,
+                message,
+                cause
             }
         );
     }

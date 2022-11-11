@@ -71,8 +71,8 @@ export default function CreateMatch({ props }: Props) {
     // This functions gets all existing game modes on each existing sports and push them into allModes array to be accessed later
     props.map((sport: Sport) => {
         if (sport.name === sportname) {
-            sport.gameModes.map((mode: any) => {
-                allModes.push({ value: mode.modeNames, name: mode.modeNames });
+            sport.gameModes.map((mode:any) => {
+                allModes.push({ value: mode.modeNames, name: mode.name });
             });
         }
     });

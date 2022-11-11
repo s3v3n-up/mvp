@@ -1,5 +1,6 @@
 import { increaseMatchScoreOfTeam, decreaseMatchScoreOfTeam, getMatchById } from "@/lib/actions/match";
 import Database from "@/lib/resources/database";
+import { APIErr } from "@/lib/types/General";
 import { NextApiRequest, NextApiResponse } from "next";
 // eslint-disable-next-line camelcase
 import { unstable_getServerSession } from "next-auth";
@@ -71,10 +72,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 message: "method not allowed"
             };
         }
-    } catch (err: any) {
-        res.status(err.code || 500).json(
+    } catch(error) {
+        const {
+            code = 500,
+            message="internal server error",
+            cause="internal error"
+        } = error as APIErr;
+        res.status(code).json(
             {
-                message: err.message + "cause" + (err.cause??"undefined") || "Internal Server Error",
+                code,
+                message,
+                cause
             }
         );
     }

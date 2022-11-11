@@ -5,6 +5,7 @@ import multer from "multer";
 
 // Local imports
 import { uploadFile } from "@/lib/actions/File";
+import { APIErr } from "@/lib/types/General";
 
 /**
  * @description saves the file locally
@@ -77,17 +78,17 @@ handler
                 });
 
             // Catches error and throw the error message and code
-        } catch (error: any) {
+        } catch (error) {
             const {
                 code = 500,
-                message = "unknown error occured",
-                cause: {
-                    message: reason="an internal error"
-                }
-            } = error;
+                message="internal server error",
+                cause="internal error"
+            } = error as APIErr;
             res.status(code).json(
                 {
-                    message: `${message} caused by ${reason}`
+                    code,
+                    message,
+                    cause
                 }
             );
         }

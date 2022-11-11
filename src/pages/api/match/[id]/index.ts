@@ -4,6 +4,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 // Local imports
 import Database from "@/lib/resources/database";
 import { deleteMatch, getMatchById, updateMatch } from "@/lib/actions/match";
+import { APIErr } from "@/lib/types/General";
 
 export default async function handler(
     req: NextApiRequest,
@@ -100,11 +101,17 @@ export default async function handler(
         }
 
     // Catches a specific error when there is no match for the id set
-    } catch (error: any) {
-        const { code = 500, message = "internal server error" } = error;
+    } catch(error) {
+        const {
+            code = 500,
+            message="internal server error",
+            cause="internal error"
+        } = error as APIErr;
         res.status(code).json(
             {
-                message
+                code,
+                message,
+                cause
             }
         );
     }
