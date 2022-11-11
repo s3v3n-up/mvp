@@ -551,9 +551,12 @@ export async function getLeaderboardOfSport(
 export async function deleteMatch(matchId: string) {
     try {
         await MatchModel.findByIdAndDelete(matchId);
+
     } catch (error: any) {
         throw new Error("error deleting match", { cause: error });
     }
+
+    return true;
 }
 
 /**

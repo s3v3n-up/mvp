@@ -114,7 +114,7 @@ export default function CreateMatch({ props }: Props) {
                 setSuggestions(data?.features);
             });
         } catch (error) {
-            console.log("Error fetching data, ", error);
+            throw new Error("Error fetching data, ", error);
         }
     }
 

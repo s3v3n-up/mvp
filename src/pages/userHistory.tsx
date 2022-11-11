@@ -36,7 +36,7 @@ export default function History({ pastMatches, activeMatches }: any) {
             content: (
                 <>
                     {/* Created match cards to hold match information*/}
-                    {joinActive.map((created: any, idx: any) => (
+                    {joinActive.map((created: {matchStart: string, sport: string, location: { address: { fullAddress: string }}, status: string, _id: string }, idx: number) => (
                         <div className={styles.cardContainer} key={idx}>
                             <div className={styles.cardInfo}>
                                 {/* The starting time of the match*/}

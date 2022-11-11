@@ -42,13 +42,6 @@ interface Config {
   description: string;
 }
 
-interface Pos {
-    coords: {
-        latitude: number,
-        longitude: number
-    }
-}
-
 interface GeocodeResult {
     routes: [
         {
@@ -359,7 +352,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         // Get the specific match that you want to view
         const match = await getMatchById(id as string);
         const isMemberFull = (match.teams[0].members.concat(match.teams[1].members)).length === match.gameMode.requiredPlayers;
-        console.log(isMemberFull);
 
         // Redirect them to index if the match type is not REGULAR
         if (match.matchType === "QUICK" || !match) {

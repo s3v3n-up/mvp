@@ -71,8 +71,7 @@ export default function Home({ regMatches, quickMatches, users }: any) {
         // Error parameter for currentPosition function
         function error(err: any) {
 
-            //TODO: don't use console log
-            console.warn(`ERROR(${err.code}): ${err.message}`);
+            throw new Error(`ERROR(${err.code}): ${err.message}`);
         }
         navigator.geolocation.getCurrentPosition(success, error, options);
     }, []);

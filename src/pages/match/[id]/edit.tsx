@@ -48,7 +48,7 @@ export default function MatchEdit({ data }: Props) {
 
     //axios to get the userdata and stats from api
     useEffect(() => {
-        const offSetDateTime = new Date(data.matchStart!).getTime()-28800000;
+        const offSetDateTime = new Date(data.matchStart!).getTime() - 28800000;
         setDate(new Date(offSetDateTime!).toISOString().slice(0, 16));
         setDescription(data.description);
         setIsDataLoaded(true);
@@ -64,14 +64,17 @@ export default function MatchEdit({ data }: Props) {
         // Code to set location to be saved on database and set suggestions for autofill
         try {
             const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/
-                ${val}.json?&limit=3&access_token=
-                ${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`;
-            await axios.get(endpoint).then(({ data }) => {
+                ${val}.json?&limit=3&access_token=${process.env
+                .NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN!}`;
+            const res = await axios.get(endpoint);
+
+            if (res.status === 200) {
+                const data = res.data;
                 setLocation(data);
                 setSuggestions(data?.features);
-            });
-        } catch (error) {
-            console.log("Error fetching data, ", error);
+            }
+        } catch (error: any) {
+            throw new Error("Error fetching data, ", error);
         }
     }
 
@@ -89,12 +92,18 @@ export default function MatchEdit({ data }: Props) {
 
     //function that handles delete
     async function handleDelete(id: string) {
+        setLoading(true);
+        try {
 
-        //axios fetch post to delete a match
-        await axios.delete(`/api/match/${data._id}`);
-
-        //return to home page
-        return router.push("/");
+            //axios fetch post to delete a match
+            const res = await axios.delete(`/api/match/${id}`);
+            if (res.status === 200) {
+                router.push("/");
+            }
+        } catch (error: any) {
+            const { message } = error as Error;
+            setError(message);
+        }
     }
 
     // Function to handle submission of form event
@@ -102,15 +111,13 @@ export default function MatchEdit({ data }: Props) {
         e.preventDefault();
         try {
             setLoading(true);
-
-            if(!address){
+            if (!address) {
                 throw new Error("needed input for location");
             }
 
-            if(!description){
+            if (!description) {
                 throw new Error("needed input for description");
             }
-
 
             // Axios fetch post to access create match api
             const res = await axios.put(`/api/match/${data._id}`, {
@@ -125,7 +132,7 @@ export default function MatchEdit({ data }: Props) {
                         pointOfInterest: location?.features[0].context[0].text,
                         city: location?.features[0].context[2].text,
                         country: location?.features[0].context[5].text,
-                    }
+                    },
                 },
                 matchStart: date,
                 description: description,
@@ -180,8 +187,8 @@ export default function MatchEdit({ data }: Props) {
                             </div>
                         </div>
 
-						 {/* Autofill for address */}
-						 {suggestions?.length > 0 && (
+                        {/* Autofill for address */}
+                        {suggestions?.length > 0 && (
                             <div className={styles.suggest}>
                                 {suggestions.map((suggestion: any, index: any) => {
                                     return (
@@ -229,19 +236,19 @@ export default function MatchEdit({ data }: Props) {
                     </div>
                 </div>
                 <div>
-                    {/* button for delete */}
-                    <button
-                        className={styles.delete}
-                        onClick={() => handleDelete(data._id as string)}
-                    >
-                        Delete
-                    </button>
                     {/* button for save */}
                     <button type="submit" className={styles.save}>
-                        Save
+            Save
                     </button>
                 </div>
             </form>
+            {/* button for delete */}
+            <button
+                className={styles.delete}
+                onClick={() => handleDelete(data._id as string)}
+            >
+        Delete
+            </button>
         </div>
     );
 }
