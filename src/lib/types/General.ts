@@ -23,3 +23,40 @@ export interface Address {
   city: string;
   country: string;
 }
+
+// Interface for full address and location values
+export interface FullLocation {
+  query: string[];
+  features: [
+    {
+      geometry: {
+        coordinates: string[];
+      };
+      context: [
+        {
+          text: string;
+        },
+        {},
+        { text: string },
+        {},
+        {},
+        { text: string }
+      ];
+      place_name: string;
+    }
+  ];
+}
+
+// Interface for geolocation
+export interface Pos {
+  coords: {
+    latitude: number;
+    longitude: number;
+  };
+}
+
+export interface GameModes {
+  mode: {
+	modeNames: string
+  }
+}
