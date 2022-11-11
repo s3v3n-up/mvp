@@ -148,7 +148,8 @@ export default function QuickMatch({ props }: Props) {
                 teams: [
                     { members: [session!.user.userName], score: 0, status: "UNSET" },
                     { members: [], score: 0, status: "UNSET" }
-                ]
+                ],
+                description: "no description",
             });
 
             // Checks if no successful post response
