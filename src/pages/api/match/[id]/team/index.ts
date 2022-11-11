@@ -7,8 +7,8 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { APIErr } from "@/lib/types/General";
 
 /**
- * api router for add/remove a new member to a team.
- * Team index and username are required from client
+ * api router for add/remove a member to/from a team.
+ * teamIndex and userName are required from request
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {

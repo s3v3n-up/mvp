@@ -13,10 +13,8 @@ export namespace Matches {
  */
 	export type TeamStatus = "WIN" | "LOSE" | "DRAW" | "UNSET";
 
-/**
- * this is the match status
- */
-	export type MatchStatus = "UPCOMING" | "INPROGRESS" | "FINISHED" | "CANCELLED" | "PAUSED" | "RESUMED";
+	// Matches status type
+	export type MatchStatus = "UPCOMING" | "INPROGRESS" | "FINISHED" | "CANCELLED" | "PAUSED";
 }
 
 /**
@@ -113,9 +111,7 @@ export interface Match {
 	 */
 	matchPause: Date | null;
 
-	/**
-	 * This is the match resume time
-	 */
-	matchResume: Date | null;
+	//delta between match pause and match resume
+	matchPauseDelta?: number;
 }
 

@@ -1,11 +1,10 @@
 //third party imports
 import Image from "next/image";
-import { GetServerSidePropsContext, GetStaticPropsContext } from "next";
-import { useState, useEffect, useCallback } from "react";
+import { GetServerSidePropsContext } from "next";
+import { useState, useEffect } from "react";
 import useSWR from "swr";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
 import debounce from "lodash.debounce";
 import Snackbar from "@mui/material/Snackbar";
 
@@ -19,7 +18,10 @@ import styles from "@/styles/Scoreboard.module.sass";
 import fetcher from "@/lib/helpers/fetcher";
 import { UserProfile } from "@/lib/types/User";
 import { mapPlayerToTeam } from "@/lib/helpers/scoreboard";
-import AlertMessage from "@/components/alertMessage";
+import { getLocaleTime } from "@/lib/helpers/time";
+import { alterSetInterval } from "@/lib/helpers/time";
+import useAuth from "@/hooks/useAuth";
+import useMatchNavigate from "@/hooks/useMatchStatus";
 
 /**
  * scoreboard props type
@@ -39,27 +41,21 @@ interface Props {
 export default function Scoreboard({ match, players }: Props) {
 
     //guard page against unauthenticated users and check if user is host of the match or in the match
-    const { data: session, status } = useSession();
     const router = useRouter();
+    const { id } = router.query as { id: string };
     const [isMatchHost, setIsMatchHost] = useState<boolean>(false);
+    const { session } = useAuth();
 
     //guard page against unauthenticated users and check if user is host of the match or in the match
     useEffect(()=> {
-        if (status === "loading") return;
-        if (status === "unauthenticated") {
-            router.push("/login");
-        }
         if (session && session.user) {
             setIsMatchHost(session.user.id === match.matchHost);
-            if (!match.teams[0].members.includes(session.user.userName)
-                && !match.teams[1].members.includes(session.user.userName)) {
+            if (!match.teams[0].members.includes(session.user.userName) &&
+                !match.teams[1].members.includes(session.user.userName)) {
                 router.push("/");
             }
         }
-    }, [session, status, router, match]);
-
-    //snackbar state
-    const [snackbar, setSnackbar] = useState(false);
+    }, [session, router, match]);
 
     //match state
     const [currMatch, setMatch] = useState<Match>(match);
@@ -79,10 +75,10 @@ export default function Scoreboard({ match, players }: Props) {
         mapPlayerToTeam(players, currMatch.teams)[1]
     );
 
-    //set the queue timer
+    //queue timer state - to display the time left for the queue
     const [queueTimer, setQueueTimer] = useState<number | null>(null);
 
-    //set the match timer
+    //match timer state - to display the time progress of the match
     const [matchTimer, setMatchTimer] = useState<number | null>(null);
 
     //team score states
@@ -93,12 +89,13 @@ export default function Scoreboard({ match, players }: Props) {
         currMatch.teams[1].score
     );
 
+    //network error state
+    const [networkError, setNetworkError] = useState<string>("");
+
     //refetch match data every 1 seconds
-    const { data, error } = useSWR<{match: Match}>(`/api/match/${match._id?.toString()}`,fetcher, {
+    const { data, error } = useSWR<{match: Match}>(`/api/match/${id}`,fetcher, {
         refreshInterval: 100,
-        revalidateOnFocus: false,
-        revalidateOnReconnect: false,
-        fallback: match
+        fallback: { match: currMatch }
     });
 
     //every time match data is updated, update the states
@@ -115,192 +112,193 @@ export default function Scoreboard({ match, players }: Props) {
                     setHomeScore(data.match.teams[0].score);
                     setAwayScore(data.match.teams[1].score);
                 }
-            } else {
-                console.log(error);
+            } else if (error) {
+                setNetworkError("error getting match updates");
             }
         })();
     },[data, error, isMatchHost, currMatch]);
 
     //guard against if match is finished or cancelled
-    useEffect(()=> {
-        if (currMatch.status === "FINISHED") {
-            router.push(`/match/${currMatch._id?.toString()}/result`);
-        }
-        if (currMatch.status === "CANCELLED") {
-            router.push("/match/cancel");
-        }
-    }, [currMatch, router]);
+    useMatchNavigate(currMatch);
 
     //set the match queue timer
     useEffect(()=> {
-        let queuingTimer: NodeJS.Timeout | null;
-        let gameTimer: NodeJS.Timeout | null;
 
-        async function updateTimer() {
-            const { gameMode: { requiredPlayers: maxPlayer } } = currMatch;
-            const currMemberNumbers = currMatch.teams[0].members.length + currMatch.teams[1].members.length;
-            const isMemberFull = currMemberNumbers === maxPlayer;
+        //game progress and queue timer placeholder
+        let queuingTimer: ()=>void = ()=> {};
+        let gameTimer: ()=>void = ()=>{};
 
-            //if match is full, set match start queue time
-            if (isMemberFull && !currMatch.matchQueueStart && !currMatch.matchStart
-                && currMatch.matchType !== "REGULAR") {
-                await axios.put(`/api/match/${currMatch._id?.toString()}/time/queue`, {
+        //get required amount of members of the match
+        const { gameMode: { requiredPlayers: maxPlayer } } = currMatch;
+
+        //get total number of members in the match
+        const currMemberNumbers = (currMatch.teams[0].members.concat(currMatch.teams[1].members)).length;
+
+        //boolean to check if match is full
+        const isMemberFull = currMemberNumbers === maxPlayer;
+
+        //if match is full, update match queue start time
+        if (isMemberFull &&
+            !currMatch.matchQueueStart &&
+            !currMatch.matchStart &&
+            currMatch.matchType !== "REGULAR") {
+            (async()=>
+                await axios.put(`/api/match/${id}/operation/queue`, {
                     queueStartTime: new Date().toString()
-                });
-            };
+                }).catch(()=>{
+                    setNetworkError("error setting match queue time");
+                }))();
+        };
 
-            //queuing timer
-            if (currMatch.matchQueueStart) {
+        //if it's queuing time
+        if (currMatch.matchQueueStart) {
 
-                //queue start time
-                const queueStart = new Date(new Date(currMatch.matchQueueStart).toUTCString()).getTime();
+            //queue start time
+            const queueStart = getLocaleTime(currMatch.matchQueueStart);
 
-                //queue timer
-                queuingTimer = setInterval(async()=> {
-                    const now = new Date(new Date().toUTCString()).getTime();
-                    const timeDiff = 35 - Math.floor((now - queueStart) / 1000);
-                    setQueueTimer(timeDiff);
+            //queue timer interval
+            queuingTimer = alterSetInterval(async()=> {
+                const timeLeft = 31 - Math.floor((Date.now() - queueStart) / 1000);
+                setQueueTimer(timeLeft);
 
-                    //check if 30 seconds has passed or if match is not full
-                    if (timeDiff <= 0 || !isMemberFull) {
+                //check if 30 seconds has passed or if match is not full
+                if (timeLeft <= 0 || !isMemberFull) {
 
-                        //set queue start time to null
-                        await axios.put(`/api/match/${currMatch._id?.toString()}/time/queue`, {
-                            queueStartTime: null
+                    //set queue start time to null
+                    await axios.put(`/api/match/${id}/operation/queue`, {
+                        queueStartTime: null
+                    }).catch(()=>{
+                        setNetworkError("error unset match queue time");
+                    });
+
+                    //set start time to now if time has passed 30 seconds
+                    if(timeLeft <= 0) {
+                        await axios.put(`/api/match/${id}/operation/start`, {
+                            startTime: new Date().toString()
                         });
-
-                        //set start time to now if time has passed 30 seconds
-                        if(timeDiff <= 0) {
-                            await axios.put(`/api/match/${currMatch._id?.toString()}/operation/start`, {
-                                startTime: new Date().toString()
-                            });
-                        }
-                        setQueueTimer(null);
-                        clearInterval(queuingTimer as NodeJS.Timeout);
                     }
-                }, 1000);
-            }
-
-            //match progress timer(timer after queue timer is finished)
-            if (currMatch.status === "INPROGRESS" && currMatch.matchStart) {
-                setIsLeavable(false);
-                const startTimer = new Date(new Date(currMatch.matchStart).toUTCString()).getTime();
-                clearInterval(queuingTimer as NodeJS.Timeout);
-                setQueueTimer(null);
-
-                //timer start from start time
-                gameTimer = setInterval(async()=> {
-
-                    //set match timer to null, if match does not have enough members
-                    if (!isMemberFull) {
-                        await axios.put(`/api/match/${currMatch._id?.toString()}/time/start`, {
-                            startTime: null
-                        });
-                        await axios.put(`/api/match/${currMatch._id?.toString()}/status`, {
-                            status: "UPCOMING"
-                        });
-                        setMatchTimer(null);
-                        clearInterval(gameTimer as NodeJS.Timeout);
-                    } else {
-                        const now = new Date(new Date().toUTCString()).getTime();
-                        const timeDiff = Math.floor((now - startTimer) / 1000);
-                        setMatchTimer(timeDiff);
-                    }
-                }, 1000);
-            } else if (currMatch.status === "PAUSED" && currMatch.matchPause) {
-
-                //match start time
-                const startTimer = new Date(new Date(currMatch.matchStart!).toUTCString()).getTime();
-
-                //get pause time
-                const pauseTimer = new Date(new Date(currMatch.matchPause).toUTCString()).getTime();
-
-                //get time difference start and pause time in seconds
-                const startToPause = Math.floor((pauseTimer - startTimer) / 1000);
-
-                //set timer to the point user hit click pause
-                setMatchTimer(startToPause);
-                clearInterval(gameTimer as NodeJS.Timeout);
-            } else if (currMatch.status === "RESUMED" && currMatch.matchResume) {
-
-                //match start time
-                const startTimer = new Date(new Date(currMatch.matchStart!).toUTCString()).getTime();
-
-                //match pause time
-                const pauseTimer = new Date(new Date(currMatch.matchPause!).toUTCString()).getTime();
-
-                //match resume time
-                const resumeTimer = new Date(new Date(currMatch.matchResume).toUTCString()).getTime();
-
-                //const time difference between pause and resume time in seconds
-                const pauseToResume = Math.floor((resumeTimer - pauseTimer) / 1000);
-
-                //const time difference between start and resume time in seconds
-                const startToPause = Math.floor((pauseTimer - startTimer) / 1000);
-
-                //const resume to now
-                const resumeToNow = Math.floor((new Date().getTime() - resumeTimer) / 1000);
-
-                gameTimer = setInterval(async()=> {
-                    const now = new Date(new Date().toUTCString()).getTime();
-                    const timeDiff = Math.floor((now - pauseTimer) / 1000) + resumeToNow - pauseToResume + startToPause;
-                    setMatchTimer(timeDiff);
-                }, 1000);
-            }
+                    setQueueTimer(null);
+                    queuingTimer();
+                }
+            }, 1000);
         }
-        updateTimer();
+
+        //if match has started(after queue timer has finished)
+        if (currMatch.status === "INPROGRESS" && currMatch.matchStart) {
+
+            //no one can leave the match
+            setIsLeavable(false);
+
+            //match start time
+            const startTimer = getLocaleTime(currMatch.matchStart!);
+
+            //accumulated pause delta time
+            const accumulatedPauseDelta = currMatch.matchPauseDelta??0;
+
+            //clear queue timer interval and set queue time to null
+            queuingTimer();
+            setQueueTimer(null);
+
+            //match timer interval
+            gameTimer = alterSetInterval(async()=> {
+
+                //check if match members are full
+                if (!isMemberFull) {
+
+                    //if not full and match is not regular
+                    if (currMatch.matchType !== "REGULAR") {
+                        Promise.all([
+
+                            //set match start time to null
+                            await axios.put(`/api/match/${id}/operation/start`, {
+                                startTime: null
+                            }),
+
+                            //set match status to upcoming
+                            await axios.put(`/api/match/${id}/status`, {
+                                status: "UPCOMING"
+                            })
+                        ]).catch(()=>{
+                            setNetworkError("error unset match start time");
+                        });
+                    }
+
+                    //if match is regular, cancel it
+                    else {
+                        await axios.put(`/api/match/${id}/status`, {
+                            status: "CANCELLED"
+                        }).catch(()=>{
+                            setNetworkError("error cancelling match");
+                        });
+                    }
+                    setMatchTimer(null);
+                    gameTimer();
+                } else {
+                    const timeElapsed = Math.floor((Date.now() - startTimer) / 1000) - accumulatedPauseDelta;
+                    setMatchTimer(timeElapsed);
+                }
+            }, 1000);
+        } else if (currMatch.status === "PAUSED" && currMatch.matchPause) {
+
+            //match start time
+            const startTimer = getLocaleTime(currMatch.matchStart!);
+
+            //get pause time
+            const pauseTimer = getLocaleTime(currMatch.matchPause);
+
+            //pause delta
+            const AccumulatedPauseDelta = currMatch.matchPauseDelta??0;
+
+            //get time progress of the match till pause
+            const timeAccumlated = Math.floor((pauseTimer - startTimer) / 1000) - AccumulatedPauseDelta;
+
+            //set timer to the point user hit click pause
+            setMatchTimer(timeAccumlated);
+            gameTimer();
+        }
 
         //clear interval on unmount
         return ()=>{
-            clearInterval(gameTimer??0);
-            clearInterval(queuingTimer??0);
+            gameTimer();
+            queuingTimer();
         };
-    }, [currMatch]);
+    }, [currMatch, id]);
 
     //function for the host to pause the match
     const pauseMatch = debounce(async()=> {
-
-        // try {
-        //     if(currMatch.status === "PAUSED") return;
-        //     await axios.put(`/api/match/${currMatch._id?.toString()}/operation/pause`, {
-        //         pauseTime: new Date().toString()
-        //     });
-        // } catch(err: any){
-        //     alert(err.response.data.message);
-        // }
-        setSnackbar(true);
+        if(currMatch.status === "PAUSED") return;
+        await axios.put(`/api/match/${id?.toString()}/operation/pause`, {
+            pauseTime: new Date().toString()
+        }).catch(()=>{
+            setNetworkError("error pausing match");
+        });
     }, 500);
 
     //function for host to end the match
     const endMatch = debounce(async()=> {
-        try{
-            await axios.put(`/api/match/${currMatch._id?.toString()}/operation/finish`);
-        } catch(err: any){
-            alert(err.response.data.message);
-        }
+        await axios.put(`/api/match/${id?.toString()}/operation/finish`)
+            .catch(()=> {
+                setNetworkError("error ending match");
+            });
     }, 500);
 
     //function for host to cancel the match
     const cancelMatch = debounce(async()=> {
-        try{
-            await axios.put(`/api/match/${currMatch._id?.toString()}/operation/cancel`, {
-                cancelTime: new Date().toString()
-            });
-        } catch(err: any) {
-            alert(err.response.data.message);
-        }
+        await axios.put(`/api/match/${id}/operation/cancel`, {
+            cancelTime: new Date().toString()
+        }).catch(()=> {
+            setNetworkError("error cancelling match");
+        });
     }, 500);
 
     //function for host to resume the match after pausing
     const resumeMatch = debounce(async()=> {
-        try{
-            if(currMatch.status === "INPROGRESS") return;
-            await axios.put(`/api/match/${currMatch._id?.toString()}/operation/resume`, {
-                resumeTime: new Date().toString()
-            });
-        } catch(err: any){
-            alert(err.response.data.message);
-        }
+        if(currMatch.status === "INPROGRESS") return;
+        await axios.put(`/api/match/${id}/operation/resume`, {
+            resumeTime: new Date().toString()
+        }).catch(()=>{
+            setNetworkError("error resuming match");
+        });
     }, 500);
 
     //handle increase and decrease score, debounce to prevent spamming
@@ -309,20 +307,40 @@ export default function Scoreboard({ match, players }: Props) {
         if (type === "increase") {
             if (team === "home") {
                 setHomeScore(prev => prev + 1);
-                await axios.put(`/api/match/${currMatch._id?.toString()}/score`, { teamIndex: 0, operation: "increase" });
+                await axios.put(`/api/match/${id}/score`,
+                    {
+                        teamIndex: 0,
+                        operation: "increase"
+                    }
+                );
             } else {
                 setAwayScore(prev => prev + 1);
-                await axios.put(`/api/match/${currMatch._id?.toString()}/score`, { teamIndex: 1, operation: "increase" });
+                await axios.put(`/api/match/${id}/score`,
+                    {
+                        teamIndex: 1,
+                        operation: "increase"
+                    }
+                );
             }
         } else {
             if (team === "home") {
                 if (homeScore <= 0) return;
                 setHomeScore(prev => prev - 1);
-                await axios.put(`/api/match/${currMatch._id?.toString()}/score`, { teamIndex: 0, operation: "decrease" });
+                await axios.put(`/api/match/${id}/score`,
+                    {
+                        teamIndex: 0,
+                        operation: "decrease"
+                    }
+                );
             } else {
                 if (awayScore <= 0) return;
                 setAwayScore(prev => prev - 1);
-                await axios.put(`/api/match/${currMatch._id?.toString()}/score`, { teamIndex: 1, operation: "decrease" });
+                await axios.put(`/api/match/${id}/score`,
+                    {
+                        teamIndex: 1,
+                        operation: "decrease"
+                    }
+                );
             }
         }
     }, 700);
@@ -331,15 +349,14 @@ export default function Scoreboard({ match, players }: Props) {
         <div className={styles.page}>
             <Snackbar
                 anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                open={snackbar}
+                open={networkError? true:false}
                 autoHideDuration={10000}
-                onClose={()=> setSnackbar(false)}
+                onClose={()=> setNetworkError("")}
             >
-                <p className="w-full bg-black p-5 drop-shadow-lg z-50">
-                    <span className="text-yellow-500">⚠️ </span>
-                    <span className="text-white">
-                        This feature is currently in development and will be available in the future.
-                        We&apos;re sorry for any inconvenience 🙇
+                <p className="w-full bg-black p-5 drop-shadow-lg z-50 text-base">
+                    <span className="text-yellow-500"> ⚠️ </span>
+                    <span className="text-red-400">
+                        {networkError}
                     </span>
                 </p>
             </Snackbar>
@@ -353,8 +370,16 @@ export default function Scoreboard({ match, players }: Props) {
                 />
             </div>
             <h2 className="text-white text-center mt-5 text-3xl font-bold mb-3">
-                { currMatch.matchQueueStart && queueTimer && "Match is starting in " + queueTimer }
-                { matchTimer && "Match is in progress " + new Date(matchTimer * 1000).toISOString().slice(11, 19) }
+                {
+                    currMatch.matchQueueStart &&
+                    queueTimer &&
+                    `Match is starting in ${queueTimer}`
+                }
+                {
+                    matchTimer &&
+                    `Match is in progress 
+                    ${new Date(matchTimer * 1000).toISOString().slice(11, 19)}`
+                }
             </h2>
             <div className={styles.scoreboard}>
                 <div className={styles.hometeam}>
@@ -381,13 +406,37 @@ export default function Scoreboard({ match, players }: Props) {
                                  `
                             }
                         >
-                            { isMatchHost && <button
-                                className="bg-gray-300 w-5 h-5 rounded text-base p-5 flex items-center justify-center mr-auto"
-                                onClick={()=>handleScoreChange("home", "increase") }>+</button> }
+                            { isMatchHost &&
+                                <button
+                                    className={
+                                        `bg-gray-300 w-5 
+                                        h-5 rounded 
+                                        text-base p-5 
+                                        flex items-center 
+                                        justify-center mr-auto`
+                                    }
+                                    onClick={
+                                        ()=>handleScoreChange("home", "increase")
+                                    }>
+                                        +
+                                </button>
+                            }
                             <p className="font-extrabold">{homeScore}</p>
-                            { isMatchHost && <button
-                                className="bg-gray-300 w-5 h-5 rounded text-base p-5 flex items-center justify-center ml-auto"
-                                onClick={()=>handleScoreChange("home", "decrease")}>-</button> }
+                            { isMatchHost &&
+                                <button
+                                    className={
+                                        `bg-gray-300 w-5 
+                                        h-5 rounded 
+                                        text-base p-5 
+                                        flex items-center 
+                                        justify-center ml-auto`
+                                    }
+                                    onClick={
+                                        ()=>handleScoreChange("home", "decrease")
+                                    }>
+                                    -
+                                </button>
+                            }
                         </div>
                     </div>
                     <div className={styles.homeplayers}>
@@ -428,13 +477,38 @@ export default function Scoreboard({ match, players }: Props) {
                                 items-center`
                             }
                         >
-                            { isMatchHost && <button
-                                className="bg-gray-300 w-5 h-5 rounded p-5 text-base flex items-center justify-center mr-auto"
-                                onClick={()=>handleScoreChange("away", "increase")}>+</button> }
+                            { isMatchHost &&
+                                <button
+                                    className={
+                                        `bg-gray-300 w-5 
+                                        h-5 rounded 
+                                        p-5 text-base 
+                                        flex items-center 
+                                        justify-center mr-auto`
+                                    }
+                                    onClick={
+                                        ()=>handleScoreChange("away", "increase")
+                                    }
+                                >
+                                    +
+                                </button>
+                            }
                             <p className="font-extrabold">{awayScore}</p>
-                            { isMatchHost && <button
-                                className="bg-gray-300 w-5 h-5 rounded p-5 text-base flex items-center justify-center ml-auto"
-                                onClick={()=>handleScoreChange("away", "decrease")}>-</button> }
+                            { isMatchHost &&
+                                <button
+                                    className={
+                                        `bg-gray-300 w-5 
+                                        h-5 rounded 
+                                        p-5 text-base 
+                                        flex items-center 
+                                        justify-center ml-auto`
+                                    }
+                                    onClick={
+                                        ()=>handleScoreChange("away", "decrease")
+                                    }>
+                                        -
+                                </button>
+                            }
                         </div>
                     </div>
                     <div className={styles.awayplayers}>
@@ -452,21 +526,26 @@ export default function Scoreboard({ match, players }: Props) {
                             )
                         }
                     </div>
-
                 </div>
                 { isMatchHost &&
                     <>
-                        { (currMatch.status === "INPROGRESS" || currMatch.status === "RESUMED") &&
-                            <button onClick={pauseMatch} className={`${styles.pause} text-base p-5`}>
+                        { currMatch.status === "INPROGRESS" &&
+                            <button
+                                onClick={pauseMatch}
+                                className={`${styles.pause} text-base p-5`}
+                            >
                                 Pause
                             </button>
                         }
                         { currMatch.status === "PAUSED" &&
-                            <button onClick={resumeMatch} className={`${styles.pause} text-base p-5`}>
+                            <button
+                                onClick={resumeMatch}
+                                className={`${styles.pause} text-base p-5`}
+                            >
                                 Resume
                             </button>
                         }
-                        { (currMatch.status === "INPROGRESS" || currMatch.status === "PAUSED" || currMatch.status === "RESUMED") &&
+                        { (currMatch.status === "INPROGRESS" || currMatch.status === "PAUSED") &&
                             <button
                                 className={`${styles.finish} text-base p-5`}
                                 onClick={endMatch}
@@ -498,9 +577,13 @@ export default function Scoreboard({ match, players }: Props) {
  * @param context - context of the page
  */
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-    const { id } = context.params!;
+
+    //get match id from url
+    const { id } = context.params as { id: string };
 
     try {
+
+        //setup database connection
         await Database.setup();
 
         //get match data

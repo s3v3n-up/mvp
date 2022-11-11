@@ -7,8 +7,9 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { APIErr } from "@/lib/types/General";
 
 /**
- * router for joinging a match.
- * Add user to a match, will check(if team full) and compare both teams to add user to the team with less members
+ * api route for user to join a match.
+ * Add user to a match, will check(if team full) and compare both teams to add user to the team with less members.
+ * only userName is required from request
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
