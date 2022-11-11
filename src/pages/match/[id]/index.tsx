@@ -160,13 +160,10 @@ export default function MatchView({ data }: Props) {
 
         // fetch mapbox api using directions services
         try {
-            const endpoint = `https://api.mapbox.com/directions/v5/mapbox/driving/${
-        startLocation!.lng
-            },${startLocation!.lat};${data.location.lng},${
-                data.location.lat
-            }?steps=true&geometries=geojson&access_token=${
-                process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
-            }`;
+            const endpoint = `https://api.mapbox.com/directions/v5/mapbox/driving/
+            ${startLocation!.lng},${startLocation!.lat};${data.location.lng},
+            ${data.location.lat}?steps=true&geometries=geojson&access_token=
+            ${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`;
 
             await axios.get(endpoint).then(({ data }) => {
                 setResult(data);
@@ -209,9 +206,9 @@ export default function MatchView({ data }: Props) {
             <div>
                 {/* Sidebar to get step-by-step instructions */}
                 {/* https://popupsmart.com/blog/react-popup */}
-                <Popup trigger={<button
-                    className={styles.directions}
-                >Get Directions</button>} onOpen={(e) => {getDirectionsClicked();}} position="right center">
+                <Popup trigger={<button className={styles.directions}>Get Directions</button>}
+                    onOpen={(e) => {getDirectionsClicked();}}
+                    position="right center">
                     {steps &&
                     <div className={styles.popupContent}>
                         <p>
@@ -237,7 +234,7 @@ export default function MatchView({ data }: Props) {
                     className={styles.calendar}
                     onClick={() => addToCal()}
                 >
-          Add to Calendar
+                    Add to Calendar
                 </button>
                 {/* Sub Header for Date and Time */}
                 <h3>Date and Time</h3>
@@ -292,24 +289,27 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         // Redirect them to index if the match type is not REGULAR
         if (match.matchType === "QUICK" || !match) {
             return {
-                redirect: {
-                    destination: "/",
+                redirect:
+                {
+                    destination: "/"
                 },
             };
         }
 
         // Returns the data as props
         return {
-            props: {
-                data: JSON.parse(JSON.stringify(match)),
+            props:
+            {
+                data: JSON.parse(JSON.stringify(match))
             },
         };
     } catch (error: any) {
 
         // When there is an error you will be redirected to the index
         return {
-            redirect: {
-                destination: "/",
+            redirect:
+            {
+                destination: "/"
             },
         };
     }

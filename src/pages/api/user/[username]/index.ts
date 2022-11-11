@@ -69,16 +69,18 @@ export default async function handler(
             );
 
             // Returns code 200 and the updated user
-            res.status(200).json({
-                updatedUser,
-            });
+            res.status(200).json(
+                {
+                    updatedUser,
+                });
         }
 
     // Catches and sends response status 400 and error
     } catch (error: any) {
-        res.status(400).json({
-            message: "Bad Request",
-            error
-        });
+        res.status(400).json(
+            {
+                message: "Bad Request",
+                error
+            });
     }
 }

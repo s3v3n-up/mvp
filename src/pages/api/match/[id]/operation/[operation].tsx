@@ -167,9 +167,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             updatedMatch!.teams[1].status = awayScore > homeScore ? "WIN" : awayScore < homeScore ? "LOSE" : "DRAW";
             updatedMatch!.save();
         }
-
-        res.status(200).json({ message: "operation success" });
+        res.status(200).json(
+            {
+                message: "operation success"
+            }
+        );
     } catch(error: any) {
-        res.status(error.code || 500).json({ message: error.message, cause: error.cause });
+        res.status(error.code || 500).json(
+            {
+                message: error.message,
+                cause: error.cause
+            }
+        );
     }
 }

@@ -43,10 +43,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             await joinMatch(id as string, userName);
 
             // Return a success message
-            res.status(200).json({ message: "success" });
+            res.status(200).json(
+                {
+                    message: "success"
+                }
+            );
         }
     } catch(error: any) {
         const { code=500, message="Internal server error", cause="internal error" } = error;
-        res.status(code).json({ message, cause });
+        res.status(code).json(
+            {
+                message, cause
+            }
+        );
     }
 }

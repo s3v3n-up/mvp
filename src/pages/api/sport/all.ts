@@ -17,18 +17,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const response = await getAllSports();
 
             //returns the response as json
-            res.status(200).json({
-                response
-            });
+            res.status(200).json(
+                {
+                    response
+                }
+            );
 
             //catches and throws a status code and error message
         } catch (error: any) {
 
             const { code = 500, message } = error;
 
-            res.status(code).json({
-                message
-            });
+            res.status(code).json(
+                {
+                    message
+                }
+            );
 
             return;
         }

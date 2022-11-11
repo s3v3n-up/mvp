@@ -12,12 +12,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         //validate the query parameters
         if(!sportname || !limit || typeof sportname !== "string" || typeof limit !== "string") {
-            res.status(400).json({ message: "Bad request" });
+            res.status(400).json(
+                {
+                    message: "Bad request"
+                }
+            );
         }
 
         //validate the limit
         if(isNaN(Number(limit))) {
-            res.status(400).json({ message: "Invalid limit" });
+            res.status(400).json(
+                {
+                    message: "Invalid limit"
+                }
+            );
         }
 
         //get the leaderboard from the database
@@ -26,7 +34,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const leaderboard = await getLeaderboardOfSport(sportname as string, Number(limit));
             res.status(200).json(leaderboard);
         } catch(error: any) {
-            res.status(500).json({ message: error.message });
+            res.status(500).json(
+                {
+                    message: error.message
+                }
+            );
         }
     }
 }

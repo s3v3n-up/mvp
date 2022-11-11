@@ -27,6 +27,7 @@ interface Props {
   props: Sport[];
 }
 
+
 /*
  * this component is used in create match page
  */
@@ -108,7 +109,9 @@ export default function CreateMatch({ props }: Props) {
 
         // Code to set location to be saved on database and set suggestions for autofill
         try {
-            const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${val}.json?&limit=3&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`;
+            const endpoint =
+                `https://api.mapbox.com/geocoding/v5/mapbox.places/${val}
+                .json?&limit=3&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`;
             await axios.get(endpoint).then(({ data }) => {
                 setLocation(data);
                 setSuggestions(data?.features);
@@ -167,7 +170,10 @@ export default function CreateMatch({ props }: Props) {
                 matchStart: date,
                 matchType: "REGULAR",
                 status: "UPCOMING",
-                teams: [{ members: [session!.user.userName], score: 0, status: "UNSET" }, { members: [], score: 0, status: "UNSET" }]
+                teams: [
+                    { members: [session!.user.userName], score: 0, status: "UNSET" },
+                    { members: [], score: 0, status: "UNSET" }
+                ]
             });
 
             // Checks if no successful post response
@@ -288,7 +294,7 @@ export default function CreateMatch({ props }: Props) {
                     {/* Location Textarea*/}
                     <div className="my-2">
                         <label className="text-[#f3f2ef]" htmlFor="description">
-              Description
+                            Description
                         </label>
                     </div>
                     <div>
@@ -307,7 +313,7 @@ export default function CreateMatch({ props }: Props) {
                             type="submit"
                             className="rounded-sm w-80 bg-[#fc5c3e] h-10  font-extrabold  text-[#f1ecec]"
                         >
-              CREATE
+                            CREATE
                         </button>
                     </div>
                 </form>

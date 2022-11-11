@@ -59,7 +59,8 @@ export default function MatchEdit({ data }: Props) {
 
         // Code to set location to be saved on database and set suggestions for autofill
         try {
-            const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${val}.json?&limit=3&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`;
+            const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${val}
+            .json?&limit=3&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`;
             await axios.get(endpoint).then(({ data }) => {
                 setLocation(data);
                 setSuggestions(data?.features);
@@ -218,11 +219,11 @@ export default function MatchEdit({ data }: Props) {
                         className={styles.delete}
                         onClick={() => handleDelete(data._id as string)}
                     >
-            Delete
+                        Delete
                     </button>
                     {/* button for save */}
                     <button type="submit" className={styles.save}>
-            Save
+                        Save
                     </button>
                 </div>
             </form>
@@ -245,22 +246,25 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         // Redirect them to index if the match type is not REGULAR
         if (match.matchType === "QUICK" || !match) {
             return {
-                redirect: {
-                    destination: "/",
+                redirect:
+                {
+                    destination: "/"
                 },
             };
         }
 
         // Returns the data as props
         return {
-            props: {
-                data: JSON.parse(JSON.stringify(match)),
+            props:
+            {
+                data: JSON.parse(JSON.stringify(match))
             },
         };
     } catch (error: any) {
         return {
-            redirect: {
-                destination: "/",
+            redirect:
+            {
+                destination: "/"
             },
         };
     }

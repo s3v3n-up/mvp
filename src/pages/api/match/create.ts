@@ -43,8 +43,10 @@ export default async function handler(
                     is: ((matchType: string) => matchType==="REGULAR"),
                     then: date().min(
                         new Date(Date.now() + 3600000),
-                        "You cannot set a date or time less than 1 hour from now.").typeError("Please set a date and time for the regular match"),
-                    otherwise: date().min(new Date(Date.now() - 60000), "You cannot set a date or time in the past")
+                        "You cannot set a date or time less than 1 hour from now.")
+                        .typeError("Please set a date and time for the regular match"),
+                    otherwise: date().min(new Date(Date.now() - 60000),
+                        "You cannot set a date or time in the past")
                 }),
                 matchEnd: date(),
                 description: string().required("Please enter a description"),
@@ -111,16 +113,20 @@ export default async function handler(
             const response = await createMatch(match);
 
             // Return the response as json
-            res.status(200).json({
-                response,
-            });
+            res.status(200).json(
+                {
+                    response
+                }
+            );
 
             // Catch any errors caught above and send it back as json
         } catch (error: any) {
             const { code = 500, message } = error;
-            res.status(code).json({
-                message,
-            });
+            res.status(code).json(
+                {
+                    message
+                }
+            );
 
             return;
         }

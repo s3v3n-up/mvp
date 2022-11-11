@@ -68,12 +68,13 @@ handler
             const { url } = await uploadFile(path);
 
             // Sends back status and the url
-            res.status(200).json({
-                status: 200,
-                data: {
-                    url,
-                },
-            });
+            res.status(200).json(
+                {
+                    status: 200,
+                    data: {
+                        url
+                    }
+                });
 
             // Catches error and throw the error message and code
         } catch (error: any) {
@@ -84,7 +85,11 @@ handler
                     message: reason="an internal error"
                 }
             } = error;
-            res.status(code).json({ message: `${message} caused by ${reason}` });
+            res.status(code).json(
+                {
+                    message: `${message} caused by ${reason}`
+                }
+            );
         }
     });
 

@@ -32,9 +32,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             //update matchPauseTime
             await updateMatchPauseTime(id as string, !isNaN(Date.parse(pauseTime)) ? new Date(pauseTime) : null);
-            res.status(200).json({ message: "Match pause time updated" });
+            res.status(200).json(
+                {
+                    message: "Match pause time updated"
+                }
+            );
         }
     } catch (error: any) {
-        res.status(error.code || 500).json({ message: error.message || "Internal Server Error", cause: error.cause });
+        res.status(error.code || 500).json(
+            {
+                message: error.message || "Internal Server Error", cause: error.cause
+            }
+        );
     }
 }

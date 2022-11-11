@@ -87,9 +87,11 @@ export default async function handler(
             });
 
             // Then return updateMatch as a json response
-            res.status(200).json({
-                updatedMatch,
-            });
+            res.status(200).json(
+                {
+                    updatedMatch
+                }
+            );
 
         // If the HTTP method is Delete
         } else if (req.method == "DELETE") {
@@ -99,6 +101,10 @@ export default async function handler(
     // Catches a specific error when there is no match for the id set
     } catch (error: any) {
         const { code = 500, message = "internal server error" } = error;
-        res.status(code).json({ message });
+        res.status(code).json(
+            {
+                message
+            }
+        );
     }
 }
