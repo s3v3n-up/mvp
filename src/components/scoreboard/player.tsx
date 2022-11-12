@@ -76,7 +76,8 @@ export default function Player(props: PlayerProps) {
 
     return (
         <div
-            className={`grid grid-cols-3 gap-3 w-full h-full sm:text-base text-sm ${variantStyle[props.variant].container}`}
+            className={`grid grid-cols-3 gap-3 w-full h-full sm:text-base text-sm 
+                        ${variantStyle[props.variant].container}`}
         >
             <div className="relative rounded-full lg:w-12 lg:h-12 w-10 h-10">
                 <Image

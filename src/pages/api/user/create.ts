@@ -1,19 +1,17 @@
-// Imports NextApiRequest and NextApiResponse from next
-import { NextApiRequest, NextApiResponse } from "next";
-
-// Imports UserProfile interface
+// Local imports
 import { UserProfile } from "@/lib/types/User";
-
-// Imports createUser function
 import { createUser } from "@/lib/actions/user";
+import { APIErr } from "@/lib/types/General";
 
-// Imports object and string types from yup
+// Third party imports
 import { object, string } from "yup";
 import { validate } from "@/shared/validate";
 import { userSchema } from "@/shared/schema";
+import { NextApiRequest, NextApiResponse } from "next";
 // eslint-disable-next-line camelcase
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
+
 
 /**
  * @description = a function that handles api request for registering user
@@ -74,29 +72,35 @@ async function handler(
                 const response = await createUser(user);
 
                 // Returns the code and the user created
-                res.status(200).json({
-                    response,
-                    method: req.method
-                });
-
-            // Catches error and throw code and message
-            } catch (error: any) {
-                if (error.cause.code === "11000") {
-                    throw {
-                        code: 400,
-                        message: error.message,
-                    };
-                }
-                throw error;
+                res.status(200).json(
+                    {
+                        response,
+                        method: req.method
+                    }
+                );
+            } catch (error) {
+                const { code = 400, message, cause } = error as APIErr;
+                throw {
+                    code,
+                    message,
+                    cause
+                };
             }
 
-        //Catches any error and throws it in message
-        } catch (error: any) {
-            const { code = 500, message } = error;
-            res.status(code).json({
-                code,
-                message
-            });
+            //Catches any error and throws it in message
+        } catch(error) {
+            const {
+                code = 500,
+                message="internal server error",
+                cause="internal error"
+            } = error as APIErr;
+            res.status(code).json(
+                {
+                    code,
+                    message,
+                    cause
+                }
+            );
 
             return;
         }

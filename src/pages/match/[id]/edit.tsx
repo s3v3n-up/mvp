@@ -3,6 +3,7 @@ import { getMatchById } from "@/lib/actions/match";
 import Database from "@/lib/resources/database";
 import { Match } from "@/lib/types/Match";
 import styles from "@/styles/MatchEdit.module.sass";
+import useAuth from "@/hooks/useAuth";
 
 //Third party imports
 import { AccessTime, AddLocationAlt } from "@mui/icons-material";
@@ -20,6 +21,9 @@ interface Props {
  * @description displays Match Edit page
  */
 export default function MatchEdit({ data }: Props) {
+
+    //guard page against unauthenticated users
+    useAuth();
 
     //location useState
     const [location, setLocation] = useState<any>();
@@ -247,22 +251,25 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         // Redirect them to index if the match type is not REGULAR
         if (match.matchType === "QUICK" || !match) {
             return {
-                redirect: {
-                    destination: "/",
+                redirect:
+                {
+                    destination: "/"
                 },
             };
         }
 
         // Returns the data as props
         return {
-            props: {
-                data: JSON.parse(JSON.stringify(match)),
+            props:
+            {
+                data: JSON.parse(JSON.stringify(match))
             },
         };
     } catch (error: any) {
         return {
-            redirect: {
-                destination: "/",
+            redirect:
+            {
+                destination: "/"
             },
         };
     }

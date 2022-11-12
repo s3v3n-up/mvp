@@ -30,6 +30,8 @@ const ImagePicker = dynamic(
 
 /**
  * interface for type of user data
+ * @property {UserProfile} profile - user profile data
+ * @property {win:number, lose:number, draw:number} stats - stats data
  */
 interface Props {
   profile: UserProfile,
@@ -40,9 +42,12 @@ interface Props {
   };
 }
 
-/*
+/**
  * this component is used in profile page, which shows user's firstname, lastname, username, phone, email and avatar.
- *  user also can edit their profile(firstname, lastname and phone)
+ * user also can edit their profile(firstname, lastname and phone)
+ * @prop {UserProfile} profile - user profile data
+ * @prop {win:number, lose:number, draw:number} stats - stats data
+ * @returns {JSX.Element} user profile component
  */
 export default function Profile({ profile, userStats }: Props) {
 
@@ -55,14 +60,11 @@ export default function Profile({ profile, userStats }: Props) {
     //set the initial state and setState using useState
     const [firstName,setFirstName] = useState(profile.firstName);
     const [lastName,setLastName] = useState(profile.lastName);
-    const [userName,setUserName] = useState(profile.userName);
-    const [email,setEmail] = useState(profile.email);
     const [phone,setPhone] = useState(profile.phoneNumber);
 
-    //set initial image as logo if user didn't upload their avatar
+    //user profile image
     const [image,setImage] = useState(profile.image);
     const [updatedImage, setUpdatedImage] = useState<File | null>(null);
-    const [stats, setStats] = useState(userStats);
 
     //get the user firstname input value, update it in the db through axios put api
     const fNameHandle = async (event: React.ChangeEvent<HTMLInputElement>) =>{
@@ -76,7 +78,7 @@ export default function Profile({ profile, userStats }: Props) {
 
         //update the user firstname in the db
         debounce(async () => {
-            await axios.put(`/api/user/${userName}`, {
+            await axios.put(`/api/user/${profile.userName}`, {
                 userName: session?.user.userName,
                 firstName: value,
                 lastName,
@@ -98,7 +100,7 @@ export default function Profile({ profile, userStats }: Props) {
         //validate the lastname
         if (value.length <= 2) return;
         debounce(async () => {
-            await axios.put(`/api/user/${userName}`, {
+            await axios.put(`/api/user/${profile.userName}`, {
                 userName: session?.user.userName,
                 email: session?.user.email,
                 firstName,
@@ -121,7 +123,7 @@ export default function Profile({ profile, userStats }: Props) {
 
         //update the user phonenumber in the db
         debounce(async () => {
-            await axios.put(`/api/user/${userName}`, {
+            await axios.put(`/api/user/${profile.userName}`, {
                 userName: session?.user.userName,
                 email: session?.user.email,
                 firstName,
@@ -150,7 +152,7 @@ export default function Profile({ profile, userStats }: Props) {
         try {
             const res = await axios.post("/api/file", data);
             const { data: { data: { url: imageUrl } } } = res;
-            await axios.put(`/api/user/${userName}`, {
+            await axios.put(`/api/user/${profile.userName}`, {
                 userName: session?.user.userName,
                 email: session?.user.email,
                 firstName,
@@ -200,7 +202,7 @@ export default function Profile({ profile, userStats }: Props) {
                 </Input>
                 <Input
                     label="User Name"
-                    value={userName}
+                    value={profile.userName}
                     name="userName"
                     readonly
                 >
@@ -216,7 +218,7 @@ export default function Profile({ profile, userStats }: Props) {
                 </Input>
                 <Input
                     label="Email"
-                    value={email}
+                    value={profile.email}
                     name="email"
                     readonly
                 >
@@ -233,9 +235,9 @@ export default function Profile({ profile, userStats }: Props) {
                     </thead>
                     <tbody>
                         <tr className=" bg-white text-black">
-                            <td>{stats.win}</td>
-                            <td>{stats.draw}</td>
-                            <td>{stats.lose}</td>
+                            <td>{userStats.win}</td>
+                            <td>{userStats.draw}</td>
+                            <td>{userStats.lose}</td>
                         </tr>
                     </tbody>
                 </table>

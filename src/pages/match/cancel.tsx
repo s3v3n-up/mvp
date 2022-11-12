@@ -1,18 +1,10 @@
-import { useRouter } from "next/router";
-import { useEffect } from "react";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
+import useAuth from "@/hooks/useAuth";
 
 export default function Cancel() {
-    const router = useRouter();
-    const { status } = useSession();
 
-    useEffect(() => {
-        if (status === "loading") return;
-        if (status !== "authenticated") {
-            router.push("/login");
-        }
-    },[status, router]);
+    //guard page against unauthenticated users on client side
+    useAuth();
 
     return (
         <section>

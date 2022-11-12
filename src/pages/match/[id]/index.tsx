@@ -5,9 +5,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import dynamic from "next/dynamic";
 import useSWR from "swr";
-
-//https://popupsmart.com/blog/react-popup
-import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 
 //local-import
@@ -16,15 +13,19 @@ import { getMatchById, updateMatchFields } from "@/lib/actions/match";
 import Database from "@/lib/resources/database";
 import { Location, Pos } from "@/lib/types/General";
 import { Match } from "@/lib/types/Match";
-import dateConverter from "@/lib/helpers/date";
+import { dateConverter } from "@/lib/helpers/time";
+import useAuth from "@/hooks/useAuth";
+import useMatchNavigate from "@/hooks/useMatchStatus";
+import { getUTCTime } from "@/lib/helpers/time";
 
 // https://www.npmjs.com/package/add-to-calendar-button
 // eslint-disable-next-line camelcase
 import "add-to-calendar-button/assets/css/atcb.css";
-import { useSession } from "next-auth/react";
+import fetcher from "@/lib/helpers/fetcher";
 
 //dynamic imports
 const Snackbar = dynamic(()=> import("@mui/material/Snackbar"), { ssr: false });
+const Popup = dynamic(() => import("reactjs-popup"), { ssr: false });
 
 // Interface for passed props
 interface Props {
@@ -67,7 +68,7 @@ interface Steps {
 export default function MatchView({ matchData }: Props) {
 
     // Access session
-    const { data: session } = useSession();
+    const { session } = useAuth();
 
     //current match state
     const [match, setMatch] = useState<Match>(matchData);
@@ -82,61 +83,29 @@ export default function MatchView({ matchData }: Props) {
     const [errorMessage, setErrorMessage] = useState<string>("");
 
     //start time
-    const [matchStartTime, setMatchStartTime] = useState<string>(
-        dateConverter(matchData.matchStart!, true)
-    );
+    const [matchStartTime, setMatchStartTime] = useState<string>("loading...");
 
     //guard page against match already started
     const router = useRouter();
-    useEffect(()=> {
-
-        //cancel match if match is already start and member is not full
-        (async() => {
-
-            //boolean check if match teams are full
-            const isMemberFull = match.teams[0].members.concat(match.teams[1].members).length === match.gameMode.requiredPlayers;
-
-            //boolean check if match is alredy started
-            const isMatchStarted = new Date(match.matchStart!.toLocaleString()).getTime() <= new Date().getTime();
-
-            //if match is started
-            if (isMatchStarted) {
-
-                //if member is not full, cancel the match
-                if (!isMemberFull && match.status !== "CANCELLED") {
-                    await axios.put(`/api/match/${match._id}/operation/cancel`,{
-                        cancelTime: new Date().toString()
-                    });
-                }
-
-                //if status is still upcoming, update it to in progress
-                else if (match.status === "UPCOMING") {
-                    await axios.put(`/api/match/${match._id}/status`,{
-                        status: "INPROGRESS"
-                    });
-                }
-
-                //navigate to scoreboard
-                router.push(`/match/${match._id}/scoreboard`);
-            }
-        })();
-    }, [match, router]);
 
     //refetch match every 1 seconds
-    const { data, error } = useSWR<{match: Match}>(`/api/match/${matchData._id}`, {
+    const { data, error } = useSWR<{match: Match}>(`/api/match/${matchData._id}`, fetcher, {
         refreshInterval: 1000,
-        fallback: match
+        fallback: { match }
     });
 
     //update match with new info
     useEffect(()=> {
         if (data && !error) {
             setMatch(data.match);
-            setMatchStartTime(dateConverter(data.match.matchStart!));
+            setMatchStartTime(dateConverter(data.match.matchStart!, true));
         } if (error) {
             setErrorMessage("failed to fetch lastest info");
         }
     }, [data, error]);
+
+    //redirect user according to match status and type
+    useMatchNavigate(match);
 
     // useEffect to get user current location then set location to be saved in database
     useEffect(() => {
@@ -207,14 +176,13 @@ export default function MatchView({ matchData }: Props) {
 
         // fetch mapbox api using directions services
         try {
-            const endpoint = `https://api.mapbox.com/directions/v5/mapbox/driving/${
-            startLocation!.lng
-            },${startLocation!.lat};${match.location.lng},${
-                match.location.lat
-            }?steps=true&geometries=geojson&access_token=${
-                process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
-            }`;
-
+            const endpoint = `https://api.mapbox.com/directions/v5/mapbox/driving/
+            ${startLocation!.lng},
+            ${startLocation!.lat};
+            ${match.location.lng},
+            ${match.location.lat}
+            ?steps=true&geometries=geojson&access_token=
+            ${ process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN }`;
             await axios.get(endpoint).then(({ data }) => {
                 setResult(data);
             });
@@ -257,9 +225,9 @@ export default function MatchView({ matchData }: Props) {
             <div>
                 {/* Sidebar to get step-by-step instructions */}
                 {/* https://popupsmart.com/blog/react-popup */}
-                <Popup trigger={<button
-                    className={styles.directions}
-                >Get Directions</button>} onOpen={(e) => {getDirectionsClicked();}} position="right center">
+                <Popup trigger={<button className={styles.directions}>Get Directions</button>}
+                    onOpen={(e) => {getDirectionsClicked();}}
+                    position="right center">
                     {steps &&
                     <div className={styles.popupContent}>
                         <p>
@@ -351,11 +319,25 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
         // Get the specific match that you want to view
         const match = await getMatchById(id as string);
-        const isMemberFull = (match.teams[0].members.concat(match.teams[1].members)).length === match.gameMode.requiredPlayers;
-        console.log(isMemberFull);
+
+        //get required amount of players
+        const{ requiredPlayers: maxPlayers } = match.gameMode;
+
+        //get current amount of players
+        const totalMembers = (match.teams[0].members.concat(match.teams[1].members)).length;
+
+        //boolean to check if match is full
+        const isMembersFull = totalMembers === maxPlayers;
+
+        //if match not found, redirect to 404 page
+        if (!match) {
+            return {
+                notFound: true,
+            };
+        }
 
         // Redirect them to index if the match type is not REGULAR
-        if (match.matchType === "QUICK" || !match) {
+        if (match.matchType === "QUICK") {
             return {
                 redirect: {
                     destination: `/match/${id}/scoreboard`,
@@ -368,11 +350,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         //update match status and redirect to scoreboard if start time is passed
         if (
             match.matchType === "REGULAR" &&
-            new Date(match.matchStart!.toUTCString()).getTime() <= new Date(new Date(Date.now()).toUTCString()).getTime()
+            getUTCTime(match.matchStart!) <= getUTCTime(new Date())
         ) {
 
             //if members is not full, cancel the match
-            if (!isMemberFull && match.status !== "CANCELLED") {
+            if (!isMembersFull && match.status !== "CANCELLED") {
                 await updateMatchFields(id as string, {
                     status: "CANCELLED",
                     matchEnd: new Date(),
@@ -404,8 +386,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
         // When there is an error you will be redirected to the index
         return {
-            redirect: {
-                destination: "/",
+            redirect:
+            {
+                destination: "/"
             },
         };
     }

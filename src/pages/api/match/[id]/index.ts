@@ -4,6 +4,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 // Local imports
 import Database from "@/lib/resources/database";
 import { deleteMatch, getMatchById, updateMatch } from "@/lib/actions/match";
+import { APIErr } from "@/lib/types/General";
 
 export default async function handler(
     req: NextApiRequest,
@@ -84,13 +85,14 @@ export default async function handler(
                 status: "UPCOMING",
                 matchPause: null,
                 matchQueueStart: null,
-                matchResume: null
             });
 
             // Then return updateMatch as a json response
-            res.status(200).json({
-                updatedMatch,
-            });
+            res.status(200).json(
+                {
+                    updatedMatch
+                }
+            );
 
         // If the HTTP method is Delete
         } else if (req.method == "DELETE") {
@@ -98,8 +100,18 @@ export default async function handler(
         }
 
     // Catches a specific error when there is no match for the id set
-    } catch (error: any) {
-        const { code = 500, message = "internal server error" } = error;
-        res.status(code).json({ message });
+    } catch(error) {
+        const {
+            code = 500,
+            message="internal server error",
+            cause="internal error"
+        } = error as APIErr;
+        res.status(code).json(
+            {
+                code,
+                message,
+                cause
+            }
+        );
     }
 }

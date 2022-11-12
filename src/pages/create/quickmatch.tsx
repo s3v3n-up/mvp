@@ -7,9 +7,9 @@ import Database from "@/lib/resources/database";
 */
 export default function CreateMatchPage({ data }: any) {
     return (
-        <div className="flex pt-20 h-full w-full justify-center">
+        <section className="flex pt-20 h-full w-full justify-center">
             <QuickMatch props={data} />
-        </div>
+        </section>
     );
 }
 

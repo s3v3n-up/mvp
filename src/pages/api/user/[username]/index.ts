@@ -4,16 +4,14 @@ import { getSession } from "next-auth/react";
 import { object, string } from "yup";
 // eslint-disable-next-line camelcase
 import { unstable_getServerSession } from "next-auth";
+import { authOptions } from "../../auth/[...nextauth]";
 
 // local imports
 import Database from "@/lib/resources/database";
 import { getUserByUserName, updateUser } from "@/lib/actions/user";
-
-// import { PHONE_REGEX } from "@/lib/helpers/validation";
 import { validate } from "@/shared/validate";
 import { userSchema } from "@/shared/schema";
-import { authOptions } from "../../auth/[...nextauth]";
-
+import { APIErr } from "@/lib/types/General";
 
 /**
  * api route for updating and getting user by username
@@ -76,19 +74,27 @@ async function handler(
             );
 
             // Returns code 200 and the updated user
-            res.status(200).json({
-                updatedUser,
-                method: req.method
-            });
+            res.status(200).json(
+                {
+                    updatedUser,
+                    method: req.method
+                });
         }
 
     // Catches and sends response status 400 and error
-    } catch (error: any) {
-        const { code = 500,
-            message = "Internal server error" } = error;
-        res.status(code).json({
-            message
-        });
+    } catch(error) {
+        const {
+            code = 500,
+            message="internal server error",
+            cause="internal error"
+        } = error as APIErr;
+        res.status(code).json(
+            {
+                code,
+                message,
+                cause
+            }
+        );
     }
 }
 

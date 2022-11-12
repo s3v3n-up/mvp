@@ -1,7 +1,4 @@
 import UserProfile from "@/components/user/UserProfile";
-import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
-import { useEffect } from "react";
 // eslint-disable-next-line camelcase
 import { unstable_getServerSession } from "next-auth";
 import { GetServerSidePropsContext } from "next";
@@ -9,6 +6,7 @@ import { getUserByUserName, calculateStats } from "@/lib/actions/user";
 import Database from "@/lib/resources/database";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import type { UserProfile as Profile } from "@/lib/types/User";
+import useAuth from "@/hooks/useAuth";
 
 interface Props {
     profile: Profile;
@@ -25,19 +23,12 @@ interface Props {
 export default function Profile({ profile, userStats }: Props) {
 
     //guard page from unauthenticated user from client side
-    const { status } = useSession();
-    const router = useRouter();
-    useEffect(() => {
-        if (status === "loading") return;
-        if (status === "unauthenticated") {
-            router.push("/login");
-        }
-    }, [status, router]);
+    useAuth();
 
     return(
-        <div>
+        <section>
             <UserProfile profile={profile} userStats={userStats}/>
-        </div>
+        </section>
     );
 }
 
@@ -50,9 +41,10 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const session = await unstable_getServerSession(req, res, authOptions);
     if (!session) {
         return {
-            redirect: {
+            redirect:
+            {
                 destination: "/login",
-                permanent: false,
+                permanent: false
             },
         };
     }
@@ -63,7 +55,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const stats = await calculateStats(userData.userName);
 
     return {
-        props: {
+        props:
+        {
             profile: JSON.parse(JSON.stringify(userData)),
             userStats: JSON.parse(JSON.stringify(stats)),
         }
