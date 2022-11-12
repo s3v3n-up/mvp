@@ -241,7 +241,7 @@ export async function removeMatchFromUserMatches(userName: string, matchId: stri
 
         // Catches any errors and throws it
     } catch (error: any) {
-        throw new Error("Error updating the user", error.message);
+        throw new Error("Error updating the user from remove match from user", { cause: error });
     }
 }
 

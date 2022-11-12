@@ -42,11 +42,15 @@ export default function useMatchNavigate(match: Match) {
         //redirect to result page if match is finished
         if (match.status === "FINISHED") {
             router.push(`/match/${match._id}/result`);
+
+            return;
         }
 
         //redirect to cancel page if match cancelled
         if (match.status === "CANCELLED") {
             router.push("/match/cancel");
+
+            return;
         }
 
         return () => clearInterval(checkMatchStart);

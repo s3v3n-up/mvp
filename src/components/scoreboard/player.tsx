@@ -61,17 +61,13 @@ export default function Player(props: PlayerProps) {
 
     //function for the user to leave the match
     async function onLeave() {
-        const teamIndex = props.variant === "home" ? 0 : 1;
         const userName= props.userName;
-        try {
-            await axios.put(`/api/match/${props.matchId}/operation/remove`, {
-                teamIndex,
-                userName
-            });
-            router.push("/");
-        } catch(error) {
-            alert("Error leaving match");
-        }
+        await axios.put(`/api/match/${props.matchId}/operation/remove`, {
+            userName
+        })
+            .then(()=>router.push("/"))
+            .catch((err)=>console.log(err));
+
     }
 
     return (
