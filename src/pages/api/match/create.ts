@@ -1,6 +1,6 @@
 // Third-party imports
 import { NextApiRequest, NextApiResponse } from "next";
-import { object, string, date, array } from "yup";
+import { object, string, date, array, number } from "yup";
 
 // Local imports
 import { Match } from "@/lib/types/Match";
@@ -20,7 +20,7 @@ export default async function handler(
         try {
 
             // Deconstruct request body to access values from the client
-            let {
+            const {
                 matchHost,
                 sport,
                 gameMode,
@@ -36,17 +36,33 @@ export default async function handler(
             const schema = object({
                 matchHost: string().required(),
                 sport: string().required(),
-                gameMode: object().required(),
+                gameMode: object({
+                    modeName: string().required(),
+                    requiredPlayers: number().required(),
+                }),
                 matchType: string().required(),
-                location: object(),
+                location: object({
+                    lng: number().required(),
+                    lat: number().required(),
+                    address: object({
+                        fullAddress: string().required(),
+                        pointOfInterest: string().required(),
+                        city: string().required(),
+                        country: string().required(),
+                    }),
+                }),
                 matchStart: date().when("matchType", {
-                    is: ((matchType: string) => matchType==="REGULAR"),
-                    then: date().min(
-                        new Date(Date.now() + 3600000),
-                        "You cannot set a date or time less than 1 hour from now.")
+                    is: (matchType: string) => matchType === "REGULAR",
+                    then: date()
+                        .min(
+                            new Date(Date.now() + 3600000),
+                            "You cannot set a date or time less than 1 hour from now."
+                        )
                         .typeError("Please set a date and time for the regular match"),
-                    otherwise: date().min(new Date(Date.now() - 60000),
-                        "You cannot set a date or time in the past")
+                    otherwise: date().min(
+                        new Date(Date.now() - 60000),
+                        "You cannot set a date or time in the past"
+                    ),
                 }),
                 matchEnd: date(),
                 description: string().when("matchType", {
@@ -54,7 +70,13 @@ export default async function handler(
                     then: string().required("Please enter a description"),
                     otherwise: string(),
                 }),
-                teams: array(),
+                teams: array(
+                    object({
+                        members: array(),
+                        score: number(),
+                        status: string(),
+                    })
+                ),
                 status: string().required(),
             });
 
@@ -113,7 +135,7 @@ export default async function handler(
                 teams,
                 status,
                 matchQueueStart: null,
-                matchPause: null
+                matchPause: null,
             };
 
             // Call upon the createMatch action to use the values above and create a match model
@@ -135,4 +157,3 @@ export default async function handler(
         }
     }
 }
-
