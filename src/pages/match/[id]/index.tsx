@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import dynamic from "next/dynamic";
 import useSWR from "swr";
-import useMatchNavigate from "@/hooks/useMatchStatus";
+
 
 //https://popupsmart.com/blog/react-popup
 import Popup from "reactjs-popup";
@@ -18,14 +18,13 @@ import Database from "@/lib/resources/database";
 import { Location, Pos } from "@/lib/types/General";
 import { Match } from "@/lib/types/Match";
 import { dateConverter } from "@/lib/helpers/time";
+import useMatchNavigate from "@/hooks/useMatchStatus";
+import SnackBar from "@/components/snackbar";
 
 // https://www.npmjs.com/package/add-to-calendar-button
 // eslint-disable-next-line camelcase
 import "add-to-calendar-button/assets/css/atcb.css";
 import { useSession } from "next-auth/react";
-
-//dynamic imports
-const Snackbar = dynamic(()=> import("@mui/material/Snackbar"), { ssr: false });
 
 // Interface for passed props
 interface Props {
@@ -196,14 +195,22 @@ export default function MatchView({ matchData }: Props) {
     function onLeave() {
         axios.put(`/api/match/${match._id}/operation/remove`, {
             userName: session?.user.userName
-        });
+        })
+            .then(()=>router.push("/"))
+            .catch(()=> {
+                setErrorMessage("Error leaving match, please try again later");
+            });
     }
 
     //function for host to cancel match
     function onCancel() {
         axios.put(`/api/match/${match._id}/operation/cancel`, {
             cancelTime: new Date().toString()
-        });
+        })
+            .then(()=>router.push("/"))
+            .catch(()=>{
+                setErrorMessage("Error cancelling match, please try again later");
+            });
     }
 
     // Contains steps, maneuver and instruction data
@@ -301,11 +308,13 @@ export default function MatchView({ matchData }: Props) {
                                     {
                                         session?.user.userName === name?
                                             <button
-                                                onClick={() => onLeave()}
+                                                onClick={() => onCancel()}
                                             >
                                                 Cancel Match
                                             </button>:
-                                            <button>
+                                            <button
+                                                onClick={() => onLeave()}
+                                            >
                                                 Leave
                                             </button>
                                     }
@@ -314,21 +323,15 @@ export default function MatchView({ matchData }: Props) {
                         ))}
                 </div>
             </div>
-            <Snackbar
-                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            <SnackBar
                 open={errorMessage.length > 0}
-                autoHideDuration={3000}
+                duration={3000}
                 onClose={() => setErrorMessage("")}
             >
-                <p className={
-                    `w-full bg-red-100 
-                    px-5 py-3 
-                    drop-shadow-lg z-50 
-                    rounded-lg text-center`
-                }>
-                    <span className="text-red-700">{errorMessage}</span>
-                </p>
-            </Snackbar>
+                <span className="text-red-700 text-center">
+                    {errorMessage}
+                </span>
+            </SnackBar>
         </article>
     );
 }

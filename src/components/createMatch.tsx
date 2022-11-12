@@ -122,7 +122,7 @@ export default function CreateMatch({ props }: Props) {
                 setLocation(data);
                 setSuggestions(data?.features);
             });
-        } catch (error) {
+        } catch (error: any) {
             throw new Error("Error fetching data, ", error);
         }
     }
@@ -251,6 +251,7 @@ export default function CreateMatch({ props }: Props) {
                             value={address}
                             name="location"
                             onChange={handleLocationChange}
+                            required
                         >
                             <AddLocationAlt />
                         </Input>
@@ -301,6 +302,7 @@ export default function CreateMatch({ props }: Props) {
                         name="date"
                         type="datetime-local"
                         onChange={handleDateChange}
+                        required
                     >
                         <AccessTime />
                     </Input>

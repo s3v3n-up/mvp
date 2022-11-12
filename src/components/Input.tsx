@@ -20,6 +20,7 @@ interface Props {
   name?: string;
   placeholder?: string;
   readonly?: boolean;
+  required?: boolean;
 }
 
 /**
@@ -50,6 +51,7 @@ export default function Input(props:Props){
                     placeholder={props.placeholder}
                     name={props.name}
                     readOnly={props.readonly}
+                    required={props.required}
                 />
             </div>
         </>
