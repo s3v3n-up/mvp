@@ -12,8 +12,8 @@ import Head from "next/head";
 import { Match, Matches } from "@/lib/types/Match";
 
 /** Props type of user's match history
- * @property {Match} - pastMatches array
- * @property {Match} - activeMatches array
+ * @property {Match} - pastMatches
+ * @property {Match} - activeMatches
  */
 interface Props {
   pastMatchesArr: Match[];
@@ -24,11 +24,9 @@ interface Props {
 export default function History({ pastMatchesArr, activeMatchesArr }: Props) {
     const { data: session } = useSession();
 
-    // Usestate
     const [pastMatches] = useState<Match[]>(pastMatchesArr);
     const [activeMatches, setActiveMatches] = useState<Match[]>(activeMatchesArr);
 
-    //Function to getUsername from the session data
     function getUsername() {
         return session?.user.userName ?? "";
     }
@@ -38,7 +36,6 @@ export default function History({ pastMatchesArr, activeMatchesArr }: Props) {
             match.teams[0].members.includes(getUsername()) ||
       (match.teams[1] && match.teams[1].members.includes(getUsername()))
     );
-
     const pasts = pastMatches.filter(
         (match: Match) =>
             match.teams[0].members.includes(getUsername()) ||

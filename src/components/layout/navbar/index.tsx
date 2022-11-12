@@ -81,7 +81,7 @@ export default function Navbar() {
                     <NavTab href="/" pageName="Matches"/>
                     <NavTab href="/create" pageName="Create"/>
                     <NavTab href="/leaderboard" pageName="Leaderboard"/>
-                    <NavTab href="/userHistory" pageName="History"/>
+                    <NavTab href="/history" pageName="History"/>
                 </ul>
                 <ul className={styles.auth}>
                     <button className="relative h-14 w-14 rounded-full bg-white" onClick={()=>router.push("/user/profile")}>
@@ -117,7 +117,7 @@ export default function Navbar() {
                     <NavTab href="/leaderboard" pageName="Leaderboard">
                         <LeaderboardIcon/>
                     </NavTab>
-                    <NavTab href="/userHistory" pageName="History">
+                    <NavTab href="/history" pageName="History">
                         <Person/>
                     </NavTab>
                 </ul>
