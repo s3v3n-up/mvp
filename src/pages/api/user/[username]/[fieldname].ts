@@ -2,6 +2,7 @@
 import { updateUser } from "@/lib/actions/user";
 import Database from "@/lib/resources/database";
 import { APIErr } from "@/lib/types/General";
+import { firstNameSchema } from "@/shared/schema";
 
 // third party imports
 import { NextApiRequest, NextApiResponse } from "next";
@@ -55,6 +56,9 @@ export default async function handler(
                 // Get the firstName in request body
                 const { firstName } = req.body;
 
+                //Checks if firstName is Valid
+                await firstNameSchema.validate({ firstName });
+
                 // Sets up the Database connection
                 await Database.setup();
 
@@ -75,6 +79,9 @@ export default async function handler(
                 // Get the lastName in request body
                 const { lastName } = req.body;
 
+                //Checks if lastName is Valid
+                await firstNameSchema.validate({ lastName });
+
                 // Sets up the Database connection
                 await Database.setup();
 
@@ -94,6 +101,9 @@ export default async function handler(
 
                 // Get the phoneNumber in request body
                 const { phoneNumber } = req.body;
+
+                //Checks if phoneNumber is Valid
+                await firstNameSchema.validate({ phoneNumber });
 
                 // Sets up the Database connection
                 await Database.setup();
