@@ -125,21 +125,21 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
         try {
             await axios.put(`api/match/${id.toString()}/team/join`, {
                 userName: session?.user.userName,
+            }).then(()=> {
+                router.push(`/match/${id.toString()}`);
             });
         } catch (error) {
-            return;
+            alert(error);
         }
-
-        return router.push(`/match/${id.toString()}/scoreboard`);
     }
 
     // Functrion to join the quick match
     async function joinQuick(id: string) {
         await axios.put(`api/match/${id.toString()}/team/join`, {
             userName: session?.user.userName,
+        }).then(()=>{
+            router.push(`/match/${id.toString()}/scoreboard`);
         });
-
-        return router.push(`/match/${id.toString()}/scoreboard`);
     }
 
     return (
@@ -226,7 +226,7 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
                                                 className={Cardstyles.join}
                                                 onClick={() => joinQuick(quick._id)}
                                             >
-                              join
+                                                join
                                             </button>
                                         </div>
                                     )}
