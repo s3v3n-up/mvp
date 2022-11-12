@@ -7,21 +7,32 @@ import { UserProfile } from "@/lib/types/User";
 // Imports createUser function
 import { createUser } from "@/lib/actions/user";
 
-// Imports PHONE_REGEX and EMAIL_REGEX
-import { PHONE_REGEX, EMAIL_REGEX } from "@/lib/helpers/validation";
-
 // Imports object and string types from yup
 import { object, string } from "yup";
+import { validate } from "@/shared/validate";
+import { userSchema } from "@/shared/schema";
+// eslint-disable-next-line camelcase
+import { unstable_getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]";
 
 /**
  * @description = a function that handles api request for registering user
  */
-export default async function handler(
+async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
+    const session = await unstable_getServerSession(req, res, authOptions);
     if (req.method === "POST") {
         try {
+
+            // Checks if there is no session and throw code 401 and message
+            if(!session) {
+                throw{
+                    code: 401,
+                    message: "Unauthorized request"
+                };
+            }
 
             // Deconstruct body to get individual properties to be used for validation
             let {
@@ -33,29 +44,6 @@ export default async function handler(
                 email,
                 matches,
             } = req.body as UserProfile;
-
-            // Yup validation criteria
-            const schema = object({
-                userName: string().required("Please enter a username").min(8).max(30),
-                firstName: string()
-                    .required("Please enter your firstname")
-                    .min(2)
-                    .max(64),
-                lastName: string()
-                    .required("Please enter your lastname")
-                    .min(2)
-                    .max(64),
-                phoneNumber: string()
-                    .required("Please enter a phone number")
-                    .matches(PHONE_REGEX, "invalid input for phone number"),
-                image: string().required(),
-                email: string()
-                    .required("Please enter your email")
-                    .matches(EMAIL_REGEX, "invalid input for email"),
-            });
-
-            // Checks if it passes the yup validation
-            await schema.validate(req.body);
 
             // Converts username to lowercase for uniformity
             userName = userName.toLowerCase();
@@ -88,7 +76,10 @@ export default async function handler(
                 // Returns the code and the user created
                 res.status(200).json({
                     response,
+                    method: req.method
                 });
+
+            // Catches error and throw code and message
             } catch (error: any) {
                 if (error.cause.code === "11000") {
                     throw {
@@ -99,14 +90,18 @@ export default async function handler(
                 throw error;
             }
 
-            //Catches any error and throws it in message
+        //Catches any error and throws it in message
         } catch (error: any) {
             const { code = 500, message } = error;
             res.status(code).json({
-                message,
+                code,
+                message
             });
 
             return;
         }
     }
 }
+
+// Validates before exporting
+export default validate(userSchema, handler);

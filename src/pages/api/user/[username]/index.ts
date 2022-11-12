@@ -1,32 +1,46 @@
-// Imports NextApiRequest and NextApiResponse from next
+// third-party imports
 import { NextApiRequest, NextApiResponse } from "next";
+import { getSession } from "next-auth/react";
+import { object, string } from "yup";
+// eslint-disable-next-line camelcase
+import { unstable_getServerSession } from "next-auth";
 
-// Imports Database
+// local imports
 import Database from "@/lib/resources/database";
-
-// Imports calculateStats, findUserByUsername and updateUser functions
 import { getUserByUserName, updateUser } from "@/lib/actions/user";
 
-// Imports object and string type from yup
-import { object, string } from "yup";
+// import { PHONE_REGEX } from "@/lib/helpers/validation";
+import { validate } from "@/shared/validate";
+import { userSchema } from "@/shared/schema";
+import { authOptions } from "../../auth/[...nextauth]";
 
-// Imports PHONE_REGEX
-import { PHONE_REGEX } from "@/lib/helpers/validation";
 
 /**
  * api route for updating and getting user by username
  */
-export default async function handler(
+async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
+
+    // https://next-auth.js.org/getting-started/client
+    // Gets the session of the user
+    const session = await unstable_getServerSession(req, res, authOptions);
+
+    // Gets the username in the req.query
+    const { username } = req.query;
     try {
+
+        // Checks if there is no session and throw code 401 and message
+        if(!session) {
+            throw{
+                code: 401,
+                message: "Unauthorized request"
+            };
+        }
 
         // Sets up the Database connection
         await Database.setup();
-
-        // Gets the username in the req.query
-        const { username } = req.query;
 
         //validates the username
         if (typeof username !== "string" || username.length < 8 || username.length > 30) {
@@ -42,21 +56,14 @@ export default async function handler(
             // Checks if the method is PUT
         } else if (req.method === "PUT") {
 
+            if(session.user.userName !== username) {
+                return res.status(401).json({
+                    message: "Unauthorized Request"
+                });
+            }
+
             // Gets the firstName, lastName, phonenumber and image
             const { firstName, lastName, phoneNumber, image } = req.body;
-
-            // Yup validation criteria
-            const schema = object({
-                firstName: string().required().min(2).max(64),
-                lastName: string().required().min(2).max(64),
-                phoneNumber: string()
-                    .required()
-                    .matches(PHONE_REGEX, "invalid input for phone number"),
-                image: string().required(),
-            });
-
-            // Checks if it passes the yup validation
-            await schema.validate(req.body);
 
             // Converts first letter of the firstname to capital and the rest is lowercase
             // Stores the updated user
@@ -71,14 +78,18 @@ export default async function handler(
             // Returns code 200 and the updated user
             res.status(200).json({
                 updatedUser,
+                method: req.method
             });
         }
 
     // Catches and sends response status 400 and error
     } catch (error: any) {
-        res.status(400).json({
-            message: "Bad Request",
-            error
+        const { code = 500,
+            message = "Internal server error" } = error;
+        res.status(code).json({
+            message
         });
     }
 }
+
+export default validate(userSchema, handler);

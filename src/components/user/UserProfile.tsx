@@ -9,6 +9,7 @@ import Input from "@/components/Input";
 import { AvatarContext } from "@/context/avatar";
 import { UserProfile } from "@/lib/types/User";
 import { PHONE_REGEX } from "@/lib/helpers/validation";
+import { useSession } from "next-auth/react";
 
 //dynamic imports
 const Person = dynamic(
@@ -45,6 +46,9 @@ interface Props {
  */
 export default function Profile({ profile, userStats }: Props) {
 
+    //get the user session
+    const { data: session } = useSession();
+
     //get the user data
     const avatarContext = useContext(AvatarContext);
 
@@ -73,9 +77,11 @@ export default function Profile({ profile, userStats }: Props) {
         //update the user firstname in the db
         debounce(async () => {
             await axios.put(`/api/user/${userName}`, {
+                userName: session?.user.userName,
                 firstName: value,
                 lastName,
                 phoneNumber: phone,
+                email: session?.user.email,
                 image
             });
         }
@@ -93,6 +99,8 @@ export default function Profile({ profile, userStats }: Props) {
         if (value.length <= 2) return;
         debounce(async () => {
             await axios.put(`/api/user/${userName}`, {
+                userName: session?.user.userName,
+                email: session?.user.email,
                 firstName,
                 lastName: value,
                 phoneNumber: phone,
@@ -114,6 +122,8 @@ export default function Profile({ profile, userStats }: Props) {
         //update the user phonenumber in the db
         debounce(async () => {
             await axios.put(`/api/user/${userName}`, {
+                userName: session?.user.userName,
+                email: session?.user.email,
                 firstName,
                 lastName,
                 phoneNumber: value,
@@ -141,6 +151,8 @@ export default function Profile({ profile, userStats }: Props) {
             const res = await axios.post("/api/file", data);
             const { data: { data: { url: imageUrl } } } = res;
             await axios.put(`/api/user/${userName}`, {
+                userName: session?.user.userName,
+                email: session?.user.email,
                 firstName,
                 lastName,
                 phoneNumber: phone,
