@@ -1,6 +1,5 @@
 import type { Match } from "@/lib/types/Match";
 import axios from "axios";
-import { UserProfile } from "../types/User";
 
 /**
  * function to check if regular match has started, then update match status accordingly
