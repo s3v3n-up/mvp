@@ -608,6 +608,22 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             };
         }
 
+        if (match.status === "UPCOMING" && match.matchType === "REGULAR") {
+            const { gameMode: { requiredPlayers: maxPlayer } } = match;
+            const currMemberNumbers = match.teams[0].members.length + match.teams[1].members.length;
+            const isMemberFull = currMemberNumbers === maxPlayer;
+
+            //if match is full, set match start queue time
+            if (!isMemberFull){
+                return {
+                    redirect: {
+                        destination: `/match/${id}`,
+                        permanent: false
+                    }
+                };
+            }
+        }
+
         //get all profiles of players in the match
         const players = await getUsersByUserName(match.teams[0].members.concat(match.teams[1].members));
 

@@ -151,7 +151,7 @@ export default function Register() {
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="initial-scale=1.0, width=device-width" />
                 <title>MVP | Register</title>
-                <meta name="description" content="Register page" />
+                <meta name="description" content="Create an account with MVP"/>
                 <link rel="icon" href="/favicon.ico"></link>
             </Head>
             <div className={styles.container}>
