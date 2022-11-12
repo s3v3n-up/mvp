@@ -8,7 +8,6 @@ import debounce from "lodash.debounce";
 import Input from "@/components/Input";
 import { AvatarContext } from "@/context/avatar";
 import { UserProfile } from "@/lib/types/User";
-import { useSession } from "next-auth/react";
 import { firstNameSchema, lastNameSchema, phoneNumberSchema } from "@/shared/schema";
 
 //dynamic imports
@@ -54,9 +53,6 @@ interface Props {
  * @returns {JSX.Element} user profile component
  */
 export default function Profile({ profile, userStats }: Props) {
-
-    //get the user session
-    const { data: session } = useSession();
 
     //get the user data
     const avatarContext = useContext(AvatarContext);
