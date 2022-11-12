@@ -19,7 +19,7 @@ export default function useMatchNavigate(match: Match) {
 
             //redirect to result page if match is finished
             if (match.status === "FINISHED") {
-                router.push(`/match/${match._id}/result`);
+                router.push(`/match/${match._id?.toString()}/result`);
             }
 
             //redirect to cancel page if match cancelled
@@ -29,7 +29,7 @@ export default function useMatchNavigate(match: Match) {
 
             if (((match.status === "INPROGRESS" ||
             match.status === "PAUSED") &&
-            router.pathname === `/match/${match._id}/scoreboard`) ||
+            router.pathname === `/match/${match._id?.toString()}/scoreboard`) ||
             match.status === "FINISHED" ||
             match.status === "CANCELLED" ||
             match.matchType === "QUICK") {
@@ -38,15 +38,15 @@ export default function useMatchNavigate(match: Match) {
 
             //if match has type of quick
             if (match.matchType === "QUICK" &&
-            router.pathname !== `/match/${match._id}/scoreboard`)
+            router.pathname !== `/match/${match._id?.toString()}/scoreboard`)
             {
-                router.push(`/match/${match._id}/scoreboard`);
+                router.push(`/match/${match._id?.toString()}/scoreboard`);
             }
 
             //check if match has started, if yes navigate to scoreboard
             checkIfMatchHasStarted(match,()=>{
-                if (router.pathname !== `/match/${match._id}/scoreboard`) {
-                    router.push(`/match/${match._id}/scoreboard`);
+                if (router.pathname !== `/match/${match._id?.toString()}/scoreboard`) {
+                    router.push(`/match/${match._id?.toString()}/scoreboard`);
                 }
             });
         }, 1000);
