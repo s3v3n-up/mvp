@@ -1,4 +1,5 @@
 import { joinMatch } from "@/lib/actions/match";
+
 import Database from "@/lib/resources/database";
 import { NextApiRequest, NextApiResponse } from "next";
 // eslint-disable-next-line camelcase
@@ -43,6 +44,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             //update match score based on operation
             await joinMatch(id as string, userName);
+            await 
 
             // Return a success message
             res.status(200).json(
