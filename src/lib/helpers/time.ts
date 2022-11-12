@@ -9,7 +9,9 @@ export function dateConverter(date: Date, showTime = false): string {
     const convertedTime = new Date(date)
         .toLocaleTimeString("en-GB", { hour12: true });
 
-    return !showTime? convertedDate: convertedDate + " " + convertedTime;
+    return !showTime?
+        convertedDate:
+        `${convertedDate} ${convertedTime}`;
 }
 
 /**

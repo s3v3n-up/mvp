@@ -46,7 +46,7 @@ export default function useMatchNavigate(match: Match) {
 
         //redirect to cancel page if match cancelled
         if (match.status === "CANCELLED") {
-            router.push(`/match/${match._id}/cancel`);
+            router.push("/match/cancel");
         }
 
         return () => clearInterval(checkMatchStart);
