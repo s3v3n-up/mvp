@@ -2,8 +2,8 @@
 
 <!-- LOGO -->
 <div align="center">
-  <a href="https://github.com/github_username/repo_name">
-    <img src="appLogo.jpg" alt="Logo" width="200" height="200">
+  <a href="https://github.com/s3v3n-up/mvp">
+    <img src="public/img/logo.png" alt="Logo"/>
   </a>
 
   #  MVP Project
