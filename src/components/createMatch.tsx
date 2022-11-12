@@ -78,7 +78,7 @@ export default function CreateMatch({ props }: Props) {
     props.map((sport: Sport) => {
         if (sport.name === sportname) {
             sport.gameModes.map((mode:any) => {
-                allModes.push({ value: mode.modeNames, name: mode.name });
+                allModes.push({ value: mode, name: mode });
             });
         }
     });
@@ -123,7 +123,7 @@ export default function CreateMatch({ props }: Props) {
                 setSuggestions(data?.features);
             });
         } catch (error) {
-            console.log("Error fetching data, ", error);
+            throw new Error("Error fetching data, ", error);
         }
     }
 

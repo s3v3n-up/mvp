@@ -11,6 +11,7 @@ import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import { getUTCTime } from "@/lib/helpers/time";
 import { APIErr } from "@/lib/types/General";
+import { operations } from "@/constants/operations";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
@@ -31,9 +32,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 message: "Unauthorized",
             };
         }
-
-        //all available operations
-        const operations = ["pause", "start", "queue", "cancel", "remove", "finish", "resume"];
 
         //destructure request params to get id and operation name
         const { id, operation } = req.query;
