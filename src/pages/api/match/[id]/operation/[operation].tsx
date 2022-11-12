@@ -117,6 +117,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 };
             }
 
+            if (match.status === "INPROGRESS") {
+                throw {
+                    code: 400,
+                    message: "Match is in progress",
+                };
+            }
+
             //remove member from match and update queue start time to null
             await removeUserFromMatch(id as string, userName);
             await updateMatchFields(id, {

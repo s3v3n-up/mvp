@@ -6,7 +6,7 @@ import useSWR from "swr";
 import axios from "axios";
 import { useRouter } from "next/router";
 import debounce from "lodash.debounce";
-import Snackbar from "@mui/material/Snackbar";
+import Snackbar from "@/components/snackbar";
 
 //local import
 import { getMatchById } from "@/lib/actions/match";
@@ -113,7 +113,7 @@ export default function Scoreboard({ match, players }: Props) {
                     setAwayScore(data.match.teams[1].score);
                 }
             } else if (error) {
-                setNetworkError("error getting match updates");
+                setNetworkError("error getting match updates. retrying...");
             }
         })();
     },[data, error, isMatchHost, currMatch]);
@@ -225,8 +225,8 @@ export default function Scoreboard({ match, players }: Props) {
 
                     //if match is regular, cancel it
                     else {
-                        await axios.put(`/api/match/${id}/status`, {
-                            status: "CANCELLED"
+                        await axios.put(`/api/match/${id}/operation/cancelled`, {
+                            cancelTime: new Date().toString()
                         }).catch(()=>{
                             setNetworkError("error cancelling match");
                         });
@@ -348,17 +348,13 @@ export default function Scoreboard({ match, players }: Props) {
     return(
         <div className={styles.page}>
             <Snackbar
-                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
                 open={networkError? true:false}
-                autoHideDuration={10000}
+                duration={6000}
                 onClose={()=> setNetworkError("")}
             >
-                <p className="w-full bg-black p-5 drop-shadow-lg z-50 text-base">
-                    <span className="text-yellow-500"> ⚠️ </span>
-                    <span className="text-red-400">
-                        {networkError}
-                    </span>
-                </p>
+                <span className="text-red-400">
+                    {networkError}
+                </span>
             </Snackbar>
             <div className="relative h-7 w-full">
                 <Image
@@ -606,6 +602,22 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                     permanent: false
                 }
             };
+        }
+
+        if (match.status === "UPCOMING" && match.matchType === "REGULAR") {
+            const { gameMode: { requiredPlayers: maxPlayer } } = match;
+            const currMemberNumbers = match.teams[0].members.length + match.teams[1].members.length;
+            const isMemberFull = currMemberNumbers === maxPlayer;
+
+            //if match is full, set match start queue time
+            if (!isMemberFull){
+                return {
+                    redirect: {
+                        destination: `/match/${id}`,
+                        permanent: false
+                    }
+                };
+            }
         }
 
         //get all profiles of players in the match

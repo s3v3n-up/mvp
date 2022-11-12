@@ -8,8 +8,19 @@ export default function Cancel() {
 
     return (
         <section>
-            <h1 className="text-center text-4xl font-bold text-orange-500 mt-40">⚠️ MATCH HAS BEEN CANCELLED</h1>
-            <div className="relative w-44 h-44 m-auto mt-14">
+            <h1 className={
+                `text-center sm:text-4xl 
+                font-bold text-orange-500 
+                mt-40 text-2xl`
+            }>
+                ⚠️ MATCH HAS BEEN CANCELLED
+            </h1>
+            <div className={
+                `relative sm:w-44 
+                sm:h-44 w-14 
+                h-14 m-auto 
+                sm:mt-14 mt-5`
+            }>
                 <Image
                     src={"/icons/skull.png"}
                     alt="skull"
