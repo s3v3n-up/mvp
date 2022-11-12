@@ -6,14 +6,21 @@ import SnackBar from "../snackbar";
 import { useState } from "react";
 import { useRouter } from "next/router";
 
+/**
+ * history card component
+ * @param {Match} props  - The match object to be displayed
+ * @returns {JSX.Element} - The card component of history page
+ */
 export default function Card(props: Match) {
+
+    //get user session
     const { session } = useAuth();
     const router = useRouter();
 
     //network error state
     const [networkError, setNetworkError] = useState("");
 
-    // Function to delete match and refresh page
+    // Function cancel match
     function onCancel(id: string) {
         axios.put(`/api/match/${id}/operation/cancel`, {
             cancelTime: new Date()
@@ -24,6 +31,7 @@ export default function Card(props: Match) {
             });
     }
 
+    //function to remove from match
     function onLeave(id: string) {
         axios.put(`/api/match/${id}/operation/remove`, {
             userName: session?.user.userName
@@ -35,7 +43,7 @@ export default function Card(props: Match) {
     }
 
     return (
-        <article className="w-full">
+        <article className="sm:w-11/12 w-full text-base m-auto my-5 bg-white rounded-lg">
             <SnackBar
                 open={networkError !== ""}
                 onClose={() => setNetworkError("")}
@@ -45,9 +53,9 @@ export default function Card(props: Match) {
                     {networkError}
                 </span>
             </SnackBar>
-            <div className="w-full">
+            <div className="w-full flex flex-col p-5 pt-2">
                 {/* The starting time of the match*/}
-                <div className="">
+                <div className="w-full font-bold">
                     <p>
                         {
                             props.matchStart?
@@ -57,20 +65,30 @@ export default function Card(props: Match) {
                     </p>
                 </div>
                 {/* The type of sport of the match*/}
-                <div className="">
+                <div className="text-gray-500">
                     <p>{props.sport}</p>
                 </div>
-                <div className="">
-                    {/* The type of sport of the match*/}
-                    <div className="truncate ...">
-                        <p>{props.location.address.fullAddress}</p>
-                    </div>
-                    { (props.status === "UPCOMING" ||
+            </div>
+            <div className={
+                `flex flex-row 
+                    items-center justify-between 
+                    rounded-lg rounded-t-none
+                    bg-[#fc5c3e] p-3`
+            }>
+                {/* The type of sport of the match*/}
+                <p className="truncate ... w-40 text-sm">
+                    {props.location.address.fullAddress}
+                </p>
+                { (props.status === "UPCOMING" ||
                         props.status === "INPROGRESS") &&
                         <>
                             { session?.user.id === props.matchHost?
                                 <button
-                                    className=""
+                                    className={
+                                        `rounded-lg bg-white
+                                         text-orange-500 px-3 
+                                         py-1 shadow-md shadow-black/30`
+                                    }
                                     onClick={() => onCancel(props._id!.toString())}
                                 >
                                     Cancel
@@ -87,8 +105,7 @@ export default function Card(props: Match) {
                                 </>
                             }
                         </>
-                    }
-                </div>
+                }
             </div>
         </article>
     );
