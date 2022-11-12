@@ -85,45 +85,47 @@ const Layout = ({ children }: Props) => {
                     priority={true}
                 />
             </div>
-            {!isAuthPage && <Navbar /> }
-            <nav className="md:hidden flex flex-row justify-between pr-3 pt-3 items-center">
-                <button className="relative w-32 h-12 mr-auto" onClick={()=>router.push("/")}>
-                    <Image
-                        src={"/img/logo.png"}
-                        alt="logo"
-                        layout="fill"
-                        objectFit="cover"
-                        objectPosition="left"
-                    />
-                </button>
-                {!isProfilePage ?
-                    <button
-                        className="relative h-14 w-14 rounded-full"
-                        onClick={()=>router.push("/user/profile")}
-                    >
-                        { isAvatarLoaded &&
-                                <Skeleton
-                                    variant="circular"
-                                    width="100%"
-                                    height="100%"
-                                    animation="wave"
-                                />
-                        }
+            { !isAuthPage && <Navbar /> }
+            { !isAuthPage &&
+                <nav className="md:hidden flex flex-row justify-between pr-3 pt-3 items-center">
+                    <button className="relative w-32 h-12 mr-auto" onClick={()=>router.push("/")}>
                         <Image
-                            src={avatar}
-                            alt="avatar"
+                            src={"/img/logo.png"}
+                            alt="logo"
                             layout="fill"
                             objectFit="cover"
-                            objectPosition="center center"
-                            className="rounded-full bg-white"
-                            onLoad={() => setIsAvatarLoaded(true)}
+                            objectPosition="left"
                         />
-                    </button> :
-                    <button className="text-white text-base font-bold" onClick={handleLogout}>
-                        LOGOUT
                     </button>
-                }
-            </nav>
+                    {!isProfilePage ?
+                        <button
+                            className="relative h-14 w-14 rounded-full"
+                            onClick={()=>router.push("/user/profile")}
+                        >
+                            { isAvatarLoaded &&
+                                    <Skeleton
+                                        variant="circular"
+                                        width="100%"
+                                        height="100%"
+                                        animation="wave"
+                                    />
+                            }
+                            <Image
+                                src={avatar}
+                                alt="avatar"
+                                layout="fill"
+                                objectFit="cover"
+                                objectPosition="center center"
+                                className="rounded-full bg-white"
+                                onLoad={() => setIsAvatarLoaded(true)}
+                            />
+                        </button> :
+                        <button className="text-white text-base font-bold" onClick={handleLogout}>
+                            LOGOUT
+                        </button>
+                    }
+                </nav>
+            }
             <main className="flex-auto z-10">
                 { children }
             </main>

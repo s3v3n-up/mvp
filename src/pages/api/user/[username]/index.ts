@@ -14,18 +14,25 @@ import { APIErr } from "@/lib/types/General";
 /**
  * api route for updating and getting user by username
  */
-async function handler(
+export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-
-    // https://next-auth.js.org/getting-started/client
-    // Gets the session of the user
-    const session = await unstable_getServerSession(req, res, authOptions);
-
-    // Gets the username in the req.query
-    const { username } = req.query;
     try {
+
+        // https://next-auth.js.org/getting-started/client
+        // Gets the session of the user
+        const session = await unstable_getServerSession(req, res, authOptions);
+
+        // Gets the username in the req.query
+        const { username } = req.query;
+
+        if (req.method !== "GET") {
+            throw {
+                code: 405,
+                message: "Method not allowed",
+            };
+        }
 
         // Checks if there is no session and throw code 401 and message
         if(!session) {
@@ -40,15 +47,16 @@ async function handler(
 
         //validates the username
         if (typeof username !== "string" || username.length < 8 || username.length > 30) {
-            throw new Error("invalid username");
+            throw {
+                code: 400,
+                message: "bad request",
+            };
         }
 
         // Checks if the method is GET
-        if (req.method === "GET") {
-            await Database.setup();
-            const user = await getUserByUserName(username);
-            res.status(200).json(user);
-        }
+        await Database.setup();
+        const user = await getUserByUserName(username);
+        res.status(200).json(user);
 
     // Catches and sends code and error
     } catch(error) {
@@ -59,7 +67,6 @@ async function handler(
         } = error as APIErr;
         res.status(code).json(
             {
-                code,
                 message,
                 cause
             }
@@ -67,4 +74,4 @@ async function handler(
     }
 }
 
-export default validate(userSchema, handler);
+// export default validate(userSchema, handler);
