@@ -3,7 +3,9 @@ import { getAllSports } from "@/lib/actions/sport";
 import Database from "@/lib/resources/database";
 import { Sport } from "@/lib/types/Sport";
 
-
+/**
+ * interface for props
+ */
 interface Props{
     data: Sport[]
 }
