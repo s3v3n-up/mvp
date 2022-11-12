@@ -116,21 +116,21 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
     try {
       await axios.put(`api/match/${id.toString()}/team/join`, {
         userName: session?.user.userName,
-      });
+      }).then(()=> {
+        router.push(`/match/${id.toString()}`);
+      })
     } catch (error) {
       return;
     }
-
-    return router.push(`/match/${id.toString()}/scoreboard`);
   }
 
   // Functrion to join the quick match
   async function joinQuick(id: string) {
     await axios.put(`api/match/${id.toString()}/team/join`, {
       userName: session?.user.userName,
+    }).then(()=>{
+      router.push(`/match/${id.toString()}/scoreboard`)
     });
-
-    return router.push(`/match/${id.toString()}/scoreboard`);
   }
 
   return (
@@ -291,11 +291,11 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
                         <div className={Cardstyles.detail}>
                           {/* custom format for match that includes date, day of the week and time */}
                           <p>
-                            {new Date(reg.matchStart)
+                            {new Date(reg.matchStart!)
                               .toDateString()
                               .concat(
                                 " " +
-                                  new Date(reg.matchStart).toLocaleTimeString(
+                                  new Date(reg.matchStart!).toLocaleTimeString(
                                     "en-US"
                                   )
                               )}
@@ -305,7 +305,7 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
                         {reg.matchHost !== session?.user.id && (
                           <button
                             className={Cardstyles.join}
-                            onClick={() => joinReg(reg._id)}
+                            onClick={() => joinReg(reg._id!.toString())}
                           >
                             join
                           </button>
