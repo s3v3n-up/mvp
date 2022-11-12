@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 
 // Namespace to contain the enums used by the match model
 export namespace Matches {
+
   /**
    * this is the match type
    */
@@ -46,6 +47,7 @@ export interface Team {
  * Interface for creating a match
  */
 export interface Match {
+
   /**
    * This is automatically added by mongodb
    */
