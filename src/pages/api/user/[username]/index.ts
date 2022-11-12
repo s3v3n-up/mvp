@@ -1,7 +1,5 @@
 // third-party imports
 import { NextApiRequest, NextApiResponse } from "next";
-import { getSession } from "next-auth/react";
-import { object, string } from "yup";
 // eslint-disable-next-line camelcase
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]";
@@ -50,38 +48,9 @@ async function handler(
             await Database.setup();
             const user = await getUserByUserName(username);
             res.status(200).json(user);
-
-            // Checks if the method is PUT
-        } else if (req.method === "PUT") {
-
-            if(session.user.userName !== username) {
-                return res.status(401).json({
-                    message: "Unauthorized Request"
-                });
-            }
-
-            // Gets the firstName, lastName, phonenumber and image
-            const { firstName, lastName, phoneNumber, image } = req.body;
-
-            // Converts first letter of the firstname to capital and the rest is lowercase
-            // Stores the updated user
-            const updatedUser = await updateUser(
-                username as string,
-                firstName.charAt(0) + firstName.substring(1).toLowerCase(),
-                lastName.charAt(0) + lastName.substring(1).toLowerCase(),
-                phoneNumber,
-                image
-            );
-
-            // Returns code 200 and the updated user
-            res.status(200).json(
-                {
-                    updatedUser,
-                    method: req.method
-                });
         }
 
-    // Catches and sends response status 400 and error
+    // Catches and sends code and error
     } catch(error) {
         const {
             code = 500,

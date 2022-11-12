@@ -4,7 +4,6 @@ import { createUser } from "@/lib/actions/user";
 import { APIErr } from "@/lib/types/General";
 
 // Third party imports
-import { object, string } from "yup";
 import { validate } from "@/shared/validate";
 import { userSchema } from "@/shared/schema";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -78,6 +77,8 @@ async function handler(
                         method: req.method
                     }
                 );
+
+            //Catches any error and throws code, message and cause
             } catch (error) {
                 const { code = 400, message, cause } = error as APIErr;
                 throw {
@@ -87,7 +88,7 @@ async function handler(
                 };
             }
 
-            //Catches any error and throws it in message
+        //Catches any error and throws code, message and cause
         } catch(error) {
             const {
                 code = 500,
