@@ -4,7 +4,7 @@ import nextConnect from "next-connect";
 import multer from "multer";
 
 // Local imports
-import { uploadFile } from "@/lib/actions/file";
+import { uploadFile } from "@/lib/actions/File";
 import { APIErr } from "@/lib/types/General";
 
 /**

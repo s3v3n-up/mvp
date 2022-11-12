@@ -1,7 +1,7 @@
 //third-party import
 import Head from "next/head";
 import { useState, ChangeEvent, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import useAuth from "@/hooks/useAuth";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import haversine from "haversine-distance";
@@ -15,6 +15,9 @@ import { getUsers } from "@/lib/actions/user";
 import { Location } from "@/lib/types/General";
 import axios from "axios";
 import Database from "@/lib/resources/database";
+import type { Match } from "@/lib/types/Match";
+import type { UserProfile } from "@/lib/types/User";
+import { checkIfMatchIsFull } from "@/lib/helpers/match";
 
 //dynamic import
 const Search = dynamic(
@@ -34,19 +37,25 @@ const LocationOnIcon = dynamic(
 );
 
 /**
+ * home page props type
+ * @property {Match[]} regMatches - list of regular matches
+ * @property {Match[]} quickMatches - list of quick matches
+ * @property {UserProfile[]} users - list of users
+ */
+interface Props {
+    regMatches: Match[],
+    quickMatches: Match[],
+    users: UserProfile[]
+}
+
+/**
  * *
  * @description this page displays all the matches created by users from regular matches to quick matches
  *
  */
-export default function Home({ regMatches, quickMatches, users }: any) {
-    const { data: session, status } = useSession();
+export default function Home({ regMatches, quickMatches, users }: Props) {
+    const { session } = useAuth();
     const router = useRouter();
-    useEffect(() => {
-        if (status === "loading") return;
-        if (status === "unauthenticated") {
-            router.push("/login");
-        }
-    }, [status, router]);
 
     const [search, setSearch] = useState("");
 
@@ -331,33 +340,29 @@ export async function getServerSideProps() {
     await Database.setup();
 
     //call getMatches function
-    const data = await getMatches();
+    const matchData: Match[] = await getMatches();
 
     // Call getUsers function
-    const dataUsers = await getUsers();
+    const usersData: UserProfile[] = await getUsers();
 
-    //converts data into object
-    const matches = JSON.parse(JSON.stringify(data));
-
-    // Convert dataUsers into object
-    const users = JSON.parse(JSON.stringify(dataUsers));
+    const availableMatches = matchData.filter((match) => !checkIfMatchIsFull(match));
 
     //check if the match is quick
-    const quickMatches = matches.filter(
-        (match: any) => match.matchType === "QUICK" && match.status === "UPCOMING"
+    const quickMatches = availableMatches.filter(
+        (match: Match) => match.matchType === "QUICK" && match.status === "UPCOMING"
     );
 
     //checks if the match is regular
-    const regMatches = matches.filter(
-        (match: any) => match.matchType === "REGULAR" && match.status === "UPCOMING"
+    const regMatches = availableMatches.filter(
+        (match: Match) => match.matchType === "REGULAR" && match.status === "UPCOMING"
     );
 
     //returns as a props
     return {
         props: {
-            quickMatches,
-            regMatches,
-            users,
+            quickMatches: JSON.parse(JSON.stringify(quickMatches)),
+            regMatches: JSON.parse(JSON.stringify(regMatches)),
+            users: JSON.parse(JSON.stringify(usersData))
         },
     };
 }

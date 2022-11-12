@@ -43,7 +43,7 @@ export default function Card(props: Match) {
     }
 
     return (
-        <article className="sm:w-11/12 w-full text-base m-auto my-5 bg-white rounded-lg">
+        <article className="w-full text-base m-auto my-5 bg-white rounded-lg">
             <SnackBar
                 open={networkError !== ""}
                 onClose={() => setNetworkError("")}

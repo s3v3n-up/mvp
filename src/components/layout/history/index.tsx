@@ -13,7 +13,7 @@ interface Props {
 
 export default function HistoryLayout(props: Props) {
     return (
-        <section className="sm:w-3/5 m-auto w-11/12">
+        <section className="lg:w-2/5 sm:3/5 m-auto w-11/12">
             <header className="w-full mt-10 sticky top-10 z-50">
                 <ul className={
                     `w-full rounded-lg 

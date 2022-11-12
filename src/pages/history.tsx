@@ -33,7 +33,7 @@ export default function History({ pastMatches, activeMatches }: Props) {
             // The title or label of our tab
             label: "Created Matches",
             content: (
-                <section role="list">
+                <section role="list" className="w-full mt-5">
                     {/* Created match cards to hold match information*/}
                     {activeMatches.map((created: any, idx: any) => (
                         <Card key={idx} {...created} />
@@ -46,7 +46,7 @@ export default function History({ pastMatches, activeMatches }: Props) {
         past: {
             label: "History",
             content: (
-                <section role="list" className="mt-5">
+                <section role="list" className="w-full mt-5">
                     {/* Past match cards to hold match information*/}
                     {pastMatches.map((past: any, idx: any) => (
                         <Card key={idx} {...past} />
@@ -66,7 +66,7 @@ export default function History({ pastMatches, activeMatches }: Props) {
                 <meta name="description" content="History page" />
             </Head>
             {/*Here we display the appropriate tab content (or matches) that correspond to the active tab */}
-            <div>{tabsData[activeTab].content}</div>
+            {tabsData[activeTab].content}
         </HistoryLayout>
     );
 }
