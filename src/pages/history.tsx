@@ -90,7 +90,7 @@ export async function getServerSideProps({ req, res }: GetServerSidePropsContext
     const data: Match[] = await getMatches();
 
     // Filter all active matches
-    const activeMatches = data.filter((match: any) => {
+    const activeMatches = data.filter((match: Match) => {
 
         // Check if match is still active
         const isActive = match.status === "UPCOMING" ||
@@ -105,7 +105,7 @@ export async function getServerSideProps({ req, res }: GetServerSidePropsContext
     });
 
     // Filter all cancelled or finished matches
-    const pastMatches = data.filter((match: any) => {
+    const pastMatches = data.filter((match: Match) => {
 
         // Check if match is cancelled or finished
         const isEnded = match.status === "CANCELLED" || match.status === "FINISHED";
