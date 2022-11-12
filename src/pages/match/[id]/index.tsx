@@ -6,11 +6,6 @@ import axios from "axios";
 import dynamic from "next/dynamic";
 import useSWR from "swr";
 
-
-//https://popupsmart.com/blog/react-popup
-import Popup from "reactjs-popup";
-import "reactjs-popup/dist/index.css";
-
 //local-import
 import styles from "@/styles/MatchView.module.sass";
 import { getMatchById, updateMatchFields } from "@/lib/actions/match";
@@ -18,13 +13,16 @@ import Database from "@/lib/resources/database";
 import { Location, Pos } from "@/lib/types/General";
 import { Match } from "@/lib/types/Match";
 import { dateConverter } from "@/lib/helpers/time";
-import useMatchNavigate from "@/hooks/useMatchStatus";
-import SnackBar from "@/components/snackbar";
 
 // https://www.npmjs.com/package/add-to-calendar-button
 // eslint-disable-next-line camelcase
 import "add-to-calendar-button/assets/css/atcb.css";
 import { useSession } from "next-auth/react";
+
+//dynamic imports
+const Snackbar = dynamic(() => import("@mui/material/Snackbar"), {
+    ssr: false,
+});
 
 // Interface for passed props
 interface Props {
@@ -42,25 +40,6 @@ interface Config {
   description: string;
 }
 
-interface GeocodeResult {
-    routes: [
-        {
-            legs: [
-                {steps: Steps[]}
-            ],
-            duration: number
-        }
-    ]
-}
-
-interface Steps {
-    maneuver: {
-        instruction: string;
-    }
-}
-
-// interface Steps
-
 /**
  * @description displays MatchView page
  */
@@ -75,9 +54,6 @@ export default function MatchView({ matchData }: Props) {
     // Stores and Sets the location
     const [startLocation, setstartLocation] = useState<Location>();
 
-    // Stores and set data from the mapbox
-    const [geocodeResult, setGeocodeResult] = useState<GeocodeResult>();
-
     //error state
     const [errorMessage, setErrorMessage] = useState<string>("");
 
@@ -88,20 +64,60 @@ export default function MatchView({ matchData }: Props) {
 
     //guard page against match already started
     const router = useRouter();
-    useMatchNavigate(match);
+    useEffect(() => {
+
+        //cancel match if match is already start and member is not full
+        (async () => {
+
+            //boolean check if match teams are full
+            const isMemberFull =
+        match.teams[0].members.concat(match.teams[1].members).length ===
+        match.gameMode.requiredPlayers;
+
+            //boolean check if match is alredy started
+            const isMatchStarted =
+        new Date(match.matchStart!.toLocaleString()).getTime() <=
+        new Date().getTime();
+
+            //if match is started
+            if (isMatchStarted) {
+
+                //if member is not full, cancel the match
+                if (!isMemberFull && match.status !== "CANCELLED") {
+                    await axios.put(`/api/match/${match._id}/operation/cancel`, {
+                        cancelTime: new Date().toString(),
+                    });
+                }
+
+                //if status is still upcoming, update it to in progress
+                else if (match.status === "UPCOMING") {
+                    await axios.put(`/api/match/${match._id}/status`, {
+                        status: "INPROGRESS",
+                    });
+                }
+
+                //navigate to scoreboard
+                router.push(`/match/${match._id}/scoreboard`);
+            }
+        })();
+    }, [match, router]);
 
     //refetch match every 1 seconds
-    const { data, error } = useSWR<{match: Match}>(`/api/match/${matchData._id}`, {
-        refreshInterval: 1000,
-        fallback: match
-    });
+    const { data, error } = useSWR<{ match: Match }>(
+        `/api/match/${matchData._id}`,
+        {
+            refreshInterval: 1000,
+            fallback: match,
+        }
+    );
 
     //update match with new info
-    useEffect(()=> {
+    useEffect(() => {
         if (data && !error) {
             setMatch(data.match);
             setMatchStartTime(dateConverter(data.match.matchStart!));
-        } if (error) {
+        }
+        if (error) {
             setErrorMessage("failed to fetch lastest info");
         }
     }, [data, error]);
@@ -130,7 +146,9 @@ export default function MatchView({ matchData }: Props) {
 
         // Error parameter for currentPosition function
         function error(err: any) {
-            setErrorMessage(`ERROR(${err.code}): ${err.message}. Error getting your location`);
+            setErrorMessage(
+                `ERROR(${err.code}): ${err.message}. Error getting your location`
+            );
         }
         navigator.geolocation.getCurrentPosition(success, error, options);
     }, []);
@@ -138,10 +156,9 @@ export default function MatchView({ matchData }: Props) {
     // Configuration to be pass in the atcb_action
     // https://www.npmjs.com/package/add-to-calendar-button
     const config: Config = {
-        name: match.sport?? "No Sport",
-        startDate: dateConverter(match.matchStart!)?? undefined,
-        endDate: match.matchEnd?
-            dateConverter(match.matchEnd) : undefined,
+        name: match.sport ?? "No Sport",
+        startDate: dateConverter(match.matchStart!) ?? undefined,
+        endDate: match.matchEnd ? dateConverter(match.matchEnd) : undefined,
         options: [
             "Apple",
             "Google",
@@ -160,83 +177,43 @@ export default function MatchView({ matchData }: Props) {
         try {
 
             //// https://www.npmjs.com/package/add-to-calendar-button
-            await (import("add-to-calendar-button")).then((atcb) => {
+            await import("add-to-calendar-button").then((atcb) => {
                 atcb.atcb_action(config);
             });
 
-        // Catches Error and displays an alert
-        }catch {
+            // Catches Error and displays an alert
+        } catch {
             setErrorMessage("Adding to calendar failed, try again later");
         }
     }
 
     // Function to handle get direction click event
     async function getDirectionsClicked() {
-
-        // fetch mapbox api using directions services
         try {
-            const endpoint = `https://api.mapbox.com/directions/v5/mapbox/driving/${
-            startLocation!.lng
-            },${startLocation!.lat};${match.location.lng},${
-                match.location.lat
-            }?steps=true&geometries=geojson&access_token=${
-                process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
-            }`;
+            const getDirect = `https://www.google.com/maps/dir/${
+        startLocation!.lat
+            },${startLocation!.lng}
+            /${match.location.lat},${match.location.lng}`;
 
-            await axios.get(endpoint).then(({ data }) => {
-                setGeocodeResult(data);
-            });
+            router.push(getDirect);
+
+            // Catches Error and displays an alert
         } catch {
             setErrorMessage("Error getting directions, please try again later");
         }
     }
 
-    //function for user to leave match
-    function onLeave() {
-        axios.put(`/api/match/${match._id}/operation/remove`, {
-            userName: session?.user.userName
-        })
-            .then(()=>router.push("/"))
-            .catch(()=> {
-                setErrorMessage("Error leaving match, please try again later");
-            });
-    }
-
-    //function for host to cancel match
-    function onCancel() {
-        axios.put(`/api/match/${match._id}/operation/cancel`, {
-            cancelTime: new Date().toString()
-        })
-            .then(()=>router.push("/"))
-            .catch(()=>{
-                setErrorMessage("Error cancelling match, please try again later");
-            });
-    }
-
-    // Contains steps, maneuver and instruction data
-    let steps: Steps[] = [];
-
-    // Stores trip duration for when you get directions
-    let duration: number = 0;
-
-    // Guard to check if GeocodeResult from api fetch contains data
-    if (geocodeResult) {
-        steps = geocodeResult.routes[0].legs[0].steps;
-
-        // calculation to get trip duration in minutes
-        duration = Math.floor(geocodeResult.routes[0].duration / 60);
-    }
-
     return (
         <article className={styles.container}>
             {/* Header for Sport */}
-            {session?.user.id === match.matchHost &&
-            <button
-                className={styles.edit}
-                onClick={() => router.push(`/match/${match._id}/edit`)}
-            >
-                Edit
-            </button>}
+            {session?.user.id === match.matchHost && (
+                <button
+                    className={styles.edit}
+                    onClick={() => router.push(`/match/${match._id}/edit`)}
+                >
+                    Edit
+                </button>
+            )}
             <h1>{match.sport}</h1>
             <div>
                 {/* Sub Header for Match Type */}
@@ -245,23 +222,12 @@ export default function MatchView({ matchData }: Props) {
                 <p>{match.matchType}</p>
             </div>
             <div>
-                {/* Sidebar to get step-by-step instructions */}
-                {/* https://popupsmart.com/blog/react-popup */}
-                <Popup trigger={<button
+                <button
                     className={styles.directions}
-                >Get Directions</button>} onOpen={(e) => {getDirectionsClicked();}} position="right center">
-                    {steps &&
-                    <div className={styles.popupContent}>
-                        <p>
-                            <strong>Trip duration: {duration} min 🏎️</strong>
-                        </p>
-                        <ol>
-                            {steps.map((step: Steps, index: number) => {
-                                return (<li className={styles.list} key={index}>{step.maneuver.instruction}</li>);
-                            })}
-                        </ol>
-                    </div>}
-                </Popup>
+                    onClick={() => getDirectionsClicked()}
+                >
+                 Get Directions
+                </button>
 
                 {/* Sub Header for Match Type */}
                 <h3>Address</h3>
@@ -271,17 +237,12 @@ export default function MatchView({ matchData }: Props) {
             <div>
                 {/* https://www.npmjs.com/package/add-to-calendar-button */}
                 {/* Add to your local calendar button */}
-                <button
-                    className={styles.calendar}
-                    onClick={() => addToCal()}
-                >
+                <button className={styles.calendar} onClick={() => addToCal()}>
                     Add to Calendar
                 </button>
                 {/* Sub Header for Date and Time */}
                 <h3>Date and Time</h3>
-                <p>
-                    {matchStartTime}
-                </p>
+                <p>{matchStartTime}</p>
             </div>
             <div>
                 {/* Sub Header for Description */}
@@ -291,47 +252,40 @@ export default function MatchView({ matchData }: Props) {
             </div>
             <div>
                 {/* Sub Header for Joined Players */}
-                {session?.user.id !== match.matchHost &&
-                    <button className={styles.directions}>
-                        Join
-                    </button>
-                }
+                {session?.user.id !== match.matchHost && (
+                    <button className={styles.directions}>Join</button>
+                )}
                 <h3>Joined Players</h3>
                 <div>
                     {/* Displays all joined players */}
-                    {match.teams[0].members.concat(match.teams[1].members)
+                    {match.teams[0].members
+                        .concat(match.teams[1].members)
                         .map((name: string, idx: number) => (
                             <div className={styles.players} key={idx}>
                                 {name}
                                 <div>
                                     {/* Leave the match button */}
-                                    {
-                                        session?.user.userName === name?
-                                            <button
-                                                onClick={() => onCancel()}
-                                            >
-                                                Cancel Match
-                                            </button>:
-                                            <button
-                                                onClick={() => onLeave()}
-                                            >
-                                                Leave
-                                            </button>
-                                    }
+                                    <button>Leave</button>
                                 </div>
                             </div>
                         ))}
                 </div>
             </div>
-            <SnackBar
+            <Snackbar
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
                 open={errorMessage.length > 0}
-                duration={3000}
+                autoHideDuration={3000}
                 onClose={() => setErrorMessage("")}
             >
-                <span className="text-red-700 text-center">
-                    {errorMessage}
-                </span>
-            </SnackBar>
+                <p
+                    className={`w-full bg-red-100 
+                    px-5 py-3 
+                    drop-shadow-lg z-50 
+                    rounded-lg text-center`}
+                >
+                    <span className="text-red-700">{errorMessage}</span>
+                </p>
+            </Snackbar>
         </article>
     );
 }
@@ -347,7 +301,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
         // Get the specific match that you want to view
         const match = await getMatchById(id as string);
-        const isMemberFull = (match.teams[0].members.concat(match.teams[1].members)).length === match.gameMode.requiredPlayers;
+        const isMemberFull =
+      match.teams[0].members.concat(match.teams[1].members).length ===
+      match.gameMode.requiredPlayers;
 
         // Redirect them to index if the match type is not REGULAR
         if (match.matchType === "QUICK" || !match) {
@@ -363,7 +319,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         //update match status and redirect to scoreboard if start time is passed
         if (
             match.matchType === "REGULAR" &&
-            new Date(match.matchStart!.toUTCString()).getTime() <= new Date(new Date(Date.now()).toUTCString()).getTime()
+      new Date(match.matchStart!.toUTCString()).getTime() <=
+        new Date(new Date(Date.now()).toUTCString()).getTime()
         ) {
 
             //if members is not full, cancel the match
@@ -385,7 +342,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
                 redirect: {
                     destination: `/match/${id}/scoreboard`,
                     permanent: false,
-                }
+                },
             };
         }
 
