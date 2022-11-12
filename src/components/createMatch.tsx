@@ -11,6 +11,7 @@ import Input from "./Input";
 import SelectOption from "./SelectOption";
 import { SportsOptions, Modes, FullLocation } from "@/lib/types/General";
 import { Sport } from "@/lib/types/Sport";
+import SnackBar from "./snackbar";
 
 //dynamic imports
 const AddLocationAlt = dynamic(
@@ -32,7 +33,6 @@ const AlertMessage = dynamic(
 interface Props {
   props: Sport[];
 }
-
 
 /*
  * this component is used in create match page
@@ -68,6 +68,9 @@ export default function CreateMatch({ props }: Props) {
 
     // Array containing all accessed modes per existing sport
     const allModes: Modes[] = [];
+
+    //network error state
+    const [networkError, setNetworkError] = useState<string>("");
 
     // This function gets all sport names and push them into allSports array to be accessed later
     props.map((sport: Sport) => {
@@ -114,17 +117,15 @@ export default function CreateMatch({ props }: Props) {
         setAddress(val);
 
         // Code to set location to be saved on database and set suggestions for autofill
-        try {
-            const endpoint =
+        const endpoint =
                 `https://api.mapbox.com/geocoding/v5/mapbox.places/${val}
                 .json?&limit=3&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`;
-            await axios.get(endpoint).then(({ data }) => {
-                setLocation(data);
-                setSuggestions(data?.features);
-            });
-        } catch (error: any) {
-            throw new Error("Error fetching data, ", error);
-        }
+        await axios.get(endpoint).then(({ data }) => {
+            setLocation(data);
+            setSuggestions(data?.features);
+        }).catch(()=>{
+            setNetworkError("error getting suggestion");
+        });
     }
 
     // Function to handle sport change event
@@ -333,6 +334,15 @@ export default function CreateMatch({ props }: Props) {
                     </div>
                 </form>
             </div>
+            <SnackBar
+                open={networkError !== ""}
+                duration={3000}
+                onClose={() => setNetworkError("")}
+            >
+                <span className="text-red-400 text-center">
+                    {networkError}
+                </span>
+            </SnackBar>
         </div>
     );
 }
