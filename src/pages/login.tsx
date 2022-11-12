@@ -39,7 +39,7 @@ export default function Login() {
     useEffect(() => {
         const splitByError = router.asPath.split("error");
         if (splitByError.length > 1) {
-            const err = splitByError[-1].substring(1);
+            const err = splitByError[splitByError.length-1].substring(1);
             if (err == "OAuthAccountNotLinked") {
                 setError(
                     `You already login with a different provider, ex: you previously logged in with Google, 
@@ -116,6 +116,7 @@ export default function Login() {
                                     placeholder="enter your email"
                                     value={email}
                                     onChange={handleEmailChange}
+                                    required
                                 >
                                     <EmailIcon />
                                 </Input>

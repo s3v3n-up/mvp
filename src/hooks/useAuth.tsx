@@ -14,7 +14,7 @@ export default function useAuth() {
     //start checking if user is authenticated
     useEffect(() => {
         if (status === "loading") return;
-        if (status === "unauthenticated") {
+        if (status === "unauthenticated" && router.pathname !== "/login") {
             router.push("/login");
         } else if (status === "authenticated") {
 

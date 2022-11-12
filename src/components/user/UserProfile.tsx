@@ -8,7 +8,7 @@ import debounce from "lodash.debounce";
 import Input from "@/components/Input";
 import { AvatarContext } from "@/context/avatar";
 import { UserProfile } from "@/lib/types/User";
-import { PHONE_REGEX } from "@/lib/helpers/validation";
+import { firstNameSchema, lastNameSchema, phoneNumberSchema } from "@/shared/schema";
 
 //dynamic imports
 const Person = dynamic(
@@ -26,6 +26,10 @@ const Phone = dynamic(
 const ImagePicker = dynamic(
     ()=>import("@/components/imagepicker"), { ssr: false }
 );
+
+const AlertMessage = dynamic(() => import("@/components/alertMessage"), {
+    ssr: false,
+});
 
 /**
  * interface for type of user data
@@ -61,6 +65,7 @@ export default function Profile({ profile, userStats }: Props) {
     //user profile image
     const [image,setImage] = useState(profile.image);
     const [updatedImage, setUpdatedImage] = useState<File | null>(null);
+    const [error, setError] = useState("");
 
     //get the user firstname input value, update it in the db through axios put api
     const fNameHandle = async (event: React.ChangeEvent<HTMLInputElement>) =>{
@@ -68,20 +73,28 @@ export default function Profile({ profile, userStats }: Props) {
         //get and set the user firstname state
         const value = event.target.value;
         setFirstName(value);
+        try {
 
-        //validate the user firstname
-        if (value.length <= 2) return;
+            // Checks if firstName is Valid
+            const isValid = await firstNameSchema.validate({ firstName: value });
 
-        //update the user firstname in the db
-        debounce(async () => {
-            await axios.put(`/api/user/${profile.userName}`, {
-                firstName: value,
-                lastName,
-                phoneNumber: phone,
-                image
-            });
+            // If firstName is valid
+            if(isValid) {
+
+                //update the user firstName in the db
+                debounce(async () => {
+                    await axios.put(`/api/user/${profile.userName}/firstName`, {
+                        firstName: value
+                    });
+                },300)();
+            }
+
+        // Catches and sets the error message
+        } catch(error: any) {
+            setError(error.message);
+
+            return;
         }
-        ,300)();
     };
 
     //get the user lastname input value, update it in the db through axios put api
@@ -91,16 +104,28 @@ export default function Profile({ profile, userStats }: Props) {
         const value = event.target.value;
         setLastName(value);
 
-        //validate the lastname
-        if (value.length <= 2) return;
-        debounce(async () => {
-            await axios.put(`/api/user/${profile.userName}`, {
-                firstName,
-                lastName: value,
-                phoneNumber: phone,
-                image
-            });
-        },300)();
+        try {
+
+            // Checks if lastName is Valid
+            const isValid = await lastNameSchema.validate({ lastName: value });
+
+            // If phoneNumber is valid
+            if(isValid) {
+
+                //update the user lastName in the db
+                debounce(async () => {
+                    await axios.put(`/api/user/${profile.userName}/lastName`, {
+                        lastName: value
+                    });
+                },300)();
+            }
+
+        // Catches and sets the error message
+        } catch(error: any) {
+            setError(error.message);
+
+            return;
+        }
     };
 
     //get the user phone input value, update it in the db through axios put api
@@ -110,18 +135,28 @@ export default function Profile({ profile, userStats }: Props) {
         const value = event.target.value;
         setPhone(value);
 
-        //validate the phone
-        if (!PHONE_REGEX.test(value)) return;
+        try {
 
-        //update the user phonenumber in the db
-        debounce(async () => {
-            await axios.put(`/api/user/${profile.userName}`, {
-                firstName,
-                lastName,
-                phoneNumber: value,
-                image
-            });
-        },300)();
+            // Checks if phoneNumber is Valid
+            const isValid = await phoneNumberSchema.validate({ phoneNumber: value });
+
+            // If phoneNumber is valid
+            if(isValid) {
+
+                //update the user phonenumber in the db
+                debounce(async () => {
+                    await axios.put(`/api/user/${profile.userName}/phoneNumber`, {
+                        phoneNumber: value
+                    });
+                },300)();
+            }
+
+        // Catches and sets the error message
+        } catch(error: any) {
+            setError(error.message);
+
+            return;
+        }
     };
 
     /**
@@ -142,10 +177,7 @@ export default function Profile({ profile, userStats }: Props) {
         try {
             const res = await axios.post("/api/file", data);
             const { data: { data: { url: imageUrl } } } = res;
-            await axios.put(`/api/user/${profile.userName}`, {
-                firstName,
-                lastName,
-                phoneNumber: phone,
+            await axios.put(`/api/user/${profile.userName}/image`, {
                 image: imageUrl
             });
             avatarContext?.setCurrAvatar(imageUrl);
@@ -172,6 +204,7 @@ export default function Profile({ profile, userStats }: Props) {
                     onChange={handleImageChange}
                     onRemove={handleRemoveImage}
                 />
+                {error && <AlertMessage message={error} type="error" />}
                 <Input
                     label="First Name"
                     value={firstName}

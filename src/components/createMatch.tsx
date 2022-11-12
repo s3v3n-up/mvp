@@ -11,6 +11,7 @@ import Input from "./Input";
 import SelectOption from "./SelectOption";
 import { SportsOptions, Modes, FullLocation } from "@/lib/types/General";
 import { Sport } from "@/lib/types/Sport";
+import SnackBar from "./snackbar";
 
 //dynamic imports
 const AddLocationAlt = dynamic(
@@ -32,7 +33,6 @@ const AlertMessage = dynamic(
 interface Props {
   props: Sport[];
 }
-
 
 /*
  * this component is used in create match page
@@ -69,6 +69,9 @@ export default function CreateMatch({ props }: Props) {
     // Array containing all accessed modes per existing sport
     const allModes: Modes[] = [];
 
+    //network error state
+    const [networkError, setNetworkError] = useState<string>("");
+
     // This function gets all sport names and push them into allSports array to be accessed later
     props.map((sport: Sport) => {
         allSports.push({ value: sport.name, name: sport.name });
@@ -77,8 +80,8 @@ export default function CreateMatch({ props }: Props) {
     // This functions gets all existing game modes on each existing sports and push them into allModes array to be accessed later
     props.map((sport: Sport) => {
         if (sport.name === sportname) {
-            sport.gameModes.map((mode:any) => {
-                allModes.push({ value: mode.modeNames, name: mode.name });
+            sport.gameModes.map((mode: { modeNames: string}) => {
+                allModes.push({ value: mode.modeNames, name: mode.modeNames });
             });
         }
     });
@@ -114,17 +117,15 @@ export default function CreateMatch({ props }: Props) {
         setAddress(val);
 
         // Code to set location to be saved on database and set suggestions for autofill
-        try {
-            const endpoint =
+        const endpoint =
                 `https://api.mapbox.com/geocoding/v5/mapbox.places/${val}
                 .json?&limit=3&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`;
-            await axios.get(endpoint).then(({ data }) => {
-                setLocation(data);
-                setSuggestions(data?.features);
-            });
-        } catch (error) {
-            throw new Error("Error fetching data, ", error);
-        }
+        await axios.get(endpoint).then(({ data }) => {
+            setLocation(data);
+            setSuggestions(data?.features);
+        }).catch(()=>{
+            setNetworkError("error getting suggestion");
+        });
     }
 
     // Function to handle sport change event
@@ -251,13 +252,14 @@ export default function CreateMatch({ props }: Props) {
                             value={address}
                             name="location"
                             onChange={handleLocationChange}
+                            required
                         >
                             <AddLocationAlt />
                         </Input>
                         {/* Autofill for address */}
                         {suggestions?.length > 0 && (
                             <SuggestionWrapper>
-                                {suggestions.map((suggestion: any, index: any) => {
+                                {suggestions.map((suggestion: { place_name: string }, index: number) => {
                                     return (
                                         <Suggestion
                                             className="w-full text-base hover:bg-orange-500 p-5"
@@ -301,6 +303,7 @@ export default function CreateMatch({ props }: Props) {
                         name="date"
                         type="datetime-local"
                         onChange={handleDateChange}
+                        required
                     >
                         <AccessTime />
                     </Input>
@@ -331,6 +334,15 @@ export default function CreateMatch({ props }: Props) {
                     </div>
                 </form>
             </div>
+            <SnackBar
+                open={networkError !== ""}
+                duration={3000}
+                onClose={() => setNetworkError("")}
+            >
+                <span className="text-red-400 text-center">
+                    {networkError}
+                </span>
+            </SnackBar>
         </div>
     );
 }

@@ -1,5 +1,6 @@
 import type { Match } from "@/lib/types/Match";
 import axios from "axios";
+import { UserProfile } from "../types/User";
 
 /**
  * function to check if regular match has started, then update match status accordingly
@@ -38,3 +39,39 @@ export function checkIfMatchHasStarted(match: Match, onMatchStart: ()=> void) {
         onMatchStart();
     }
 }
+
+/**
+ * @param match the match user want to join
+ * @param user check for username
+ */
+
+export function checkIfUserInMatch(match:Match, userName:string){
+
+    // find out the username
+    const user = userName;
+
+    //check if the username exist in the match members
+    const userInMatch = match.teams[0].members.concat(match.teams[1].members).includes(user);
+
+    if(userInMatch){
+        return true;
+    }
+
+    return false;
+}
+
+/**
+ * @param {Match} match - to check if full
+ */
+export function checkIfMatchIsFull(match:Match){
+
+    //check if the match is full
+    const isMemberFull = match.teams[0].members.concat(match.teams[1].members).length === match.gameMode.requiredPlayers;
+
+    if(isMemberFull){
+        return true;
+    }
+
+    return false;
+}
+

@@ -226,7 +226,7 @@ export default function MatchView({ matchData }: Props) {
                     className={styles.directions}
                     onClick={() => getDirectionsClicked()}
                 >
-                    Get Directions
+                 Get Directions
                 </button>
 
                 {/* Sub Header for Match Type */}
