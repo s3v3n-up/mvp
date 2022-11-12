@@ -116,7 +116,6 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
     //handles hostAvatar
     function handleHostAvatar(id: string) {
         const host = users.filter((user: UserProfile) => user._id === id);
-        console.log(host);
 
         return host[0].image;
     }
