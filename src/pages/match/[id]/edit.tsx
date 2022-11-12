@@ -190,7 +190,7 @@ export default function MatchEdit({ data }: Props) {
                         {/* Autofill for address */}
                         {suggestions?.length > 0 && (
                             <div className={styles.suggest}>
-                                {suggestions.map((suggestion: any, index: any) => {
+                                {suggestions.map((suggestion: {place_name:string}, index: number) => {
                                     return (
                                         <p
                                             key={index}

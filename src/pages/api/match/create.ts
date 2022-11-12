@@ -7,6 +7,7 @@ import { Match } from "@/lib/types/Match";
 import { createMatch, findUserActiveMatches } from "@/lib/actions/match";
 import Database from "@/lib/resources/database";
 import MatchModel from "@/lib/resources/models/Match";
+import { APIErr } from "@/lib/types/General";
 
 /**
  * @description = a function that handles api request for creating a match
@@ -146,13 +147,19 @@ export default async function handler(
             });
 
             // Catch any errors caught above and send it back as json
-        } catch (error: any) {
-            const { code = 500, message } = error;
-            res.status(code).json({
-                message,
-            });
-
-            return;
+        } catch(error) {
+            const {
+                code = 500,
+                message="internal server error",
+                cause="internal error"
+            } = error as APIErr;
+            res.status(code).json(
+                {
+                    code,
+                    message,
+                    cause
+                }
+            );
         }
     }
 }
