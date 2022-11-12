@@ -61,7 +61,7 @@ export function checkIfUserInMatch(match:Match, userName:string){
 }
 
 /**
- * @param match the match user want to join
+ * @param {Match} match - to check if full
  */
 export function checkIfMatchIsFull(match:Match){
 
