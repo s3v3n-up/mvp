@@ -72,7 +72,7 @@ export async function getUsers() {
  * @param {string} image the image/logo of the user to be change
  * @returns the updated user
  */
-export async function updateUser(userName: string, firstName: string, lastName: string, phonenumber: string, image: string) {
+export async function updateUser(fields: Partial<UserProfile>, userName: string) {
 
     try {
 
@@ -80,15 +80,11 @@ export async function updateUser(userName: string, firstName: string, lastName: 
         const user = await UserModel.findOne({ userName });
 
         // Stores and look for a specific user id and updates it in the database
-        const updatedUser = await UserModel.findOneAndUpdate({ _id: user?.id }, {
-            userName,
-            firstName,
-            lastName,
-            phoneNumber: phonenumber,
-            image
-        }, {
-            new: true
-        });
+        const updatedUser = await UserModel.findOneAndUpdate({ _id: user?.id },
+            fields
+            , {
+                new: true
+            });
 
         // returns the updated user
         return updatedUser;

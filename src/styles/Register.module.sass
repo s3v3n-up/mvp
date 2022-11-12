@@ -3,7 +3,7 @@
 
 // This the styles for register page 
 .container
-  @apply grid grid-cols-2
+  @apply grid grid-cols-2 text-base overflow-hidden
   user-select: none
 
 // This the styles for left container shown in the browser
@@ -52,6 +52,8 @@
     flex-direction: column
     gap: 0.5rem
     width: 50%
+    @media screen and (max-width: 768px)
+      width: 95%
 
 .imgupload
   display: flex

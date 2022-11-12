@@ -128,7 +128,7 @@ export default function Register() {
             const imageUrl = await handleImageSubmit();
             await axios.post("/api/user/create", {
                 ...formData,
-                email: session!.user.email,
+                email: session?.user.email,
                 image: imageUrl,
                 matches: [],
             });

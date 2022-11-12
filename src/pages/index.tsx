@@ -1,5 +1,6 @@
 //third-party import
 import Head from "next/head";
+import Image from "next/image";
 import { useState, ChangeEvent, useEffect } from "react";
 import useAuth from "@/hooks/useAuth";
 import { useRouter } from "next/router";
@@ -112,6 +113,13 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
         return userFound && userFound.length > 0 ? userFound[0].userName : "";
     }
 
+    //handles hostAvatar
+    function handleHostAvatar(id: string) {
+        const host = users.filter((user: any) => user._id === id);
+
+        return host[0].image;
+    }
+
     // Function to join the regular match
     async function joinReg(id: string) {
         try {
@@ -218,7 +226,7 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
                                                 className={Cardstyles.join}
                                                 onClick={() => joinQuick(quick._id)}
                                             >
-                                                join
+                              join
                                             </button>
                                         </div>
                                     )}
@@ -235,9 +243,16 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
                                     <p>{quick.location.address.pointOfInterest}</p>
                                     <p>
                                         {(!isNaN(distance) && `${distance}km away`) ||
-                                        "No Location"}
+                            "No Location"}
                                     </p>
                                     {/* displays user avatar that create the match */}
+                                    <Image
+                                        src={handleHostAvatar(quick.matchHost)}
+                                        alt="avatar"
+                                        className={Cardstyles.avatar}
+                                        width={45}
+                                        height={45}
+                                    />
                                 </div>
                             </div>
                         );
@@ -318,10 +333,16 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
                                                 </div>
                                                 <p>{reg.location.address.pointOfInterest}</p>
                                                 <p>
-                                                    {(!isNaN(distance) && `${distance}km away`) ||
-                            "No Location"}
+                                                    {(!isNaN(distance) && `${distance}km away`) || "No Location"}
                                                 </p>
                                                 {/* displays user that create the match */}
+                                                <Image
+                                                    src={handleHostAvatar(reg.matchHost)}
+                                                    alt="avatar"
+                                                    className={Cardstyles.avatar}
+                                                    width={45}
+                                                    height={45}
+                                                />
                                             </div>
                                         </div>
                                     );

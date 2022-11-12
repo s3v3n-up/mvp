@@ -235,20 +235,22 @@ export default function MatchEdit({ data }: Props) {
                         ></textarea>
                     </div>
                 </div>
-                <div>
+                <div className={styles.buttoncontainer}>
                     {/* button for save */}
                     <button type="submit" className={styles.save}>
-            Save
+                        Save
+                    </button>
+
+                    <button
+                        className={styles.delete}
+                        onClick={() => handleDelete(data._id as string)}
+                    >
+                        Delete
                     </button>
                 </div>
             </form>
-            {/* button for delete */}
-            <button
-                className={styles.delete}
-                onClick={() => handleDelete(data._id as string)}
-            >
-        Delete
-            </button>
+
+
         </div>
     );
 }
