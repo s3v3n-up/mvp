@@ -54,7 +54,7 @@ export default function Register() {
         if (session && session.user.isFinishedSignup) {
             router.push("/");
         }
-    });
+    }, [session, router]);
 
     //register form data state
     const [formData, setFormData] = useState<RegisterData>({
