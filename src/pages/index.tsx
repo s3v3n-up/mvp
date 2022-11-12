@@ -118,21 +118,21 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
         try {
             await axios.put(`api/match/${id.toString()}/team/join`, {
                 userName: session?.user.userName,
+            }).then(()=>{
+                router.push(`/match/${id.toString()}/scoreboard`);
             });
         } catch (error) {
             return;
         }
-
-        return router.push(`/match/${id.toString()}/scoreboard`);
     }
 
     // Functrion to join the quick match
     async function joinQuick(id: string) {
         await axios.put(`api/match/${id.toString()}/team/join`, {
             userName: session?.user.userName,
+        }).then(()=> {
+            router.push(`/match/${id.toString()}/scoreboard`);
         });
-
-        return router.push(`/match/${id.toString()}/scoreboard`);
     }
 
     return (
@@ -207,7 +207,7 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
                               {/* displays day/date/time */}
                               <div
                                   className={Cardstyles.time}
-                                  onClick={() => handleCardClicked(quick._id as string)}
+                                  onClick={() => handleCardClicked(quick._id!.toString())}
                               >
                                   <div className={Cardstyles.detail}>
                                       <p>Now</p>
@@ -217,7 +217,7 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
                                       <div>
                                           <button
                                               className={Cardstyles.join}
-                                              onClick={() => joinQuick(quick._id as string)}
+                                              onClick={() => joinQuick(quick._id!.toString())}
                                           >
                               join
                                           </button>
@@ -309,7 +309,7 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
                                   {reg.matchHost !== session?.user.id && (
                                       <button
                                           className={Cardstyles.join}
-                                          onClick={() => joinReg(reg._id as string)}
+                                          onClick={() => joinReg(reg._id!.toString())}
                                       >
                             join
                                       </button>

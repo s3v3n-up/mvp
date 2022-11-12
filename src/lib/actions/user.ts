@@ -95,6 +95,30 @@ export async function updateUser(fields: Partial<UserProfile>, userName: string)
     }
 }
 
+/**
+ * add match to user's match history
+ */
+export async function addMatchToUserHistory(matchId: string, userName: string) {
+    try {
+
+        // Sets up the database
+        await Database.setup();
+
+        //add match to user's match history
+        const updatedUser = await UserModel.findByIdAndUpdate(
+            { userName },
+            { $push: { matchHistory: matchId } },
+            { new: true }
+        );
+
+        // Returns the updated user
+        return updatedUser;
+
+    } catch (error: any) {
+        throw new Error("Error updating the user", error.message);
+    }
+
+}
 
 /**
  * @getUserByEmail This is a function to check if the user exists on the database

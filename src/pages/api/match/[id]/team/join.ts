@@ -1,4 +1,5 @@
 import { joinMatch } from "@/lib/actions/match";
+import { addMatchToUserHistory } from "@/lib/actions/user";
 import Database from "@/lib/resources/database";
 import { NextApiRequest, NextApiResponse } from "next";
 // eslint-disable-next-line camelcase
@@ -41,8 +42,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             // Initialize connection to the database
             await Database.setup();
 
+
             //update match score based on operation
             await joinMatch(id as string, userName);
+            await addMatchToUserHistory(id as string, userName);
 
             // Return a success message
             res.status(200).json(
