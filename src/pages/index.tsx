@@ -96,6 +96,13 @@ export default function Home({ regMatches, quickMatches, users }: any) {
         return userFound && userFound.length > 0 ? userFound[0].userName : "";
     }
 
+    //handles hostAvatar
+    function handleHostAvatar(id: string) {
+        const host = users.filter((user: any) => user._id === id);
+
+        return host[0].image;
+    }
+
     // Function to join the regular match
     async function joinReg(id: string) {
         try {
@@ -222,6 +229,13 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                             "No Location"}
                                   </p>
                                   {/* displays user avatar that create the match */}
+                                  <Image
+                                      src={handleHostAvatar(quick.matchHost)}
+                                      alt="avatar"
+                                      className={Cardstyles.avatar}
+                                      width={45}
+                                      height={45}
+                                  />
                               </div>
                           </div>
                       );
@@ -306,6 +320,13 @@ export default function Home({ regMatches, quickMatches, users }: any) {
                             "No Location"}
                                   </p>
                                   {/* displays user that create the match */}
+                                  <Image
+                                      src={handleHostAvatar(reg.matchHost)}
+                                      alt="avatar"
+                                      className={Cardstyles.avatar}
+                                      width={45}
+                                      height={45}
+                                  />
                               </div>
                           </div>
                       );
