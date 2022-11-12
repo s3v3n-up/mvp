@@ -43,7 +43,10 @@ export default function Card(props: Match) {
     }
 
     return (
-        <article className="w-full text-base m-auto my-5 bg-white rounded-lg">
+        <article
+            className="w-full text-base m-auto my-5 bg-white rounded-lg"
+            onClick={() => router.push(`/match/${props._id!.toString()}`)}
+        >
             <SnackBar
                 open={networkError !== ""}
                 onClose={() => setNetworkError("")}
