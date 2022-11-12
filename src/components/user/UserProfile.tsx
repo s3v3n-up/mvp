@@ -65,7 +65,6 @@ export default function Profile({ profile, userStats }: Props) {
     //user profile image
     const [image,setImage] = useState(profile.image);
     const [updatedImage, setUpdatedImage] = useState<File | null>(null);
-
     const [error, setError] = useState("");
 
     //get the user firstname input value, update it in the db through axios put api
