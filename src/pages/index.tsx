@@ -1,5 +1,6 @@
 //third-party import
 import Head from "next/head";
+import Image from "next/image";
 import { useState, ChangeEvent, useEffect } from "react";
 import useAuth from "@/hooks/useAuth";
 import { useRouter } from "next/router";
@@ -18,7 +19,6 @@ import Database from "@/lib/resources/database";
 import type { Match } from "@/lib/types/Match";
 import type { UserProfile } from "@/lib/types/User";
 import { checkIfMatchIsFull } from "@/lib/helpers/match";
-import { User } from "next-auth";
 
 //dynamic import
 const Search = dynamic(() => import("@mui/icons-material/Search"), {
@@ -79,7 +79,7 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
 
     // Error parameter for currentPosition function
     function error(err: any) {
-      throw new Error(`ERROR(${err.code}): ${err.message}`);
+      alert(`ERROR(${err.code}): ${err.message}`);
     }
     navigator.geolocation.getCurrentPosition(success, error, options);
   }, []);
@@ -93,7 +93,7 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
 
   //handles card clicked
   function handleCardClicked(id: string) {
-    return router.push(`/match/${id}/scoreboard`);
+    return router.push(`/match/${id.toString()}/scoreboard`);
   }
 
   //handles filtering user
@@ -103,26 +103,34 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
     return userFound && userFound.length > 0 ? userFound[0].userName : "";
   }
 
+  //handles hostAvatar
+  function handleHostAvatar(id: string) {
+    const host = users.filter((user: UserProfile) => user._id === id);
+    console.log(host);
+
+    return host[0].image;
+  }
+
   // Function to join the regular match
   async function joinReg(id: string) {
     try {
-      await axios.put(`api/match/${id}/team/join`, {
+      await axios.put(`api/match/${id.toString()}/team/join`, {
         userName: session?.user.userName,
       });
     } catch (error) {
       return;
     }
 
-    return router.push(`/match/${id}/scoreboard`);
+    return router.push(`/match/${id.toString()}/scoreboard`);
   }
 
   // Functrion to join the quick match
   async function joinQuick(id: string) {
-    await axios.put(`api/match/${id}/team/join`, {
+    await axios.put(`api/match/${id.toString()}/team/join`, {
       userName: session?.user.userName,
     });
 
-    return router.push(`/match/${id}/scoreboard`);
+    return router.push(`/match/${id.toString()}/scoreboard`);
   }
 
   return (
@@ -228,6 +236,13 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
                             "No Location"}
                         </p>
                         {/* displays user avatar that create the match */}
+                        <Image
+                          src={handleHostAvatar(quick.matchHost)}
+                          alt="avatar"
+                          className={Cardstyles.avatar}
+                          width={45}
+                          height={45}
+                        />
                       </div>
                     </div>
                   );
@@ -276,11 +291,11 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
                         <div className={Cardstyles.detail}>
                           {/* custom format for match that includes date, day of the week and time */}
                           <p>
-                            {new Date(reg.matchStart!)
+                            {new Date(reg.matchStart)
                               .toDateString()
                               .concat(
                                 " " +
-                                  new Date(reg.matchStart!).toLocaleTimeString(
+                                  new Date(reg.matchStart).toLocaleTimeString(
                                     "en-US"
                                   )
                               )}
@@ -290,7 +305,7 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
                         {reg.matchHost !== session?.user.id && (
                           <button
                             className={Cardstyles.join}
-                            onClick={() => joinReg(reg._id as string)}
+                            onClick={() => joinReg(reg._id)}
                           >
                             join
                           </button>
@@ -311,6 +326,13 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
                             "No Location"}
                         </p>
                         {/* displays user that create the match */}
+                        <Image
+                          src={handleHostAvatar(reg.matchHost)}
+                          alt="avatar"
+                          className={Cardstyles.avatar}
+                          width={45}
+                          height={45}
+                        />
                       </div>
                     </div>
                   );
