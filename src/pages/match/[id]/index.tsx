@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import dynamic from "next/dynamic";
 import useSWR from "swr";
+import useMatchNavigate from "@/hooks/useMatchStatus";
 
 //https://popupsmart.com/blog/react-popup
 import Popup from "reactjs-popup";
@@ -88,39 +89,7 @@ export default function MatchView({ matchData }: Props) {
 
     //guard page against match already started
     const router = useRouter();
-    useEffect(()=> {
-
-        //cancel match if match is already start and member is not full
-        (async() => {
-
-            //boolean check if match teams are full
-            const isMemberFull = match.teams[0].members.concat(match.teams[1].members).length === match.gameMode.requiredPlayers;
-
-            //boolean check if match is alredy started
-            const isMatchStarted = new Date(match.matchStart!.toLocaleString()).getTime() <= new Date().getTime();
-
-            //if match is started
-            if (isMatchStarted) {
-
-                //if member is not full, cancel the match
-                if (!isMemberFull && match.status !== "CANCELLED") {
-                    await axios.put(`/api/match/${match._id}/operation/cancel`,{
-                        cancelTime: new Date().toString()
-                    });
-                }
-
-                //if status is still upcoming, update it to in progress
-                else if (match.status === "UPCOMING") {
-                    await axios.put(`/api/match/${match._id}/status`,{
-                        status: "INPROGRESS"
-                    });
-                }
-
-                //navigate to scoreboard
-                router.push(`/match/${match._id}/scoreboard`);
-            }
-        })();
-    }, [match, router]);
+    useMatchNavigate(match);
 
     //refetch match every 1 seconds
     const { data, error } = useSWR<{match: Match}>(`/api/match/${matchData._id}`, {
@@ -223,6 +192,20 @@ export default function MatchView({ matchData }: Props) {
         }
     }
 
+    //function for user to leave match
+    function onLeave() {
+        axios.put(`/api/match/${match._id}/operation/remove`, {
+            userName: session?.user.userName
+        });
+    }
+
+    //function for host to cancel match
+    function onCancel() {
+        axios.put(`/api/match/${match._id}/operation/cancel`, {
+            cancelTime: new Date().toString()
+        });
+    }
+
     // Contains steps, maneuver and instruction data
     let steps: Steps[] = [];
 
@@ -315,7 +298,17 @@ export default function MatchView({ matchData }: Props) {
                                 {name}
                                 <div>
                                     {/* Leave the match button */}
-                                    <button>Leave</button>
+                                    {
+                                        session?.user.userName === name?
+                                            <button
+                                                onClick={() => onLeave()}
+                                            >
+                                                Cancel Match
+                                            </button>:
+                                            <button>
+                                                Leave
+                                            </button>
+                                    }
                                 </div>
                             </div>
                         ))}
