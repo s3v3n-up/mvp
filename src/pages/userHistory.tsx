@@ -5,26 +5,56 @@ import styles from "@/styles/History.module.sass";
 import { useState } from "react";
 import { getMatches } from "@/lib/actions/match";
 import { useSession } from "next-auth/react";
-import router from "next/router";
+
+// Yud wants this in a file named requests
 import axios from "axios";
 import Head from "next/head";
+import { Match, Matches } from "@/lib/types/Match";
+
+/** Props type of user's match history
+ * @property {Match} - pastMatches array
+ * @property {Match} - activeMatches array
+ */
+interface Props {
+  pastMatchesArr: Match[];
+  activeMatchesArr: Match[];
+}
 
 // History function for page
-export default function History({ pastMatches, activeMatches }: any) {
+export default function History({ pastMatchesArr, activeMatchesArr }: Props) {
+    const { data: session } = useSession();
 
-    const { data:session } = useSession();
+    // Usestate
+    const [pastMatches] = useState<Match[]>(pastMatchesArr);
+    const [activeMatches, setActiveMatches] = useState<Match[]>(activeMatchesArr);
 
-    const joinActive = activeMatches.filter((match:any) => match.teams[0].members.includes(session?.user.userName) || (match.teams[1] && match.teams[1].members.includes(session?.user.userName)));
-    const pasts = pastMatches.filter((match:any) => match.teams[0].members.includes(session?.user.userName) || (match.teams[1] && match.teams[1].members.includes(session?.user.userName)));
+    //Function to getUsername from the session data
+    function getUsername() {
+        return session?.user.userName ?? "";
+    }
+
+    const joinActive = activeMatches.filter(
+        (match: Match) =>
+            match.teams[0].members.includes(getUsername()) ||
+      (match.teams[1] && match.teams[1].members.includes(getUsername()))
+    );
+
+    const pasts = pastMatches.filter(
+        (match: Match) =>
+            match.teams[0].members.includes(getUsername()) ||
+      (match.teams[1] && match.teams[1].members.includes(getUsername()))
+    );
 
     // Constants to indicate whether tab is active or not
     const [activeTabIndex, setActiveTabIndex] = useState(0);
 
     // Function to delete match and refresh page
-    function deleteButton(id: string) {
-        axios.delete(`/api/match/${id}`);
-
-        return router.push("/userHistory").then(() => router.reload());
+    async function deleteButton(id: string) {
+        await axios.delete(`/api/match/${id}`);
+        const temp = [...activeMatches];
+        setActiveMatches(temp.filter((match) => match._id != id));
+        console.log(activeMatches);
+        console.log(id);
     }
 
     // Labels and content to populate the selected tab
@@ -36,19 +66,21 @@ export default function History({ pastMatches, activeMatches }: any) {
             content: (
                 <>
                     {/* Created match cards to hold match information*/}
-                    {joinActive.map((created: {matchStart: string, sport: string, location: { address: { fullAddress: string }}, status: string, _id: string }, idx: number) => (
+                    {joinActive.map((created: Match, idx: number) => (
                         <div className={styles.cardContainer} key={idx}>
                             <div className={styles.cardInfo}>
                                 {/* The starting time of the match*/}
                                 <div className={styles.time}>
-                                    <p>{new Date(created.matchStart)
-                                        .toDateString()
-                                        .concat(
-                                            " " +
-                              new Date(created.matchStart).toLocaleTimeString(
-                                  "en-US"
-                              )
-                                        )}</p>
+                                    <p>
+                                        {new Date(created.matchStart!)
+                                            .toDateString()
+                                            .concat(
+                                                " " +
+                          new Date(created.matchStart!).toLocaleTimeString(
+                              "en-US"
+                          )
+                                            )}
+                                    </p>
                                 </div>
                                 {/* The type of sport of the match*/}
                                 <div className={styles.sportType}>
@@ -62,8 +94,14 @@ export default function History({ pastMatches, activeMatches }: any) {
                                     {/* The delete or leave button corresponding to whether the match was created or joined*/}
                                     {}
                                     <button className={styles.cancelButton}>Leave</button>
-                                    {created.status === "UPCOMING" && <button className={styles.cancelButton} onClick={(e) => deleteButton(created._id)}>Delete</button>}
-
+                                    {created.status === Matches.Status.UPCOMING && (
+                                        <button
+                                            className={styles.cancelButton}
+                                            onClick={(e) => deleteButton(created._id as string)}
+                                        >
+                      Delete
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -78,19 +116,19 @@ export default function History({ pastMatches, activeMatches }: any) {
             content: (
                 <>
                     {/* Past match cards to hold match information*/}
-                    {pasts.map((past: any, idx: any) => (
+                    {pasts.map((past: Match, idx: number) => (
                         <div className={styles.cardContainer} key={idx}>
                             <div className={styles.cardInfo}>
                                 {/* The starting time of the match*/}
                                 <div className={styles.time}>
-                                    <p>{new Date(past.matchStart)
-                                        .toDateString()
-                                        .concat(
-                                            " " +
-                              new Date(past.matchStart).toLocaleTimeString(
-                                  "en-US"
-                              )
-                                        )}</p>
+                                    <p>
+                                        {new Date(past.matchStart!)
+                                            .toDateString()
+                                            .concat(
+                                                " " +
+                          new Date(past.matchStart!).toLocaleTimeString("en-US")
+                                            )}
+                                    </p>
                                 </div>
                                 {/* The type of sport of the match*/}
                                 <div className={styles.sportType}>
@@ -117,12 +155,8 @@ export default function History({ pastMatches, activeMatches }: any) {
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="initial-scale=1.0, width=device-width" />
                 <title>MVP | History</title>
-                <meta name="description" content="Shows recently created and past matches" />
-                <link
-                    rel="icon"
-                    type="image/png"
-                    sizes="16x16"
-                    href="/favicon.ico"/>
+                <meta name="description" content="History page" />
+                <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico" />
             </Head>
             <div className={styles.baseContainer}>
                 <div className={styles.historyContainer}>
@@ -167,16 +201,24 @@ export async function getServerSideProps() {
     const matches = JSON.parse(JSON.stringify(data));
 
     // Filter all active matches
-    const activeMatches = matches.filter((match: any) => match.status === "UPCOMING" || match.status === "INPROGRESS");
+    const activeMatchesArr = matches.filter(
+        (match: Match) =>
+            match.status === Matches.Status.UPCOMING ||
+      match.status === Matches.Status.INPROGRESS
+    );
 
     // Filter all cancelled or finished matches
-    const pastMatches = matches.filter((match: any) => match.status === "CANCELLED" || match.status === "FINISHED");
+    const pastMatchesArr = matches.filter(
+        (match: Match) =>
+            match.status === Matches.Status.CANCELLED ||
+      match.status === Matches.Status.FINISHED
+    );
 
     // Returns as props
     return {
         props: {
-            pastMatches,
-            activeMatches
+            pastMatchesArr,
+            activeMatchesArr,
         },
     };
 }
