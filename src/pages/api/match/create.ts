@@ -1,6 +1,6 @@
 // Third-party imports
 import { NextApiRequest, NextApiResponse } from "next";
-import { object, string, date, array, setLocale } from "yup";
+import { object, string, date, array } from "yup";
 
 // Local imports
 import { Match } from "@/lib/types/Match";
@@ -49,7 +49,11 @@ export default async function handler(
                         "You cannot set a date or time in the past")
                 }),
                 matchEnd: date(),
-                description: string().required("Please enter a description"),
+                description: string().when("matchType", {
+                    is: (matchType: string) => matchType === "REGULAR",
+                    then: string().required("Please enter a description"),
+                    otherwise: string(),
+                }),
                 teams: array(),
                 status: string().required(),
             });
@@ -90,7 +94,10 @@ export default async function handler(
 
             // Checks if there are active matches and return an error if there is
             if (activeMatches.length > 0) {
-                throw new Error("You already have an active match");
+                throw {
+                    message: "You already have an active match",
+                    code: 401,
+                };
             }
 
             // Inserting the values into an object variable
@@ -113,26 +120,16 @@ export default async function handler(
             const response = await createMatch(match);
 
             // Return the response as json
-            res.status(200).json(
-                {
-                    response
-                }
-            );
+            res.status(200).json({
+                response,
+            });
 
             // Catch any errors caught above and send it back as json
-        } catch(error) {
-            const {
-                code = 500,
-                message="internal server error",
-                cause="internal error"
-            } = error as APIErr;
-            res.status(code).json(
-                {
-                    code,
-                    message,
-                    cause
-                }
-            );
+        } catch (error: any) {
+            const { code = 500, message } = error;
+            res.status(code).json({
+                message,
+            });
 
             return;
         }

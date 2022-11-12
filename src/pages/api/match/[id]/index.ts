@@ -34,9 +34,10 @@ export default async function handler(
             res.status(200).json({
                 match,
             });
+        }
 
-            // If the HTTP method is PUT
-        } else if (req.method === "PUT") {
+        // If the HTTP method is PUT
+        if (req.method === "PUT") {
 
             // Deconstruct values to be from the client side
             const {
@@ -53,7 +54,16 @@ export default async function handler(
             // Call upon the updateMatch action and update the existing match model based on the id
             const updatedMatch = await updateMatch(id as string, {
                 location: location
-                    ? location
+                    ? {
+                        lng: location.lng,
+                        lat: location.lat,
+                        address: {
+                            fullAddress: location.address.fullAddress,
+                            pointOfInterest: location.address.pointOfInterest,
+                            city: location.address.city,
+                            country: location.address.country,
+                        },
+                    }
                     : {
                         lng: 0,
                         lat: 0,
@@ -69,7 +79,10 @@ export default async function handler(
                 matchHost: matchHost ? matchHost : "",
                 sport: sport ? sport : "",
                 gameMode: gameMode
-                    ? gameMode
+                    ? {
+                        modeName: gameMode.modeName,
+                        requiredPlayers: gameMode.requiredPlayers,
+                    }
                     : {
                         modeName: "1v1",
                         requiredPlayers: 2,
@@ -85,18 +98,21 @@ export default async function handler(
                 status: "UPCOMING",
                 matchPause: null,
                 matchQueueStart: null,
+                matchResume: null,
             });
 
             // Then return updateMatch as a json response
-            res.status(200).json(
-                {
-                    updatedMatch
-                }
-            );
+            res.status(200).json({
+                updatedMatch,
+            });
 
         // If the HTTP method is Delete
-        } else if (req.method == "DELETE") {
-            await deleteMatch(id);
+        }
+        if (req.method == "DELETE") {
+            const success = await deleteMatch(id);
+            if(success) {
+                res.status(200).json({ success });
+            }
         }
 
     // Catches a specific error when there is no match for the id set
