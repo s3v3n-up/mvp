@@ -48,7 +48,7 @@
     "@babel/core": "^7.20.2",
     "@types/multer": "^1.4.7",
     "@types/node": "18.7.19",
-    "@types/react": "18.0.21",
+    "@types/react": "^18.0.21",
     "@types/react-animations": "^1.0.0",
     "@types/react-dom": "18.0.6",
     "@types/styled-components": "^5.1.26",
