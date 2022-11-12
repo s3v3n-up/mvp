@@ -1,7 +1,7 @@
 //third-party imports
 import Image from "next/image";
-import { MouseEvent, FormEvent } from "react";
-import { getSession } from "next-auth/react";
+import { MouseEvent, FormEvent, useEffect } from "react";
+import { getSession, useSession } from "next-auth/react";
 import { useState, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
@@ -47,8 +47,14 @@ interface RegisterData {
 export default function Register() {
 
     //guard page against logged and unauthenticated in users
-    const { session } = useAuth();
+    const { data: session } = useSession();
     const router = useRouter();
+
+    useEffect(()=> {
+        if (session && session.user.isFinishedSignup) {
+            router.push("/");
+        }
+    });
 
     //register form data state
     const [formData, setFormData] = useState<RegisterData>({

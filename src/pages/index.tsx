@@ -88,7 +88,7 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
         // Error parameter for currentPosition function
         function error(err: any) {
 
-            throw new Error(`ERROR(${err.code}): ${err.message}`);
+            alert(`ERROR(${err.code}): ${err.message}`);
         }
         navigator.geolocation.getCurrentPosition(success, error, options);
     }, []);
@@ -115,7 +115,8 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
 
     //handles hostAvatar
     function handleHostAvatar(id: string) {
-        const host = users.filter((user: any) => user._id === id);
+        const host = users.filter((user: UserProfile) => user._id === id);
+        console.log(host);
 
         return host[0].image;
     }
