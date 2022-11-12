@@ -35,7 +35,7 @@ export default function History({ pastMatches, activeMatches }: Props) {
             content: (
                 <section role="list">
                     {/* Created match cards to hold match information*/}
-                    {activeMatches.map((created: any, idx: any) => (
+                    {activeMatches.map((created: any, idx: number) => (
                         <Card key={idx} {...created} />
                     ))}
                 </section>

@@ -7,7 +7,6 @@ import { Match } from "@/lib/types/Match";
 import { createMatch, findUserActiveMatches } from "@/lib/actions/match";
 import Database from "@/lib/resources/database";
 import MatchModel from "@/lib/resources/models/Match";
-import { APIErr } from "@/lib/types/General";
 
 /**
  * @description = a function that handles api request for creating a match

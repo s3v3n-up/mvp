@@ -1,4 +1,4 @@
-import { getMatchById, addMemberToTeam, removeMemberFromTeam } from "@/lib/actions/match";
+import { addMemberToTeam, removeMemberFromTeam } from "@/lib/actions/match";
 import { NextApiRequest, NextApiResponse } from "next";
 import Database from "@/lib/resources/database";
 // eslint-disable-next-line camelcase

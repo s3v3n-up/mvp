@@ -1,6 +1,5 @@
 import { models, model, Model, Schema } from "mongoose";
 import { Match } from "@/lib/types/Match";
-import { NineK } from "@mui/icons-material";
 
 /**
  * subdocument schema for teams

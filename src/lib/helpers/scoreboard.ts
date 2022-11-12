@@ -1,5 +1,4 @@
 import type { UserProfile } from "../types/User";
-import axios from "axios";
 
 /**
 * map players in a list to their team(home or away)
