@@ -20,12 +20,6 @@ export default function useAuth() {
         if (status === "loading") return;
         if (status === "unauthenticated" && router.pathname !== "/login") {
             router.push("/login");
-        } else if (status === "authenticated") {
-
-            //if user hasn't finished setting up profile, redirect to register page
-            if (!session.user.isFinishedSignup && router.pathname !== "/register") {
-                router.push("/register");
-            }
         }
     }
     , [session, status, router]);
