@@ -15,7 +15,7 @@ export interface Sport {
     gameModes: [{
 
 		// This is the name of the game mode
-		name: string,
+		modeNames: string,
 
 		// This the minimum number of players for each game mode
 		requiredPlayers: number

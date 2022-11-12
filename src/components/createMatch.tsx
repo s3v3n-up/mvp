@@ -77,8 +77,8 @@ export default function CreateMatch({ props }: Props) {
     // This functions gets all existing game modes on each existing sports and push them into allModes array to be accessed later
     props.map((sport: Sport) => {
         if (sport.name === sportname) {
-            sport.gameModes.map((mode:any) => {
-                allModes.push({ value: mode, name: mode });
+            sport.gameModes.map((mode: { modeNames: string}) => {
+                allModes.push({ value: mode.modeNames, name: mode.modeNames });
             });
         }
     });
@@ -258,7 +258,7 @@ export default function CreateMatch({ props }: Props) {
                         {/* Autofill for address */}
                         {suggestions?.length > 0 && (
                             <SuggestionWrapper>
-                                {suggestions.map((suggestion: any, index: any) => {
+                                {suggestions.map((suggestion: { place_name: string }, index: number) => {
                                     return (
                                         <Suggestion
                                             className="w-full text-base hover:bg-orange-500 p-5"
