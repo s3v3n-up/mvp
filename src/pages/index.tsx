@@ -103,7 +103,7 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
     //handles card clicked
     function handleCardClicked(id: string) {
 
-        return router.push(`/match/${id}/scoreboard`);
+        return router.push(`/match/${id.toString()}/scoreboard`);
     }
 
     //handles filtering user
@@ -124,23 +124,23 @@ export default function Home({ regMatches, quickMatches, users }: Props) {
     // Function to join the regular match
     async function joinReg(id: string) {
         try {
-            await axios.put(`api/match/${id}/team/join`, {
+            await axios.put(`api/match/${id.toString()}/team/join`, {
                 userName: session?.user.userName,
             });
         } catch (error) {
             return;
         }
 
-        return router.push(`/match/${id}/scoreboard`);
+        return router.push(`/match/${id.toString()}/scoreboard`);
     }
 
     // Functrion to join the quick match
     async function joinQuick(id: string) {
-        await axios.put(`api/match/${id}/team/join`, {
+        await axios.put(`api/match/${id.toString()}/team/join`, {
             userName: session?.user.userName,
         });
 
-        return router.push(`/match/${id}/scoreboard`);
+        return router.push(`/match/${id.toString()}/scoreboard`);
     }
 
     return (

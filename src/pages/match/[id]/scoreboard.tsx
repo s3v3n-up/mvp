@@ -93,7 +93,7 @@ export default function Scoreboard({ match, players }: Props) {
     const [networkError, setNetworkError] = useState<string>("");
 
     //refetch match data every 1 seconds
-    const { data, error } = useSWR<{match: Match}>(`/api/match/${id}`,fetcher, {
+    const { data, error } = useSWR<{match: Match}>(`/api/match/${id.toString()}`,fetcher, {
         refreshInterval: 100,
         fallback: { match: currMatch }
     });
@@ -143,7 +143,7 @@ export default function Scoreboard({ match, players }: Props) {
             !currMatch.matchStart &&
             currMatch.matchType !== "REGULAR") {
             (async()=>
-                await axios.put(`/api/match/${id}/operation/queue`, {
+                await axios.put(`/api/match/${id.toString()}/operation/queue`, {
                     queueStartTime: new Date().toString()
                 }).catch(()=>{
                     setNetworkError("error setting match queue time");
@@ -165,7 +165,7 @@ export default function Scoreboard({ match, players }: Props) {
                 if (timeLeft <= 0 || !isMemberFull) {
 
                     //set queue start time to null
-                    await axios.put(`/api/match/${id}/operation/queue`, {
+                    await axios.put(`/api/match/${id.toString()}/operation/queue`, {
                         queueStartTime: null
                     }).catch(()=>{
                         setNetworkError("error unset match queue time");
@@ -173,7 +173,7 @@ export default function Scoreboard({ match, players }: Props) {
 
                     //set start time to now if time has passed 30 seconds
                     if(timeLeft <= 0) {
-                        await axios.put(`/api/match/${id}/operation/start`, {
+                        await axios.put(`/api/match/${id.toString()}/operation/start`, {
                             startTime: new Date().toString()
                         });
                     }
@@ -210,12 +210,12 @@ export default function Scoreboard({ match, players }: Props) {
                         Promise.all([
 
                             //set match start time to null
-                            await axios.put(`/api/match/${id}/operation/start`, {
+                            await axios.put(`/api/match/${id.toString()}/operation/start`, {
                                 startTime: null
                             }),
 
                             //set match status to upcoming
-                            await axios.put(`/api/match/${id}/status`, {
+                            await axios.put(`/api/match/${id.toString()}/status`, {
                                 status: "UPCOMING"
                             })
                         ]).catch(()=>{
@@ -225,7 +225,7 @@ export default function Scoreboard({ match, players }: Props) {
 
                     //if match is regular, cancel it
                     else {
-                        await axios.put(`/api/match/${id}/operation/cancelled`, {
+                        await axios.put(`/api/match/${id.toString()}/operation/cancelled`, {
                             cancelTime: new Date().toString()
                         }).catch(()=>{
                             setNetworkError("error cancelling match");
@@ -284,7 +284,7 @@ export default function Scoreboard({ match, players }: Props) {
 
     //function for host to cancel the match
     const cancelMatch = debounce(async()=> {
-        await axios.put(`/api/match/${id}/operation/cancel`, {
+        await axios.put(`/api/match/${id.toString()}/operation/cancel`, {
             cancelTime: new Date().toString()
         }).catch(()=> {
             setNetworkError("error cancelling match");
@@ -294,7 +294,7 @@ export default function Scoreboard({ match, players }: Props) {
     //function for host to resume the match after pausing
     const resumeMatch = debounce(async()=> {
         if(currMatch.status === "INPROGRESS") return;
-        await axios.put(`/api/match/${id}/operation/resume`, {
+        await axios.put(`/api/match/${id.toString()}/operation/resume`, {
             resumeTime: new Date().toString()
         }).catch(()=>{
             setNetworkError("error resuming match");
@@ -307,7 +307,7 @@ export default function Scoreboard({ match, players }: Props) {
         if (type === "increase") {
             if (team === "home") {
                 setHomeScore(prev => prev + 1);
-                await axios.put(`/api/match/${id}/score`,
+                await axios.put(`/api/match/${id.toString()}/score`,
                     {
                         teamIndex: 0,
                         operation: "increase"
@@ -315,7 +315,7 @@ export default function Scoreboard({ match, players }: Props) {
                 );
             } else {
                 setAwayScore(prev => prev + 1);
-                await axios.put(`/api/match/${id}/score`,
+                await axios.put(`/api/match/${id.toString()}/score`,
                     {
                         teamIndex: 1,
                         operation: "increase"
@@ -326,7 +326,7 @@ export default function Scoreboard({ match, players }: Props) {
             if (team === "home") {
                 if (homeScore <= 0) return;
                 setHomeScore(prev => prev - 1);
-                await axios.put(`/api/match/${id}/score`,
+                await axios.put(`/api/match/${id.toString()}/score`,
                     {
                         teamIndex: 0,
                         operation: "decrease"
@@ -335,7 +335,7 @@ export default function Scoreboard({ match, players }: Props) {
             } else {
                 if (awayScore <= 0) return;
                 setAwayScore(prev => prev - 1);
-                await axios.put(`/api/match/${id}/score`,
+                await axios.put(`/api/match/${id.toString()}/score`,
                     {
                         teamIndex: 1,
                         operation: "decrease"
@@ -589,7 +589,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
         if (match.status === "FINISHED") {
             return {
                 redirect: {
-                    destination: `/match/${id}/result`,
+                    destination: `/match/${id.toString()}/result`,
                     permanent: false
                 }
             };
@@ -613,7 +613,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
             if (!isMemberFull){
                 return {
                     redirect: {
-                        destination: `/match/${id}`,
+                        destination: `/match/${id.toString()}`,
                         permanent: false
                     }
                 };
