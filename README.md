@@ -1,6 +1,8 @@
 ###### CSTP 2107 Internet Programming and Web Apps
 
-![](https://github.com/MelodyC823/logo/blob/b58baa0e33a06837f3c4bffee60ccf2f345c0a56/Screen%20Shot%202022-11-11%20at%2010.45.45%20PM.png)
+<p align="center">
+  <img src="https://github.com/s3v3n-up/mvp/blob/540cb3eeb08afe2aabe49ca92aedcfa9264da3fb/public/img/logo.png" />
+</p>
 
   #  MVP Project
 
