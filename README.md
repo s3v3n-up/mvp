@@ -23,7 +23,6 @@
 <!-- TABLE OF CONTENTS -->
 ## :notebook_with_decorative_cover: Table of Contents
 - [About the Project](#star2-about-the-project)
-  * [Screenshots](#camera-screenshots)
   * [Tech Stack](#space_invader-tech-stack)
   * [Features](#dart-features)
   * [User Interface Reference](#art-user-interface-reference)
