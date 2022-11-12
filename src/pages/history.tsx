@@ -1,7 +1,7 @@
 // Import useState and getMatches function
 import useAuth from "@/hooks/useAuth";
 import { getMatches } from "@/lib/actions/match";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Head from "next/head";
 import HistoryLayout from "@/components/layout/history";
 import Card from "@/components/history/card";
@@ -35,7 +35,7 @@ export default function History({ pastMatches, activeMatches }: Props) {
             content: (
                 <section role="list" className="w-full mt-5">
                     {/* Created match cards to hold match information*/}
-                    {activeMatches.map((created: any, idx: any) => (
+                    {activeMatches.map((created: Match, idx: number) => (
                         <Card key={idx} {...created} />
                     ))}
                 </section>
@@ -48,7 +48,7 @@ export default function History({ pastMatches, activeMatches }: Props) {
             content: (
                 <section role="list" className="w-full mt-5">
                     {/* Past match cards to hold match information*/}
-                    {pastMatches.map((past: any, idx: any) => (
+                    {pastMatches.map((past: Match, idx: number) => (
                         <Card key={idx} {...past} />
                     ))}
                 </section>
@@ -90,7 +90,7 @@ export async function getServerSideProps({ req, res }: GetServerSidePropsContext
     const data: Match[] = await getMatches();
 
     // Filter all active matches
-    const activeMatches = data.filter((match: any) => {
+    const activeMatches = data.filter((match: Match) => {
 
         // Check if match is still active
         const isActive = match.status === "UPCOMING" ||
@@ -105,7 +105,7 @@ export async function getServerSideProps({ req, res }: GetServerSidePropsContext
     });
 
     // Filter all cancelled or finished matches
-    const pastMatches = data.filter((match: any) => {
+    const pastMatches = data.filter((match: Match) => {
 
         // Check if match is cancelled or finished
         const isEnded = match.status === "CANCELLED" || match.status === "FINISHED";

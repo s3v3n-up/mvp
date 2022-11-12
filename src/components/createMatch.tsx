@@ -1,6 +1,6 @@
 // Third-party imports
 import { useSession } from "next-auth/react";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import router from "next/router";
 import axios from "axios";
 import dynamic from "next/dynamic";

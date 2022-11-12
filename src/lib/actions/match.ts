@@ -1,7 +1,7 @@
 import MatchModel from "../resources/models/Match";
 import type { Match, Matches } from "@/lib/types/Match";
 import Database from "../resources/database";
-import { findUserByUsername, getUserByUserName } from "./user";
+import { getUserByUserName } from "./user";
 
 /**
  * add a new match to the database

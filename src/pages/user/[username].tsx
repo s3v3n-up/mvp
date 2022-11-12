@@ -3,9 +3,6 @@ import { getUsers, calculateStats } from "@/lib/actions/user";
 import { getUserByUserName } from "@/lib/actions/user";
 import { GetStaticPropsContext } from "next";
 import type { UserProfile } from "@/lib/types/User";
-import { useEffect } from "react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import useAuth from "@/hooks/useAuth";
 
 /**
