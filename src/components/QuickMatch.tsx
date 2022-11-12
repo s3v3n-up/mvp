@@ -1,7 +1,7 @@
 // Local imports
 import Input from "./Input";
 import SelectOption from "./SelectOption";
-import { Location, SportsOptions, Modes, Address } from "@/lib/types/General";
+import { Location, SportsOptions, Modes, Pos, FullLocation } from "@/lib/types/General";
 import { Sport } from "@/lib/types/Sport";
 
 // Third party imports
@@ -38,7 +38,7 @@ export default function QuickMatch({ props }: Props) {
     const [location, setLocation] = useState<Location>();
 
     // Stores and sets address
-    const [address, setAddress] = useState<any>();
+    const [address, setAddress] = useState<FullLocation>();
 
     // useEffect to get user current location then set location to be saved in database
     useEffect(() => {
@@ -51,7 +51,7 @@ export default function QuickMatch({ props }: Props) {
         };
 
         // Success parameter for currentPosition function
-        const success = (pos: any) => {
+        const success = (pos: Pos) => {
 
             // access position coordinates
             const crd = pos.coords;
@@ -73,7 +73,8 @@ export default function QuickMatch({ props }: Props) {
     useEffect(() => {
         axios
             .get(
-                `https://api.mapbox.com/geocoding/v5/mapbox.places/${location?.lng},${location?.lat}.json?types=address&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`
+                `https://api.mapbox.com/geocoding/v5/mapbox.places/${location?.lng},${location?.lat}
+                .json?types=address&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`
             )
             .then(({ data }) => {
                 setAddress(data);
@@ -81,10 +82,10 @@ export default function QuickMatch({ props }: Props) {
     }, [location]);
 
     // Stores and Sets the sportname
-    const [sportname, setSportname] = useState("Basketball");
+    const [sportname, setSportname] = useState<string>("Basketball");
 
     // Stores and Sets the mode
-    const [mode, setMode] = useState("1V1");
+    const [mode, setMode] = useState<string>("1V1");
 
     /**
    * This splits the mode string then turns into a number to compute for required players
@@ -106,8 +107,8 @@ export default function QuickMatch({ props }: Props) {
     }
 
     //Form submission state
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string>("");
+    const [loading, setLoading] = useState<boolean>(false);
 
     // Function to handle sport change event
     function handleSportChange(e: ChangeEvent<HTMLSelectElement>) {
@@ -142,11 +143,13 @@ export default function QuickMatch({ props }: Props) {
                 },
                 sport: sportname,
                 gameMode: { modeName: mode, requiredPlayers: computeReqPlayers(mode) },
-                matchStart: new Date(Date.now()),
                 matchType: "QUICK",
                 status: "UPCOMING",
-                teams: [{ members: [session!.user.userName], score: 0, status: "UNSET" }, { members: [], score: 0, status: "UNSET" }]
-
+                teams: [
+                    { members: [session!.user.userName], score: 0, status: "UNSET" },
+                    { members: [], score: 0, status: "UNSET" }
+                ],
+                description: "no description",
             });
 
             // Checks if no successful post response
@@ -189,7 +192,7 @@ export default function QuickMatch({ props }: Props) {
     // This functions gets all existing game modes on each existing sports and push them into allModes array to be accessed later
     props.map((sport: Sport) => {
         if (sport.name === sportname) {
-            sport.gameModes.map((mode: any) => {
+            sport.gameModes.map((mode: {modeNames: string }) => {
                 allModes.push({ value: mode.modeNames, name: mode.modeNames });
             });
         }

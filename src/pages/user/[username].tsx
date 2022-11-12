@@ -3,9 +3,7 @@ import { getUsers, calculateStats } from "@/lib/actions/user";
 import { getUserByUserName } from "@/lib/actions/user";
 import { GetStaticPropsContext } from "next";
 import type { UserProfile } from "@/lib/types/User";
-import { useEffect } from "react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
+import useAuth from "@/hooks/useAuth";
 
 /**
  * view user profile page props type
@@ -27,20 +25,13 @@ interface Props {
 export default function ViewProfile({ user, stats }: Props) {
 
     //guard page from unauthenticated user from client side
-    const { status } = useSession();
-    const router = useRouter();
-    useEffect(()=>{
-        if(status === "loading") return;
-        if (status === "unauthenticated") {
-            router.push("/login");
-        }
-    },[status, router]);
+    useAuth();
 
     //user data states
     const { firstName, lastName, userName, image, phoneNumber } = user;
 
     return (
-        <div>
+        <section>
             <ViewUserProfile data={
                 {
                     fullName: `${firstName} ${lastName}`,
@@ -50,7 +41,7 @@ export default function ViewProfile({ user, stats }: Props) {
                     stats
                 }
             } />
-        </div>
+        </section>
     );
 }
 

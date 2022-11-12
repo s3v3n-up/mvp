@@ -1,13 +1,14 @@
-import { getMatchById, addMemberToTeam, removeMemberFromTeam } from "@/lib/actions/match";
+import { addMemberToTeam, removeMemberFromTeam } from "@/lib/actions/match";
 import { NextApiRequest, NextApiResponse } from "next";
 import Database from "@/lib/resources/database";
 // eslint-disable-next-line camelcase
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { APIErr } from "@/lib/types/General";
 
 /**
- * api router for add/remove a new member to a team.
- * Team index and username are required from client
+ * api router for add/remove a member to/from a team.
+ * teamIndex and userName are required from request
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
@@ -52,18 +53,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
 
             //update match team members
-            res.status(200).json({ message: `successfully ${operation}ed ${userName} to team` });
+            res.status(200).json(
+                {
+                    message: `successfully ${operation}ed ${userName} to team`
+                }
+            );
         } else {
             throw {
                 code: 405,
                 message: "method not allowed"
             };
         }
-    } catch(error: any) {
-        const { code=500, message="Internal server error", cause="internal error" } = error;
-        res.status(code).json({
-            message,
-            cause
-        });
+    } catch(error) {
+        const {
+            code = 500,
+            message="internal server error",
+            cause="internal error"
+        } = error as APIErr;
+        res.status(code).json(
+            {
+                code,
+                message,
+                cause
+            }
+        );
     }
 }

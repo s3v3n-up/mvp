@@ -1,15 +1,23 @@
 import QuickMatch from "@/components/QuickMatch";
 import { getAllSports } from "@/lib/actions/sport";
 import Database from "@/lib/resources/database";
+import { Sport } from "@/lib/types/Sport";
+
+/**
+ * interface for props
+ */
+interface Props{
+    data: Sport[]
+}
 
 /*
 *this is quick match page
 */
-export default function CreateMatchPage({ data }: any) {
+export default function CreateMatchPage({ data }: Props) {
     return (
-        <div className="flex pt-20 h-full w-full justify-center">
+        <section className="flex pt-20 h-full w-full justify-center">
             <QuickMatch props={data} />
-        </div>
+        </section>
     );
 }
 

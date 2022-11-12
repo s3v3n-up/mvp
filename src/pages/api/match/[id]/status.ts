@@ -4,6 +4,7 @@ import { updateMatchStatus, getMatchById } from "@/lib/actions/match";
 // eslint-disable-next-line camelcase
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]";
+import { APIErr } from "@/lib/types/General";
 
 //function to update the status of the match
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -68,9 +69,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             //update matchStatus
             await updateMatchStatus(id as string, status);
-            res.status(200).json({ message: "Match status updated" });
+            res.status(200).json(
+                {
+                    message: "Match status updated"
+                }
+            );
         }
-    } catch (error: any) {
-        res.status(error.code || 500).json({ message: error.message || "Internal Server Error", cause: error.cause });
+    } catch(error) {
+        const {
+            code = 500,
+            message="internal server error",
+            cause="internal error"
+        } = error as APIErr;
+        res.status(code).json(
+            {
+                code,
+                message,
+                cause
+            }
+        );
     }
 }

@@ -1,13 +1,16 @@
 import { joinMatch } from "@/lib/actions/match";
+import { addMatchToUserHistory } from "@/lib/actions/user";
 import Database from "@/lib/resources/database";
 import { NextApiRequest, NextApiResponse } from "next";
 // eslint-disable-next-line camelcase
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import { APIErr } from "@/lib/types/General";
 
 /**
- * router for joinging a match.
- * Add user to a match, will check(if team full) and compare both teams to add user to the team with less members
+ * api route for user to join a match.
+ * Add user to a match, will check(if team full) and compare both teams to add user to the team with less members.
+ * only userName is required from request
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
@@ -39,14 +42,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             // Initialize connection to the database
             await Database.setup();
 
+
             //update match score based on operation
             await joinMatch(id as string, userName);
+            await addMatchToUserHistory(id as string, userName);
 
             // Return a success message
-            res.status(200).json({ message: "success" });
+            res.status(200).json(
+                {
+                    message: "success"
+                }
+            );
         }
-    } catch(error: any) {
-        const { code=500, message="Internal server error", cause="internal error" } = error;
-        res.status(code).json({ message, cause });
+    } catch(error) {
+        const {
+            code = 500,
+            message="internal server error",
+            cause="internal error"
+        } = error as APIErr;
+        res.status(code).json(
+            {
+                code,
+                message,
+                cause
+            }
+        );
     }
 }

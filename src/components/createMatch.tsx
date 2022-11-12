@@ -1,6 +1,6 @@
 // Third-party imports
 import { useSession } from "next-auth/react";
-import { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import router from "next/router";
 import axios from "axios";
 import dynamic from "next/dynamic";
@@ -9,8 +9,9 @@ import styled from "styled-components";
 // Local imports
 import Input from "./Input";
 import SelectOption from "./SelectOption";
-import { SportsOptions, Modes } from "@/lib/types/General";
+import { SportsOptions, Modes, FullLocation } from "@/lib/types/General";
 import { Sport } from "@/lib/types/Sport";
+import SnackBar from "./snackbar";
 
 //dynamic imports
 const AddLocationAlt = dynamic(
@@ -19,9 +20,15 @@ const AddLocationAlt = dynamic(
 const SportsBasketball = dynamic(
     () => import("@mui/icons-material/SportsBasketball")
 );
-const PeopleAlt = dynamic(() => import("@mui/icons-material/PeopleAlt"));
-const AccessTime = dynamic(() => import("@mui/icons-material/AccessTime"));
-const AlertMessage = dynamic(() => import("@/components/alertMessage"));
+const PeopleAlt = dynamic(
+    () => import("@mui/icons-material/PeopleAlt")
+);
+const AccessTime = dynamic(
+    () => import("@mui/icons-material/AccessTime")
+);
+const AlertMessage = dynamic(
+    () => import("@/components/alertMessage")
+);
 
 interface Props {
   props: Sport[];
@@ -36,7 +43,7 @@ export default function CreateMatch({ props }: Props) {
     const { data: session } = useSession();
 
     // Location useState
-    const [location, setLocation] = useState<any>();
+    const [location, setLocation] = useState<FullLocation>();
 
     // Address useState
     const [address, setAddress] = useState("");
@@ -62,6 +69,9 @@ export default function CreateMatch({ props }: Props) {
     // Array containing all accessed modes per existing sport
     const allModes: Modes[] = [];
 
+    //network error state
+    const [networkError, setNetworkError] = useState<string>("");
+
     // This function gets all sport names and push them into allSports array to be accessed later
     props.map((sport: Sport) => {
         allSports.push({ value: sport.name, name: sport.name });
@@ -70,7 +80,7 @@ export default function CreateMatch({ props }: Props) {
     // This functions gets all existing game modes on each existing sports and push them into allModes array to be accessed later
     props.map((sport: Sport) => {
         if (sport.name === sportname) {
-            sport.gameModes.map((mode: any) => {
+            sport.gameModes.map((mode: { modeNames: string}) => {
                 allModes.push({ value: mode.modeNames, name: mode.modeNames });
             });
         }
@@ -107,15 +117,15 @@ export default function CreateMatch({ props }: Props) {
         setAddress(val);
 
         // Code to set location to be saved on database and set suggestions for autofill
-        try {
-            const endpoint = `https://api.mapbox.com/geocoding/v5/mapbox.places/${val}.json?&limit=3&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`;
-            await axios.get(endpoint).then(({ data }) => {
-                setLocation(data);
-                setSuggestions(data?.features);
-            });
-        } catch (error) {
-            console.log("Error fetching data, ", error);
-        }
+        const endpoint =
+                `https://api.mapbox.com/geocoding/v5/mapbox.places/${val}
+                .json?&limit=3&access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`;
+        await axios.get(endpoint).then(({ data }) => {
+            setLocation(data);
+            setSuggestions(data?.features);
+        }).catch(()=>{
+            setNetworkError("error getting suggestion");
+        });
     }
 
     // Function to handle sport change event
@@ -163,11 +173,14 @@ export default function CreateMatch({ props }: Props) {
                 },
                 sport: sportname,
                 gameMode: { modeName: mode, requiredPlayers: computeReqPlayers(mode) },
-                matchStart: date,
                 description: description,
+                matchStart: date,
                 matchType: "REGULAR",
                 status: "UPCOMING",
-                teams: [{ members: [session!.user.userName], score: 0, status: "UNSET" }, { members: [], score: 0, status: "UNSET" }]
+                teams: [
+                    { members: [session!.user.userName], score: 0, status: "UNSET" },
+                    { members: [], score: 0, status: "UNSET" }
+                ]
             });
 
             // Checks if no successful post response
@@ -201,16 +214,21 @@ export default function CreateMatch({ props }: Props) {
 	  display: flex;
 	  flex-direction: column;
 	  background: white;
-	  width: 320px;
-	  padding: 10px 20px;
+	  width: 100%;
 	  border-radius: 0px 0px 10px 10px;
 	  gap: 10px 0px;
+      position: absolute;
+      z-index: 100;
+      top: 5rem;
+      background-color: black;
 	`;
 
     // Custom child wrapper for autofill feature
     const Suggestion = styled.p`
 	  cursor: pointer;
-	  max-width: 320px;
+	  width: 100%;
+      color: white;
+      transition: all 0.2s ease-in-out;
 	`;
 
     return (
@@ -218,43 +236,46 @@ export default function CreateMatch({ props }: Props) {
             <div className="flex flex-col gap-2 lg:justify-end ">
                 <div className="mt-5">
                     {/* Header for Create Match */}
-                    <h1 className="text-[#f3f2ef] text-3xl text-center pt-3">
-            Create a Match
+                    <h1 className="text-white text-3xl text-center pt-3">
+                        Create a Match
                     </h1>
                 </div>
                 {/* Form to be submitted */}
-                <form onSubmit={handleFormSubmit} className="w-full">
+                <form onSubmit={handleFormSubmit} className="w-full text-base">
                     {/* Error and Loading div */}
                     {error && <AlertMessage message={error} type="error" />}
                     {loading && <AlertMessage message="Loading..." type="loading" />}
                     {/* Location Input Box */}
-                    <Input
-                        label="Location"
-                        value={address}
-                        name="location"
-                        onChange={handleLocationChange}
-                    >
-                        <AddLocationAlt />
-                    </Input>
-                    {/* Autofill for address */}
-                    {suggestions?.length > 0 && (
-                        <SuggestionWrapper>
-                            {suggestions.map((suggestion: any, index: any) => {
-                                return (
-                                    <Suggestion
-                                        className="w-full text-[#31302f] text-base"
-                                        key={index}
-                                        onClick={() => {
-                                            setAddress(suggestion.place_name);
-                                            setSuggestions([]);
-                                        }}
-                                    >
-                                        {suggestion.place_name}
-                                    </Suggestion>
-                                );
-                            })}
-                        </SuggestionWrapper>
-                    )}
+                    <div className="flex flex-col gap-2 z-10 relative w-full">
+                        <Input
+                            label="Location"
+                            value={address}
+                            name="location"
+                            onChange={handleLocationChange}
+                            required
+                        >
+                            <AddLocationAlt />
+                        </Input>
+                        {/* Autofill for address */}
+                        {suggestions?.length > 0 && (
+                            <SuggestionWrapper>
+                                {suggestions.map((suggestion: { place_name: string }, index: number) => {
+                                    return (
+                                        <Suggestion
+                                            className="w-full text-base hover:bg-orange-500 p-5"
+                                            key={index}
+                                            onClick={() => {
+                                                setAddress(suggestion.place_name);
+                                                setSuggestions([]);
+                                            }}
+                                        >
+                                            {suggestion.place_name}
+                                        </Suggestion>
+                                    );
+                                })}
+                            </SuggestionWrapper>
+                        )}
+                    </div>
                     {/* Selection box for Sport */}
                     <SelectOption
                         label="Sport"
@@ -282,13 +303,14 @@ export default function CreateMatch({ props }: Props) {
                         name="date"
                         type="datetime-local"
                         onChange={handleDateChange}
+                        required
                     >
                         <AccessTime />
                     </Input>
                     {/* Location Textarea*/}
                     <div className="my-2">
                         <label className="text-[#f3f2ef]" htmlFor="description">
-              Description
+                            Description
                         </label>
                     </div>
                     <div>
@@ -307,11 +329,20 @@ export default function CreateMatch({ props }: Props) {
                             type="submit"
                             className="rounded-sm w-80 bg-[#fc5c3e] h-10  font-extrabold  text-[#f1ecec]"
                         >
-              CREATE
+                            CREATE
                         </button>
                     </div>
                 </form>
             </div>
+            <SnackBar
+                open={networkError !== ""}
+                duration={3000}
+                onClose={() => setNetworkError("")}
+            >
+                <span className="text-red-400 text-center">
+                    {networkError}
+                </span>
+            </SnackBar>
         </div>
     );
 }

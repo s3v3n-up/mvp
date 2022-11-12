@@ -1,23 +1,26 @@
-import { useRouter } from "next/router";
-import { useEffect } from "react";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
+import useAuth from "@/hooks/useAuth";
 
 export default function Cancel() {
-    const router = useRouter();
-    const { status } = useSession();
 
-    useEffect(() => {
-        if (status === "loading") return;
-        if (status !== "authenticated") {
-            router.push("/login");
-        }
-    },[status, router]);
+    //guard page against unauthenticated users on client side
+    useAuth();
 
     return (
         <section>
-            <h1 className="text-center text-4xl font-bold text-orange-500 mt-40">⚠️ MATCH HAS BEEN CANCELLED</h1>
-            <div className="relative w-44 h-44 m-auto mt-14">
+            <h1 className={
+                `text-center sm:text-4xl 
+                font-bold text-orange-500 
+                mt-40 text-2xl`
+            }>
+                ⚠️ MATCH HAS BEEN CANCELLED
+            </h1>
+            <div className={
+                `relative sm:w-44 
+                sm:h-44 w-14 
+                h-14 m-auto 
+                sm:mt-14 mt-5`
+            }>
                 <Image
                     src={"/icons/skull.png"}
                     alt="skull"

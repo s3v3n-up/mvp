@@ -10,8 +10,13 @@ const Person = dynamic(() => import("@mui/icons-material/Person"));
 const Phone = dynamic(() => import("@mui/icons-material/Phone"));
 const FolderSharedOutlined = dynamic(() => import("@mui/icons-material/FolderSharedOutlined"));
 
-/*
- * type of user data
+/**
+ * type for user profile component props
+ * @property {string} fullName - user full name
+ * @property {string} userName - user username
+ * @property {string} phone - user phone number
+ * @property {string} image - user avatar
+ * @property {win:number, lose:number, draw:number} stats - stats data
  */
 export interface Data {
   fullName: string;
@@ -25,9 +30,13 @@ export interface Data {
   };
 }
 
-/*
+/**
  * this component is for viewprofile page
- * @param { Data } data - data of user to display profile
+ * @prop {string} fullName - user full name
+ * @prop {string} userName - user username
+ * @prop {string} phone - user phone number
+ * @prop {string} image - user avatar
+ * @prop {win:number, lose:number, draw:number} stats - stats data
  * @return display the other user's profile:fullname, username, phone, avatar, stats
  */
 export default function ViewUserProfile({ data }: { data: Data }) {

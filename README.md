@@ -1,10 +1,8 @@
 ###### CSTP 2107 Internet Programming and Web Apps
 
-<!-- LOGO -->
-<div align="center">
-  <a href="https://github.com/github_username/repo_name">
-    <img src="appLogo.jpg" alt="Logo" width="200" height="200">
-  </a>
+<p align="center">
+  <img src="https://github.com/s3v3n-up/mvp/blob/540cb3eeb08afe2aabe49ca92aedcfa9264da3fb/public/img/logo.png" />
+</p>
 
   #  MVP Project
 
@@ -23,7 +21,6 @@
 <!-- TABLE OF CONTENTS -->
 ## :notebook_with_decorative_cover: Table of Contents
 - [About the Project](#star2-about-the-project)
-  * [Screenshots](#camera-screenshots)
   * [Tech Stack](#space_invader-tech-stack)
   * [Features](#dart-features)
   * [User Interface Reference](#art-user-interface-reference)

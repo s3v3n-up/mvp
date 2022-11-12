@@ -1,7 +1,7 @@
 import MatchModel from "../resources/models/Match";
 import type { Match, Matches } from "@/lib/types/Match";
 import Database from "../resources/database";
-import { findUserByUsername, getUserByUserName } from "./user";
+import { getUserByUserName } from "./user";
 
 /**
  * add a new match to the database
@@ -18,7 +18,7 @@ export async function createMatch(match: Match): Promise<Match> {
         //return created match
         return createdMatch;
     } catch (error: any) {
-        throw new Error("error creating match", { cause: error });
+        throw new Error("Error creating match", { cause: error });
     }
 }
 
@@ -123,12 +123,14 @@ export async function decreaseMatchScoreOfTeam(
  */
 export async function getMatchesBetweenDates(start: Date, end: Date) {
     try {
-        const matches = await MatchModel.find({
-            startDate: {
-                $gte: start,
-                $lt: end,
-            },
-        });
+        const matches = await MatchModel.find(
+            {
+                startDate: {
+                    $gte: start,
+                    $lt: end,
+                },
+            }
+        );
 
         return matches;
     } catch (error: any) {
@@ -397,76 +399,6 @@ export async function updateMatchFields(matchId: string,fields: Partial<Match>) 
 }
 
 /**
- * update match queue start time
- * @param matchId id of match to update
- * @param startTime new start time
- * @returns {Promise<Match>} promise that resolves to updated match
- * @throws {Error} if match is not found
- */
-export async function updateMatchQueueStartTime(matchId: string, startTime: Date | null) {
-    try {
-        const match = await MatchModel.findById(matchId);
-
-        //if match is not found, throw error
-        if (!match) {
-            throw new Error("match not found");
-        }
-
-        match.matchQueueStart = startTime;
-        await match.save();
-
-        return match;
-
-    } catch (error: any) {
-        throw new Error("error updating match queue start time", { cause: error });
-    }
-}
-
-/**
- * update match start time
- * @param matchId id of match to update
- * @param startTime new start time
- * @returns {Promise<Match>} promise that resolves to updated match
- * @throws {Error} if match is not found
- */
-export async function updateMatchStartTime(matchId: string, startTime: Date | null) {
-    try {
-        const match = await MatchModel.findById(matchId);
-        if (!match) {
-            throw new Error("match not found");
-        }
-        match.matchStart = startTime;
-        await match.save();
-
-        return match;
-    } catch (error: any) {
-        throw new Error("error updating match start time", { cause: error });
-    }
-}
-
-/**
- * update match pause time
- * @param matchId id of match to update
- * @param pauseTime new pause time
- * @returns {Promise<Match>} promise that resolves to updated match
- * @throws {Error} if match is not found
- */
-export async function updateMatchPauseTime(matchId: string, pauseTime: Date | null) {
-    try {
-        const match = await MatchModel.findById(matchId);
-        if (!match) {
-            throw new Error("match not found");
-        }
-        match.matchPause = pauseTime;
-        await match.save();
-
-        return match;
-    } catch (error: any) {
-        throw new Error("error updating match pause time", { cause: error });
-    }
-}
-
-/**
  * update match status
  * @param matchId id of match to update
  * @param status new status
@@ -551,9 +483,13 @@ export async function getLeaderboardOfSport(
 export async function deleteMatch(matchId: string) {
     try {
         await MatchModel.findByIdAndDelete(matchId);
+
     } catch (error: any) {
         throw new Error("error deleting match", { cause: error });
     }
+
+
+    return true;
 }
 
 /**

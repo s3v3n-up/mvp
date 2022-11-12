@@ -1,15 +1,23 @@
 import CreateMatch from "@/components/createMatch";
 import { getAllSports } from "@/lib/actions/sport";
 import Database from "@/lib/resources/database";
+import { Sport } from "@/lib/types/Sport";
+
+/**
+ * interface for props
+ */
+interface Props{
+    data: Sport[]
+}
 
 /*
 *this is create match page
 */
-export default function CreateMatchPage({ data }: any) {
+export default function CreateMatchPage({ data }: Props) {
     return (
-        <div>
+        <section>
             <CreateMatch props={data}/>
-        </div>
+        </section>
     );
 }
 

@@ -72,7 +72,7 @@ export async function getUsers() {
  * @param {string} image the image/logo of the user to be change
  * @returns the updated user
  */
-export async function updateUser(userName: string, firstName: string, lastName: string, phonenumber: string, image: string) {
+export async function updateUser(fields: Partial<UserProfile>, userName: string) {
 
     try {
 
@@ -80,15 +80,11 @@ export async function updateUser(userName: string, firstName: string, lastName: 
         const user = await UserModel.findOne({ userName });
 
         // Stores and look for a specific user id and updates it in the database
-        const updatedUser = await UserModel.findOneAndUpdate({ _id: user?.id }, {
-            userName,
-            firstName,
-            lastName,
-            phonenumber,
-            image
-        }, {
-            new: true
-        });
+        const updatedUser = await UserModel.findOneAndUpdate({ _id: user?.id },
+            fields
+            , {
+                new: true
+            });
 
         // returns the updated user
         return updatedUser;
@@ -99,6 +95,30 @@ export async function updateUser(userName: string, firstName: string, lastName: 
     }
 }
 
+/**
+ * add match to user's match history
+ */
+export async function addMatchToUserHistory(matchId: string, userName: string) {
+    try {
+
+        // Sets up the database
+        await Database.setup();
+
+        //add match to user's match history
+        const updatedUser = await UserModel.findByIdAndUpdate(
+            { userName },
+            { $push: { matchHistory: matchId } },
+            { new: true }
+        );
+
+        // Returns the updated user
+        return updatedUser;
+
+    } catch (error: any) {
+        throw new Error("Error updating the user", error.message);
+    }
+
+}
 
 /**
  * @getUserByEmail This is a function to check if the user exists on the database
@@ -241,7 +261,7 @@ export async function removeMatchFromUserMatches(userName: string, matchId: stri
 
         // Catches any errors and throws it
     } catch (error: any) {
-        throw new Error("Error updating the user", error.message);
+        throw new Error("Error updating the user from remove match from user", { cause: error });
     }
 }
 

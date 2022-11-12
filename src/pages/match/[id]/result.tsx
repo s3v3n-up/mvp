@@ -8,6 +8,9 @@ import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
 //local-import
+import useAuth from "@/hooks/useAuth";
+
+//dynamic imports
 const Draw = dynamic(() => import("@/components/results/draw"));
 const Lose = dynamic(() => import ("@/components/results/lose"));
 const Win = dynamic(() => import("@/components/results/win"));
@@ -16,6 +19,10 @@ const Win = dynamic(() => import("@/components/results/win"));
  * @description this page displays multiple components depends on the match result
  */
 export default function Result({ result } : {result : string}) {
+
+    //guard page against unauthenticated users on client side
+    useAuth();
+
     return(
         <>
             {result === "WIN" ? <Win /> : result === "LOSE" ? <Lose /> : <Draw />}
@@ -31,7 +38,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext){
     //checks if there is a session
     if(!session){
         return {
-            redirect: {
+            redirect:
+            {
                 destination: "/",
                 permanent: false
             }
@@ -47,7 +55,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext){
     //checks if the match is finished or not
     if(match.status !== "FINISHED"){
         return {
-            redirect: {
+            redirect:
+            {
                 destination: "/",
                 permanent: false
             }
@@ -58,7 +67,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext){
     //checks if the user is in the match
     if(!players.includes(session.user.userName)){
         return {
-            redirect: {
+            redirect:
+            {
                 destination: "/",
                 permanent: false
             }
@@ -79,7 +89,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext){
     });
 
     return {
-        props: {
+        props:
+        {
             result: matchResult.result
         }
     };

@@ -1,7 +1,6 @@
 //third-party imports
 import Image from "next/image";
 import { ChangeEvent, FormEvent, useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
@@ -16,6 +15,7 @@ import Head from "next/head";
 import styles from "@/styles/Login.module.sass";
 import Button from "@/components/buttons/primaryButton";
 import Input from "@/components/Input";
+import useAuth from "@/hooks/useAuth";
 
 //dynamic imports
 const EmailIcon = dynamic(() => import("@mui/icons-material/Email"));
@@ -28,18 +28,8 @@ const AlertMessage = dynamic(() => import("@/components/alertMessage"));
 export default function Login() {
 
     //guard page against unauthenticated users on client side
-    const { data: session, status } = useSession();
+    useAuth();
     const router = useRouter();
-    useEffect(() => {
-        if (status === "loading") return;
-        if (status === "authenticated") {
-            if (session.user.isFinishedSignup) {
-                router.push("/");
-            } else {
-                router.push("/register");
-            }
-        }
-    }, [status, session, router]);
 
     //login error state
     const [error, setError] = useState("");
@@ -48,10 +38,11 @@ export default function Login() {
     useEffect(() => {
         const splitByError = router.asPath.split("error");
         if (splitByError.length > 1) {
-            const err = splitByError[1].substring(1);
+            const err = splitByError[splitByError.length-1].substring(1);
             if (err == "OAuthAccountNotLinked") {
                 setError(
-                    "You already login with a different provider, ex: you previously logged in with Google, but now you are trying to log in with email/discord. Please log in with the same provider you used previously."
+                    `You already login with a different provider, ex: you previously logged in with Google, 
+                    but now you are trying to log in with email/discord. Please log in with the same provider you used previously.`
                 );
             } else {
                 setError(
@@ -76,7 +67,11 @@ export default function Login() {
    */
     function handleEmailSubmit(e: FormEvent<HTMLFormElement>) {
         e.preventDefault();
-        signIn("email", { email });
+        try {
+            signIn("email", { email });
+        } catch {
+            setError("Error sending email to your account.");
+        }
     }
 
     return (
@@ -93,10 +88,10 @@ export default function Login() {
                     <div className={styles.about}>
                         <h2>Are YOU the MVP?</h2>
                         <p>
-              Create your matches <br />
-              Schedule your face-off
+                            Create your matches <br />
+                            Schedule your face-off
                             <br />
-              Put your skills to the test.
+                            Put your skills to the test.
                         </p>
                         <h2>Can you be #1?</h2>
                     </div>
@@ -120,11 +115,12 @@ export default function Login() {
                                     placeholder="enter your email"
                                     value={email}
                                     onChange={handleEmailChange}
+                                    required
                                 >
                                     <EmailIcon />
                                 </Input>
                                 <Button type="submit" className={styles.login}>
-                  Log in
+                                    Log in
                                 </Button>
                             </form>
                             <div className="flex w-full items-center gap-2 my-5">
@@ -187,16 +183,18 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     if (session) {
         if (session.user.isFinishedSignup) {
             return {
-                redirect: {
+                redirect:
+                {
                     destination: "/",
-                    permanent: false,
+                    permanent: false
                 },
             };
         } else {
             return {
-                redirect: {
+                redirect:
+                {
                     destination: "/register",
-                    permanent: false,
+                    permanent: false
                 },
             };
         }

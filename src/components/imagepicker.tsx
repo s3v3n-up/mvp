@@ -1,4 +1,5 @@
-import { ChangeEvent, useEffect, useRef } from "react";
+//third party imports
+import { ChangeEvent, useRef, MouseEvent } from "react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 
@@ -15,7 +16,7 @@ const Close = dynamic(() => import("@mui/icons-material/Close"));
 interface Props {
   image: File | null;
   imageUrl?: string;
-  onRemove?: (e?: any) => void;
+  onRemove?: (e: MouseEvent<HTMLButtonElement>) => void;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 

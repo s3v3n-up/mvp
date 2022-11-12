@@ -1,22 +1,39 @@
 import { ReactNode, ChangeEvent } from "react";
 
-/*
- * interface for input type: value,label,type,option,name
+/**
+ * props type of input component
+ * @property {string} label - input label
+ * @property {string} name - input name
+ * @property {string} value - input value
+ * @property {(e: ChangeEvent)=>void} onChange - handle input change
+ * @property {ReactNode} children - extra icon to be displayed
+ * @property {string} type - input type
+ * @property {boolean} readonly - is input readonly
+ * @property {string} placeholder - input placeholder
  */
 interface Props {
   value: string;
   label?: string;
   type?: "text" | "password" | "email" | "datetime-local" | "tel" ;
-  option?:string;
   children?: ReactNode;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   name?: string;
   placeholder?: string;
   readonly?: boolean;
+  required?: boolean;
 }
 
 /**
  * this input component which can be reused in any user input field.
+ * @prop {string} label - input label
+ * @prop {string} name - input name
+ * @prop {string} value - input value
+ * @prop {(e: ChangeEvent)=>void} onChange - handle input change
+ * @prop {ReactNode} children - extra icon to be displayed
+ * @prop {string} type - input type
+ * @prop {boolean} readonly - is input readonly
+ * @prop {string} placeholder - input placeholder
+ * @returns {JSX.Element} - input component
  */
 export default function Input(props:Props){
     return (
@@ -34,6 +51,7 @@ export default function Input(props:Props){
                     placeholder={props.placeholder}
                     name={props.name}
                     readOnly={props.readonly}
+                    required={props.required}
                 />
             </div>
         </>

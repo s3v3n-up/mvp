@@ -1,12 +1,13 @@
 // Third-party imports
 import { NextApiRequest, NextApiResponse } from "next";
-import { object, string, date, array } from "yup";
+import { object, string, date, array, number } from "yup";
 
 // Local imports
 import { Match } from "@/lib/types/Match";
 import { createMatch, findUserActiveMatches } from "@/lib/actions/match";
 import Database from "@/lib/resources/database";
 import MatchModel from "@/lib/resources/models/Match";
+import { APIErr } from "@/lib/types/General";
 
 /**
  * @description = a function that handles api request for creating a match
@@ -19,14 +20,13 @@ export default async function handler(
         try {
 
             // Deconstruct request body to access values from the client
-            let {
+            const {
                 matchHost,
                 sport,
                 gameMode,
                 matchType,
                 location,
                 matchStart,
-                matchEnd,
                 description,
                 teams,
                 status,
@@ -36,19 +36,47 @@ export default async function handler(
             const schema = object({
                 matchHost: string().required(),
                 sport: string().required(),
-                gameMode: object().required(),
+                gameMode: object({
+                    modeName: string().required(),
+                    requiredPlayers: number().required(),
+                }),
                 matchType: string().required(),
-                location: object(),
+                location: object({
+                    lng: number().required(),
+                    lat: number().required(),
+                    address: object({
+                        fullAddress: string().required(),
+                        pointOfInterest: string().required(),
+                        city: string().required(),
+                        country: string().required(),
+                    }),
+                }),
                 matchStart: date().when("matchType", {
-                    is: ((matchType: any) => matchType==="REGULAR"),
-                    then: date().min(
-                        new Date(Date.now() + 3600000),
-                        "You cannot set a date or time less than 1 hour from now."),
-                    otherwise: date().min(new Date(Date.now() - 60000), "You cannot set a date or time in the past")
+                    is: (matchType: string) => matchType === "REGULAR",
+                    then: date()
+                        .min(
+                            new Date(Date.now() + 3600000),
+                            "You cannot set a date or time less than 1 hour from now."
+                        )
+                        .typeError("Please set a date and time for the regular match"),
+                    otherwise: date().min(
+                        new Date(Date.now() - 60000),
+                        "You cannot set a date or time in the past"
+                    ),
                 }),
                 matchEnd: date(),
-                description: string(),
-                teams: array(),
+                description: string().when("matchType", {
+                    is: (matchType: string) => matchType === "REGULAR",
+                    then: string().required("Please enter a description"),
+                    otherwise: string(),
+                }),
+                teams: array(
+                    object({
+                        members: array(),
+                        score: number(),
+                        status: string(),
+                    })
+                ),
                 status: string().required(),
             });
 
@@ -88,7 +116,10 @@ export default async function handler(
 
             // Checks if there are active matches and return an error if there is
             if (activeMatches.length > 0) {
-                throw new Error("You already have an active match");
+                throw {
+                    message: "You already have an active match",
+                    code: 401,
+                };
             }
 
             // Inserting the values into an object variable
@@ -98,13 +129,13 @@ export default async function handler(
                 gameMode,
                 matchType,
                 location,
-                matchStart,
-                matchEnd,
+                matchStart: matchType === "REGULAR" ? matchStart : null,
+                matchEnd: null,
                 description,
                 teams,
                 status,
                 matchQueueStart: null,
-                matchPause: null
+                matchPause: null,
             };
 
             // Call upon the createMatch action to use the values above and create a match model
@@ -116,13 +147,19 @@ export default async function handler(
             });
 
             // Catch any errors caught above and send it back as json
-        } catch (error: any) {
-            const { code = 500, message } = error;
-            res.status(code).json({
-                message,
-            });
-
-            return;
+        } catch(error) {
+            const {
+                code = 500,
+                message="internal server error",
+                cause="internal error"
+            } = error as APIErr;
+            res.status(code).json(
+                {
+                    code,
+                    message,
+                    cause
+                }
+            );
         }
     }
 }

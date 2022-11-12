@@ -61,22 +61,19 @@ export default function Player(props: PlayerProps) {
 
     //function for the user to leave the match
     async function onLeave() {
-        const teamIndex = props.variant === "home" ? 0 : 1;
         const userName= props.userName;
-        try {
-            await axios.put(`/api/match/${props.matchId}/operation/remove`, {
-                teamIndex,
-                userName
-            });
-            router.push("/");
-        } catch(error) {
-            alert("Error leaving match");
-        }
+        await axios.put(`/api/match/${props.matchId}/operation/remove`, {
+            userName
+        })
+            .then(()=>router.push("/"))
+            .catch((err)=>console.log(err));
+
     }
 
     return (
         <div
-            className={`grid grid-cols-3 gap-3 w-full h-full sm:text-base text-sm ${variantStyle[props.variant].container}`}
+            className={`grid grid-cols-3 gap-3 w-full h-full sm:text-base text-sm 
+                        ${variantStyle[props.variant].container}`}
         >
             <div className="relative rounded-full lg:w-12 lg:h-12 w-10 h-10">
                 <Image

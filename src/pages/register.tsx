@@ -1,7 +1,7 @@
 //third-party imports
 import Image from "next/image";
-import { useEffect, MouseEvent, FormEvent } from "react";
-import { useSession, getSession } from "next-auth/react";
+import { MouseEvent, FormEvent, useEffect } from "react";
+import { getSession, useSession } from "next-auth/react";
 import { useState, ChangeEvent } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
@@ -12,6 +12,7 @@ import Head from "next/head";
 import styles from "@/styles/Register.module.sass";
 import Input from "@/components/Input";
 import Button from "@/components/buttons/primaryButton";
+import useAuth from "@/hooks/useAuth";
 
 //dynamic imports
 const Person = dynamic(() => import("@mui/icons-material/Person"));
@@ -48,13 +49,10 @@ export default function Register() {
     //guard page against logged and unauthenticated in users
     const { data: session } = useSession();
     const router = useRouter();
-    useEffect(() => {
+
+    useEffect(()=> {
         if (session && session.user.isFinishedSignup) {
             router.push("/");
-        }
-
-        if (!session) {
-            router.push("/login");
         }
     }, [session, router]);
 
@@ -136,7 +134,7 @@ export default function Register() {
             const imageUrl = await handleImageSubmit();
             await axios.post("/api/user/create", {
                 ...formData,
-                email: session!.user.email,
+                email: session?.user.email,
                 image: imageUrl,
                 matches: [],
             });
@@ -159,7 +157,7 @@ export default function Register() {
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="initial-scale=1.0, width=device-width" />
                 <title>MVP | Register</title>
-                <meta name="description" content="Register page" />
+                <meta name="description" content="Create an account with MVP"/>
                 <link rel="icon" href="/favicon.ico"></link>
             </Head>
             <div className={styles.container}>
@@ -167,10 +165,9 @@ export default function Register() {
                     <div className={styles.about}>
                         <h2>Are YOU the MVP?</h2>
                         <p>
-              Create your matches <br />
-              Schedule your face-off
-                            <br />
-              Put your skills to the test.
+                            Create your matches <br />
+                            Schedule your face-off <br />
+                            Put your skills to the test.
                         </p>
                         <h2>Can you be #1?</h2>
                     </div>
@@ -231,7 +228,7 @@ export default function Register() {
                                 <Phone fontSize="medium" />
                             </Input>
                             <Button type="submit" className={styles.signup}>
-                Sign up
+                                Sign up
                             </Button>
                         </form>
                     </div>
