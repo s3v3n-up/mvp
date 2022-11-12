@@ -1,10 +1,6 @@
 ###### CSTP 2107 Internet Programming and Web Apps
 
-<!-- LOGO -->
-<div align="center">
-  <a href="https://github.com/github_username/repo_name">
-    <img src="appLogo.jpg" alt="Logo" width="200" height="200">
-  </a>
+![](https://github.com/MelodyC823/logo/blob/b58baa0e33a06837f3c4bffee60ccf2f345c0a56/Screen%20Shot%202022-11-11%20at%2010.45.45%20PM.png)
 
   #  MVP Project
 
